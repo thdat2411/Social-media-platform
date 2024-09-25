@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -18,26 +18,31 @@ interface EmojiPopoverProps {
   onEmojiSelect: (value: string) => void;
 }
 
-export const EmojiPopover = ({
+export const EmojiPopover = memo(function EmojiPopover({
   children,
   hint = "Emoji",
   onEmojiSelect,
-}: EmojiPopoverProps) => {
+}: EmojiPopoverProps) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const onSelect = (value: EmojiClickData) => {
     onEmojiSelect(value.emoji);
     setPopoverOpen(false);
-
-    setTimeout(() => {
+    setTooltipOpen(false);
+  };
+  const togglePopover = (isOpen: boolean) => {
+    setPopoverOpen(isOpen);
+    if (isOpen) {
+      setTooltipOpen(true);
+    } else {
       setTooltipOpen(false);
-    }, 500);
+    }
   };
 
   return (
     <TooltipProvider>
-      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+      <Popover open={popoverOpen} onOpenChange={togglePopover}>
         <Tooltip
           open={tooltipOpen}
           onOpenChange={setTooltipOpen}
@@ -56,4 +61,4 @@ export const EmojiPopover = ({
       </Popover>
     </TooltipProvider>
   );
-};
+});

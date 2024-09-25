@@ -19,7 +19,7 @@ const LoginForm = () => {
       >
         <div className="flex items-center space-x-2">
           <Image
-            src="https://placehold.co/20x20"
+            src="https://github.com/shadcn.png"
             alt="User Avatar"
             className="h-8 w-8 rounded-full"
             width={20}

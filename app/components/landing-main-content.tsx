@@ -4,19 +4,19 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LandingImage from "@/app/assets/landing-image.jpg";
 
 const LandingMainContent = () => {
   return (
-    <main className="flex flex-row space-x-10  mt-20">
+    <main className="flex flex-row space-x-10  mt-20 ">
       <div className="flex flex-col w-[550px]">
         <h1 className="text-5xl text-slate-500 ">
           Chào mừng đến với cộng đồng chuyên gia của bạn
         </h1>
         <Button
           variant="outline"
-          className="mt-8 w-[400px] border-gray-600 flex space-x-2 border rounded-full px-4 py-4 h-11 justify-between"
+          className="mt-8 w-[400px] border-gray-600 bg-white flex space-x-2 border rounded-full px-4 py-4 h-11 justify-between"
         >
           <div className="flex items-center space-x-2">
             <Avatar>
@@ -40,7 +40,7 @@ const LandingMainContent = () => {
         </Button>
         <Button
           variant="outline"
-          className="mt-6 border w-[400px] border-gray-600 rounded-full px-6 py-2"
+          className="mt-6 border w-[400px] bg-white border-gray-600 rounded-full px-6 py-2"
         >
           Đăng nhập bằng email
         </Button>
@@ -71,9 +71,9 @@ const LandingMainContent = () => {
       </div>
       <div>
         <Image
-          src="https://placehold.co/650x520"
+          src={LandingImage}
           alt="Illustration"
-          className="w-full "
+          className="w-full bg-transparent rounded-full"
           width={650}
           height={520}
         />

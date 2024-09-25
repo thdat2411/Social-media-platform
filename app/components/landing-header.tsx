@@ -5,9 +5,10 @@ import { PiArticle } from "react-icons/pi";
 import { BriefcaseBusiness, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-const LandingHeader = () => {
+const LandingHeader = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   return (
-    <div className="w-full flex justify-around items-center ">
+    <div className="w-full flex justify-around items-center bg-white">
       <div className="flex items-center">
         <Image src={LinkedLogo} alt="LinkedIn Logo" className="w-48" />
       </div>
@@ -16,21 +17,21 @@ const LandingHeader = () => {
           href="#"
           className="text-gray-500 hover:text-gray-800 flex flex-col items-center justify-center"
         >
-          <PiArticle className="size-6" />
+          <PiArticle className="size-7" />
           <span className="text-xs">Article</span>
         </Link>
         <Link
           href="#"
           className="text-gray-500 hover:text-gray-800 flex flex-col items-center justify-center"
         >
-          <UserRound className="size-6" />
+          <UserRound className="size-7" />
           <span className="text-xs">Article</span>
         </Link>
         <Link
           href="#"
           className="text-gray-500 hover:text-gray-800 flex flex-col items-center justify-center"
         >
-          <BriefcaseBusiness className="size-6" />
+          <BriefcaseBusiness className="size-7" />
           <span className="text-xs">Article</span>
         </Link>
         <div className="border-l px-3">

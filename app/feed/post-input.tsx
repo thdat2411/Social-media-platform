@@ -1,17 +1,23 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import { GoFileMedia } from "react-icons/go";
 import { MdCalendarMonth } from "react-icons/md";
 import { SiLibreofficewriter } from "react-icons/si";
 
 interface PostInputProps {
   setIsPostModalOpen: (open: boolean) => void;
+  setIsImageModalOpen: (open: boolean) => void;
+  draft?: string | null;
 }
 
-const PostInput = ({ setIsPostModalOpen }: PostInputProps) => {
+const PostInput = ({
+  setIsPostModalOpen,
+  setIsImageModalOpen,
+  draft,
+}: PostInputProps) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
+    <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
       <div className="flex items-center space-x-2">
         <Avatar className="size-14">
           <AvatarImage src="https://github.com/shadcn.png" />
@@ -21,12 +27,15 @@ const PostInput = ({ setIsPostModalOpen }: PostInputProps) => {
           variant="outline"
           className="flex w-full rounded-full items-center justify-start h-12 border-slate-800 text-slate-500"
           onClick={() => setIsPostModalOpen(true)}
+          onBlur={() => setIsPostModalOpen(false)}
         >
-          <p>Start a post</p>
+          <p>{draft === "" ? "Start a post" : `Draft: ${draft}`}</p>
         </Button>
       </div>
       <div className="flex mt-4 justify-around">
         <Button
+          onClick={() => setIsImageModalOpen(true)}
+          onBlur={() => setIsImageModalOpen(false)}
           variant="ghost"
           className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2 mr-2"
         >

@@ -4,6 +4,7 @@ import { EmojiPopover } from "../components/emoji-popover";
 import { Button } from "@/components/ui/button";
 import { FaImage, FaRegSmile } from "react-icons/fa";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface CommentInputProps {
   commentText: string;
@@ -39,7 +40,7 @@ const CommentInput = ({
       </Avatar>
       {commentText.trim().length === 0 && !imageUrl ? (
         <div
-          className={`flex w-full py-1 px-4 border-2 border-gray-300 rounded-full${
+          className={`flex w-full items-center py-1 px-4 border-2 border-gray-300 rounded-full${
             isFocused ? " border-gray-500" : ""
           }`}
         >
@@ -87,14 +88,16 @@ const CommentInput = ({
           />
           {imageUrl && (
             <div className="flex items-center mt-2 relative px-4">
-              <img
+              <Image
                 src={imageUrl}
                 alt="Selected"
-                className="size-40 object-cover mr-2 rounded-lg"
+                className="object-cover mr-2 rounded-lg"
+                width={160}
+                height={160}
               />
               <Button
                 onClick={removeImage}
-                className="rounded-full px-3 absolute top-2 left-32 bg-black hover:bg-black"
+                className="rounded-full w-fit p-3 absolute top-2 left-32 bg-black hover:bg-black"
               >
                 <X className="size-4" />
               </Button>

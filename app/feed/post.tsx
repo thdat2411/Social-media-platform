@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
 import { Button } from "@/components/ui/button";
-import { Earth, MessageSquareMore, Send, X } from "lucide-react";
+import { Earth, MessageSquareMore, Send } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import Link from "next/link";
@@ -25,20 +25,20 @@ const Post = () => {
   const [commentText, setCommentText] = useState("");
   const [showFullText, setShowFullText] = useState(false);
   const textareaRef = useRef(null);
-  const handleCommentSubmit = () => {
-    // if (commentText.trim()) {
-    //   setComments([...comments, commentText]);
-    //   setCommentText("");
-    //   setShowCommentInput(false); // Optionally hide the input after submitting
-    // }
-  };
+  // const handleCommentSubmit = () => {
+  //   // if (commentText.trim()) {
+  //   //   setComments([...comments, commentText]);
+  //   //   setCommentText("");
+  //   //   setShowCommentInput(false); // Optionally hide the input after submitting
+  //   // }
+  // };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault(); // Prevent default Enter key behavior (newline)
-      handleCommentSubmit();
-    }
-  };
+  // const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+  //   if (event.key === "Enter" && !event.shiftKey) {
+  //     event.preventDefault(); // Prevent default Enter key behavior (newline)
+  //     handleCommentSubmit();
+  //   }
+  // };
   const handleEmojiSelect = (emoji: string) => {
     setCommentText((prev) => prev + emoji);
   };
@@ -71,7 +71,7 @@ const Post = () => {
   }, [commentText]);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm">
+    <div className="bg-white p-4 rounded-lg shadow-sm border-[1.5px] border-[#DADEE2]">
       <Link
         href="#"
         className="flex items-center mb-4 space-x-2 cursor-pointer"
