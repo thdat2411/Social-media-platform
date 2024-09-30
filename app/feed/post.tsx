@@ -49,19 +49,18 @@ const Post = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImageUrl(reader.result as string); // Append image to text
+        setImageUrl(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
   const removeImage = () => {
     setImageUrl("");
-    setCommentText(commentText.replace(/!\[Image\]\((.*?)\)/, "")); // Remove image placeholder from text
+    setCommentText(commentText.replace(/!\[Image\]\((.*?)\)/, ""));
   };
 
   useEffect(() => {
     if (textareaRef.current && commentText.trim().length > 0) {
-      // Set focus and cursor to the end when transitioning to textarea
       (textareaRef.current as HTMLTextAreaElement).focus();
       (textareaRef.current as HTMLTextAreaElement).setSelectionRange(
         commentText.length,

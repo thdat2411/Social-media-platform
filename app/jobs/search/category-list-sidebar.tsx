@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import useSearchingCategoriesList from "../hooks/useSearchingCategoriesList";
+import useSearchingCategoriesList from "@/app/hooks/useSearchingCategoriesList";
 
 const CategoryListSidebar = () => {
   const lists = useSearchingCategoriesList();

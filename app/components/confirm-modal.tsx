@@ -13,6 +13,11 @@ interface ConfirmModalProps {
   setOpen: (open: boolean) => void;
   onConfirm?: () => void;
   onClose?: () => void;
+  width: string;
+  title: string;
+  content: string;
+  cancelLabel: string;
+  confirmLabel: string;
 }
 
 const ConfirmModal = ({
@@ -20,20 +25,24 @@ const ConfirmModal = ({
   setOpen,
   onClose,
   onConfirm,
+  title,
+  content,
+  cancelLabel,
+  confirmLabel,
+  width,
 }: ConfirmModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-0 bg-gray-50 overflow-hidden top-1/4 mt-16 h-fit w-[340px]">
+      <DialogContent
+        className="p-0 bg-gray-50 overflow-hidden top-1/4 mt-16 h-fit "
+        style={{ width: `${width}px` }}
+      >
         <div className="bg-white border rounded-lg">
           <DialogHeader className="pt-7 px-3 pb-2">
-            <DialogTitle className="text-lg font-medium">
-              Save this post as a draft
-            </DialogTitle>
+            <DialogTitle className="text-lg font-medium">{title}</DialogTitle>
           </DialogHeader>
           <Separator />
-          <p className="pt-2 px-3 pb-6">
-            The post you started will be here when you return
-          </p>
+          <p className="pt-2 px-3 pb-6">{content}</p>
           <Separator />
           <div className="flex justify-end items-center space-x-3 py-4 mr-2">
             <Button
@@ -41,13 +50,13 @@ const ConfirmModal = ({
               variant="outline"
               className="border-2 border-blue-600 rounded-full text-blue-600 hover:border-blue-900 hover:text-blue-600"
             >
-              Discard
+              {cancelLabel}
             </Button>
             <Button
               onClick={onConfirm}
               className="bg-blue-600 hover:bg-blue-800 rounded-full"
             >
-              Save as draft
+              {confirmLabel}
             </Button>
           </div>
         </div>

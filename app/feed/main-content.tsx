@@ -1,45 +1,45 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PostModal from "./components/post-modal";
 import Post from "./post";
 import PostInput from "./post-input";
 import MediaModal from "./components/media-modal";
+import EventModal from "./components/event-modal";
 
 const FeedMainContent = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isOpenEditMode, setIsOpenEditModal] = useState(false);
-  const [draft, setDraft] = useState<string | null>("");
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [draftContent, setDraftContent] = useState<string | null>(null);
+  const [draftImage, setDraftImage] = useState<string | null>();
 
-  useEffect(() => {
-    const draftstorage = localStorage.getItem("draft");
-    if (!draftstorage) {
-      setDraft("");
-    } else {
-      setDraft(JSON.parse(draftstorage));
-    }
-  }, [draft]);
-
-  const updateDraft = (newText: string) => {
-    setDraft(newText);
-    localStorage.setItem("draft", JSON.stringify(newText));
-  };
   return (
     <>
       <PostModal
         open={isPostModalOpen}
         setOpen={setIsPostModalOpen}
         image={null}
-        draft={draft}
-        updateDraft={updateDraft}
+        draftImage={draftImage}
+        draftContent={draftContent}
+        setDraftContent={setDraftContent}
+        setDraftImage={setDraftImage}
+        setIsOpenEditModal={setIsOpenEditModal}
       />
-      <MediaModal open={isOpenEditMode} setOpen={setIsOpenEditModal} />
+      <MediaModal
+        open={isOpenEditMode}
+        setOpen={setIsOpenEditModal}
+        setDraftContent={setDraftContent}
+        setDraftImage={setDraftImage}
+      />
+      <EventModal open={isEventModalOpen} setOpen={setIsEventModalOpen} />
       <div className="w-1/2 mx-4">
         <PostInput
           setIsPostModalOpen={() => setIsPostModalOpen(true)}
           setIsImageModalOpen={() => {
             setIsOpenEditModal(true);
           }}
-          draft={draft}
+          setIsEventModalOpen={setIsEventModalOpen}
+          draftContent={draftContent}
         />
         <Post />
       </div>

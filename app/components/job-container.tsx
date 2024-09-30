@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
-import { Lists } from "./container";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Lists } from "../search/main-content";
 
 interface JobContainerProps {
   label: string;
@@ -30,7 +30,7 @@ const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         ) : (
-          <img src="https://github.com/shadcn.png" className="size-14  " />
+          <img src="https://github.com/shadcn.png" className="size-16" />
         )}
         <div className="flex flex-col space-y-1">
           <p className="text-lg font-semibold hover:underline">{item.label}</p>

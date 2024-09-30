@@ -8,13 +8,15 @@ import { SiLibreofficewriter } from "react-icons/si";
 interface PostInputProps {
   setIsPostModalOpen: (open: boolean) => void;
   setIsImageModalOpen: (open: boolean) => void;
-  draft?: string | null;
+  setIsEventModalOpen: (open: boolean) => void;
+  draftContent?: string | null;
 }
 
 const PostInput = ({
   setIsPostModalOpen,
   setIsImageModalOpen,
-  draft,
+  setIsEventModalOpen,
+  draftContent,
 }: PostInputProps) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
@@ -29,7 +31,9 @@ const PostInput = ({
           onClick={() => setIsPostModalOpen(true)}
           onBlur={() => setIsPostModalOpen(false)}
         >
-          <p>{draft === "" ? "Start a post" : `Draft: ${draft}`}</p>
+          <p>
+            {draftContent === null ? "Start a post" : `Draft: ${draftContent}`}
+          </p>
         </Button>
       </div>
       <div className="flex mt-4 justify-around">
@@ -43,6 +47,7 @@ const PostInput = ({
           <p>Media</p>
         </Button>
         <Button
+          onClick={() => setIsEventModalOpen(true)}
           variant="ghost"
           className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2  mr-2"
         >

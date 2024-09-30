@@ -1,11 +1,11 @@
 import React from "react";
 import Header from "../components/header";
 
-interface FeedLayoutProps {
+interface JobsLayoutProps {
   children: React.ReactNode;
 }
 
-const FeedLayout = ({ children }: FeedLayoutProps) => {
+const JobsLayout = ({ children }: JobsLayoutProps) => {
   return (
     <div className="h-full">
       <Header />
@@ -14,4 +14,4 @@ const FeedLayout = ({ children }: FeedLayoutProps) => {
   );
 };
 
-export default FeedLayout;
+export default JobsLayout;

@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import Header from "../components/header";
 
-interface FeedLayoutProps {
+interface MyNetworkLayoutProps {
   children: React.ReactNode;
 }
 
-const MyNetworkLayout = ({ children }: FeedLayoutProps) => {
+const MyNetworkLayout = ({ children }: MyNetworkLayoutProps) => {
   const [isSearchFocus, setIsSearchFocus] = useState(false);
   return (
     <div className="h-full">

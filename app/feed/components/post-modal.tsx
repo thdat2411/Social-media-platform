@@ -11,27 +11,35 @@ import { MdCalendarMonth, MdOutlinePermMedia } from "react-icons/md";
 import { EmojiPopover } from "../../components/emoji-popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReactPhotoEditor } from "react-photo-editor";
-import ConfirmModal from "./confirm-modal";
+import ConfirmModal from "../../components/confirm-modal";
+import { useDebounce } from "use-debounce";
 
 interface PostModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   image: File | null | undefined;
-  draft?: string | null;
-  updateDraft?: (draft: string) => void;
+  draftImage?: string | null;
+  draftContent?: string | null;
+  setDraftContent: (draft: string | null) => void;
+  setDraftImage: (image: string | null) => void;
+  setIsOpenEditModal?: (open: boolean) => void;
 }
 
 const PostModal = ({
   open,
   setOpen,
   image,
-  draft,
-  updateDraft,
+  draftContent,
+  draftImage,
+  setDraftContent,
+  setDraftImage,
+  setIsOpenEditModal,
 }: PostModalProps) => {
   const [postContent, setPostContent] = useState("");
   const [editedImage, setEditedImage] = useState<string | null>(null);
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [debouncedPostContent] = useDebounce(postContent, 300);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostContent(e.target.value);
@@ -42,53 +50,82 @@ const PostModal = ({
   };
 
   useEffect(() => {
-    if (draft) {
-      setPostContent(draft);
+    if (draftContent) {
+      setDraftContent(debouncedPostContent);
     }
-  }, [draft]);
+    if (draftImage) {
+      setEditedImage(draftImage);
+    }
+  }, [draftContent, draftImage, debouncedPostContent, setDraftContent]);
 
   useEffect(() => {
+    const reader = new FileReader();
     if (image) {
-      const reader = new FileReader();
       reader.onloadend = () => {
         setEditedImage(reader.result as string);
       };
       reader.readAsDataURL(image);
     }
+    return () => {
+      reader.abort();
+    };
   }, [image]);
 
   const handleSaveDraft = () => {
-    updateDraft?.(postContent);
+    if (postContent.trim() !== "") {
+      setDraftContent(postContent);
+      localStorage.setItem("draftContent", JSON.stringify(postContent));
+    }
+    if (editedImage !== null) {
+      setDraftImage(editedImage);
+      localStorage.setItem("draftImage", JSON.stringify(editedImage));
+    }
     setOpen(false);
     setIsConfirmModalOpen(false);
   };
 
   const handleDiscardDraft = () => {
-    localStorage.removeItem("draft");
-    updateDraft?.("");
+    localStorage.removeItem("draftContent");
+    localStorage.removeItem("draftImage");
+    setDraftContent(null);
+    setDraftImage(null);
     setPostContent("");
+    setEditedImage(null);
     setOpen(false);
     setIsConfirmModalOpen(false);
   };
 
-  const handleCloseWithText = () => {
+  const handleClose = () => {
     if (postContent.trim() !== "" || editedImage) {
       setIsConfirmModalOpen(true);
     } else {
-      localStorage.removeItem("draft");
-      updateDraft!("");
+      const draftContent = localStorage.getItem("draftContent");
+      const draftImage = localStorage.getItem("draftImage");
+      if (draftContent || draftImage) {
+        if (draftContent) {
+          localStorage.removeItem("draftContent");
+          setDraftContent(null);
+        }
+        if (draftImage) {
+          localStorage.removeItem("draftImage");
+          setDraftImage(null);
+        }
+      }
       setOpen(false);
     }
+  };
+
+  const handleSaveImage = (editedFile: File) => {
+    setEditedImage(URL.createObjectURL(editedFile));
+    setIsPhotoEditorOpen(false);
+    setOpen(true);
   };
   return (
     <>
       <ReactPhotoEditor
         open={isPhotoEditorOpen}
         file={image!}
-        onSaveImage={() => {
-          setIsPhotoEditorOpen(false);
-          setOpen(true);
-        }}
+        onSaveImage={handleSaveImage}
         onClose={() => {
           setIsPhotoEditorOpen(false);
         }}
@@ -98,11 +135,13 @@ const PostModal = ({
         setOpen={setIsConfirmModalOpen}
         onClose={handleDiscardDraft}
         onConfirm={handleSaveDraft}
+        title="Save this post as draft"
+        content="The post you started will be here when you return."
+        cancelLabel="Discard"
+        confirmLabel="Save as draft"
+        width="360"
       />
-      <Dialog
-        open={open}
-        onOpenChange={() => (open ? handleCloseWithText() : setOpen(false))}
-      >
+      <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full top-1/3 mt-16 max-w-2xl">
           <div className="bg-white border rounded-lg p-7 relative">
             <Button
@@ -173,9 +212,16 @@ const PostModal = ({
                 </EmojiPopover>
                 <div className="flex items-center justify-start mt-7 ml-4 space-x-9 text-gray-500">
                   <Hint label="Add a media">
-                    <div className="flex items-center space-x-4">
+                    <Button
+                      onClick={() => {
+                        setIsOpenEditModal?.(true);
+                        setOpen(false);
+                      }}
+                      variant="ghost"
+                      className="flex items-center space-x-4 rounded-full p-2"
+                    >
                       <MdOutlinePermMedia className="size-6 cursor-pointer hover:text-gray-800" />
-                    </div>
+                    </Button>
                   </Hint>
                   <Hint label="Create an event">
                     <div className="flex items-center space-x-4">
@@ -196,7 +242,7 @@ const PostModal = ({
                 editedImage ? "justify-between" : "justify-end"
               }`}
             >
-              {image && (
+              {editedImage && (
                 <EmojiPopover onEmojiSelect={handleEmojiSelect}>
                   <Button variant="ghost" className="rounded-full  w-fit">
                     <FaRegSmile className="size-6 cursor-pointer  text-gray-500 hover:text-gray-800" />
@@ -217,5 +263,4 @@ const PostModal = ({
     </>
   );
 };
-
 export default PostModal;

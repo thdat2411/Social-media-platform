@@ -10,24 +10,59 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { ReactPhotoEditor } from "react-photo-editor";
 import PostModal from "./post-modal";
-import EditorImage from "@/app/assets/editor-image.jpg";
+import EditorImage from "@/app/assets/editor-image.png";
+
 interface ImageEditModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  setDraftContent: (draft: string | null) => void;
+  setDraftImage: (image: string | null) => void;
 }
 
-const MediaModal = ({ open, setOpen }: ImageEditModalProps) => {
+const MediaModal = ({
+  open,
+  setOpen,
+  setDraftContent,
+  setDraftImage,
+}: ImageEditModalProps) => {
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
-  const [image, setImage] = useState<File | null | undefined>();
+  const [image, setImage] = useState<File | null>(null);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const setFileData: React.ChangeEventHandler<HTMLInputElement> | null = (
-    e
-  ) => {
-    if (e?.target?.files && e.target.files.length > 0) {
-      setImage(e.target.files[0]);
-      setIsPhotoEditorOpen(true);
+  const [isValid, setIsValid] = useState(true);
+
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (validateFileType(file)) {
+        setImage(file);
+        setIsPhotoEditorOpen(true);
+        setIsValid(true);
+      } else {
+        setIsValid(false);
+      }
     }
   };
+
+  const validateFileType = (file: File) => file.type.startsWith("image/");
+
+  const renderFileInput = () => (
+    <>
+      <label
+        htmlFor="imageUpload"
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
+      >
+        {isValid ? "Upload from computer" : "Try again"}
+      </label>
+      <input
+        type="file"
+        accept="image/*"
+        id="imageUpload"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+    </>
+  );
+
   return (
     <>
       <ReactPhotoEditor
@@ -37,16 +72,18 @@ const MediaModal = ({ open, setOpen }: ImageEditModalProps) => {
           setIsPhotoEditorOpen(false);
           setOpen(false);
           setIsPostModalOpen(true);
-          setImage(image);
         }}
         onClose={() => {
           setIsPhotoEditorOpen(false);
+          setIsValid(true);
         }}
       />
       <PostModal
         open={isPostModalOpen}
         setOpen={setIsPostModalOpen}
         image={image}
+        setDraftContent={setDraftContent}
+        setDraftImage={setDraftImage}
       />
       {!isPhotoEditorOpen && (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -59,7 +96,11 @@ const MediaModal = ({ open, setOpen }: ImageEditModalProps) => {
               </DialogHeader>
               <Separator className="p-0" />
 
-              <div className="flex flex-col items-center  h-[700px]">
+              <div
+                className={`flex flex-col items-center h-[700px] ${
+                  isValid ? "bg-white" : "bg-red-300"
+                }`}
+              >
                 <Image
                   src={EditorImage}
                   alt="Illustration of a person sitting at a desk with a computer and a cat lying on the floor"
@@ -68,31 +109,19 @@ const MediaModal = ({ open, setOpen }: ImageEditModalProps) => {
                   height={350}
                 />
                 <h2 className="text-lg font-semibold mb-2">
-                  Select files to begin
+                  {isValid ? "Select files to begin" : "Something went wrong"}
                 </h2>
                 <p className="text-gray-500 mb-4">
-                  Share images or a single video in your post.
+                  {isValid
+                    ? "Share images or a single video in your post."
+                    : "File(s) not supported. Upload a supported content type."}
                 </p>
-                <label
-                  htmlFor="imageUpload"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  Upload from computer
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="imageUpload"
-                  className="hidden"
-                  multiple={false}
-                  onChange={(e) => setFileData(e)}
-                />
+                {renderFileInput()}
               </div>
             </div>
           </DialogContent>
         </Dialog>
       )}
-      ;
     </>
   );
 };

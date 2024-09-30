@@ -21,9 +21,9 @@ const useRoutes = () => {
 
     {
         label: 'Jobs',
-        href: '/job',
+        href: '/jobs',
         icon: FaBriefcase,
-        active: pathname === '/job',
+        active: pathname === '/jobs',
 
     },
     {
