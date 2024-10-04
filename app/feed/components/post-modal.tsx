@@ -5,7 +5,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Pencil, X } from "lucide-react";
 import { FaRegSmile } from "react-icons/fa";
-import { IoDocumentText } from "react-icons/io5";
 import { Hint } from "../../components/hint";
 import { MdCalendarMonth, MdOutlinePermMedia } from "react-icons/md";
 import { EmojiPopover } from "../../components/emoji-popover";
@@ -13,16 +12,39 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReactPhotoEditor } from "react-photo-editor";
 import ConfirmModal from "../../components/confirm-modal";
 import { useDebounce } from "use-debounce";
+import Event from "./event-post-field";
+import EventPostField from "./event-post-field";
+import { defaultEvent } from "@/app/utils/utils";
+export type Event = {
+  eventName: string;
+  description: string;
+  address: string;
+  venue: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  isInPerson: boolean;
+  zone: string;
+  headerImage: string;
+};
 
 interface PostModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  image: File | null | undefined;
+  image?: File | null | undefined;
   draftImage?: string | null;
   draftContent?: string | null;
-  setDraftContent: (draft: string | null) => void;
-  setDraftImage: (image: string | null) => void;
+  setDraftContent?: (draft: string | null) => void;
+  setDraftImage?: (image: string | null) => void;
   setIsOpenEditModal?: (open: boolean) => void;
+  setIsEventModalOpen?: (open: boolean) => void;
+  setIsHavingText?: (value: boolean) => void;
+  setTriggerReset?: (value: boolean) => void;
+  setNestedMediaModal?: (value: boolean) => void;
+  setNestedEventModal?: (value: boolean) => void;
+  event?: Event | undefined;
+  setEvent?: (event: Event | undefined) => void;
 }
 
 const PostModal = ({
@@ -34,6 +56,13 @@ const PostModal = ({
   setDraftContent,
   setDraftImage,
   setIsOpenEditModal,
+  setIsEventModalOpen,
+  event,
+  setIsHavingText,
+  setTriggerReset,
+  setNestedMediaModal,
+  setNestedEventModal,
+  setEvent,
 }: PostModalProps) => {
   const [postContent, setPostContent] = useState("");
   const [editedImage, setEditedImage] = useState<string | null>(null);
@@ -51,7 +80,7 @@ const PostModal = ({
 
   useEffect(() => {
     if (draftContent) {
-      setDraftContent(debouncedPostContent);
+      setDraftContent?.(debouncedPostContent);
     }
     if (draftImage) {
       setEditedImage(draftImage);
@@ -73,13 +102,15 @@ const PostModal = ({
 
   const handleSaveDraft = () => {
     if (postContent.trim() !== "") {
-      setDraftContent(postContent);
+      setDraftContent?.(postContent);
       localStorage.setItem("draftContent", JSON.stringify(postContent));
     }
     if (editedImage !== null) {
-      setDraftImage(editedImage);
+      setDraftImage?.(editedImage);
       localStorage.setItem("draftImage", JSON.stringify(editedImage));
     }
+    setIsHavingText?.(false);
+    setTriggerReset?.(true);
     setOpen(false);
     setIsConfirmModalOpen(false);
   };
@@ -87,8 +118,8 @@ const PostModal = ({
   const handleDiscardDraft = () => {
     localStorage.removeItem("draftContent");
     localStorage.removeItem("draftImage");
-    setDraftContent(null);
-    setDraftImage(null);
+    setDraftContent?.(null);
+    setDraftImage?.(null);
     setPostContent("");
     setEditedImage(null);
     setOpen(false);
@@ -96,7 +127,11 @@ const PostModal = ({
   };
 
   const handleClose = () => {
-    if (postContent.trim() !== "" || editedImage) {
+    if (
+      postContent.trim() !== "" ||
+      editedImage !== null ||
+      event !== undefined
+    ) {
       setIsConfirmModalOpen(true);
     } else {
       const draftContent = localStorage.getItem("draftContent");
@@ -104,13 +139,15 @@ const PostModal = ({
       if (draftContent || draftImage) {
         if (draftContent) {
           localStorage.removeItem("draftContent");
-          setDraftContent(null);
+          setDraftContent?.(null);
         }
         if (draftImage) {
           localStorage.removeItem("draftImage");
-          setDraftImage(null);
+          setDraftImage?.(null);
         }
       }
+      setNestedEventModal?.(false);
+      setNestedMediaModal?.(false);
       setOpen(false);
     }
   };
@@ -120,6 +157,34 @@ const PostModal = ({
     setIsPhotoEditorOpen(false);
     setOpen(true);
   };
+
+  const handleEditButton = () => {
+    if (editedImage !== null) {
+      setIsPhotoEditorOpen(true);
+      setOpen(false);
+    }
+    if (event !== undefined) {
+      setIsEventModalOpen?.(true);
+      setOpen(false);
+    }
+  };
+
+  const handleOpenEvent = () => {
+    setIsEventModalOpen?.(true);
+    setEvent?.(defaultEvent);
+
+    setOpen(false);
+    setNestedEventModal?.(true);
+  };
+
+  const handleDeleteButton = () => {
+    if (event !== undefined) {
+      setEvent?.(undefined);
+    }
+    if (editedImage !== null) {
+      setEditedImage(null);
+    }
+  };
   return (
     <>
       <ReactPhotoEditor
@@ -128,6 +193,7 @@ const PostModal = ({
         onSaveImage={handleSaveImage}
         onClose={() => {
           setIsPhotoEditorOpen(false);
+          setOpen(true);
         }}
       />
       <ConfirmModal
@@ -135,11 +201,17 @@ const PostModal = ({
         setOpen={setIsConfirmModalOpen}
         onClose={handleDiscardDraft}
         onConfirm={handleSaveDraft}
-        title="Save this post as draft"
-        content="The post you started will be here when you return."
-        cancelLabel="Discard"
-        confirmLabel="Save as draft"
-        width="360"
+        title={
+          event === undefined ? "Save this post as draft" : "Discard draft"
+        }
+        content={
+          event === undefined
+            ? "The post you started will be here when you return."
+            : "You haven’t finished your post yet. Are you sure you want to leave and discard your draft?"
+        }
+        cancelLabel={event === undefined ? "Discard" : "Go back"}
+        confirmLabel={event === undefined ? "Save as draft" : "Discard"}
+        width={event?.eventName === "" || event === undefined ? "360" : "400"}
       />
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full top-1/3 mt-16 max-w-2xl">
@@ -166,44 +238,47 @@ const PostModal = ({
             <div className="relative max-h-[50vh] overflow-y-auto">
               <textarea
                 className={`w-full rounded-lg text-lg  p-2 mt-4 focus:outline-none focus:border-transparent ${
-                  image ? "h-28" : "h-60"
+                  editedImage !== null || event !== undefined ? "h-28" : "h-40"
                 }`}
                 placeholder="What do you want to say?"
                 value={postContent}
                 onChange={handleInputChange}
               />
-              {editedImage && (
+              {(editedImage !== null || event !== undefined) && (
                 <div className="flex flex-col w-full mb-4">
                   <div className="flex justify-end items-center space-x-5 mr-2">
-                    <Button
-                      onClick={() => {
-                        setIsPhotoEditorOpen(true);
-                        setOpen(false);
-                      }}
-                      className="rounded-full p-3 bg-[#404040] hover:bg-black"
-                    >
-                      <Pencil size={18} strokeWidth={2.5} />
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setEditedImage(null);
-                      }}
-                      className="rounded-full p-3  bg-[#404040] hover:bg-black"
-                    >
-                      <X size={18} strokeWidth={2.5} />
-                    </Button>
+                    {(editedImage !== null || event !== undefined) && (
+                      <>
+                        <Button
+                          onClick={handleEditButton}
+                          className="rounded-full p-3 bg-[#404040] hover:bg-black"
+                        >
+                          <Pencil size={18} strokeWidth={2.5} />
+                        </Button>
+
+                        <Button
+                          onClick={handleDeleteButton}
+                          className="rounded-full p-3  bg-[#404040] hover:bg-black"
+                        >
+                          <X size={18} strokeWidth={2.5} />
+                        </Button>
+                      </>
+                    )}
                   </div>
-                  <Image
-                    src={editedImage!}
-                    alt="image"
-                    className="rounded-lg mt-4 border px-4 "
-                    width={672}
-                    height={200}
-                  />
+                  {editedImage !== null && (
+                    <Image
+                      src={editedImage}
+                      alt="image"
+                      className="rounded-lg mt-4 border px-4 "
+                      width={672}
+                      height={200}
+                    />
+                  )}
+                  {event !== undefined && <EventPostField event={event} />}
                 </div>
               )}
             </div>
-            {!editedImage && (
+            {editedImage === null && event === undefined && (
               <>
                 <EmojiPopover onEmojiSelect={handleEmojiSelect}>
                   <Button variant="ghost" className="rounded-full w-fit">
@@ -216,6 +291,7 @@ const PostModal = ({
                       onClick={() => {
                         setIsOpenEditModal?.(true);
                         setOpen(false);
+                        setNestedMediaModal?.(true);
                       }}
                       variant="ghost"
                       className="flex items-center space-x-4 rounded-full p-2"
@@ -224,14 +300,13 @@ const PostModal = ({
                     </Button>
                   </Hint>
                   <Hint label="Create an event">
-                    <div className="flex items-center space-x-4">
+                    <Button
+                      onClick={handleOpenEvent}
+                      variant="ghost"
+                      className="flex items-center space-x-4 rounded-full p-2"
+                    >
                       <MdCalendarMonth className="size-6 cursor-pointer hover:text-gray-800" />
-                    </div>
-                  </Hint>
-                  <Hint label="Add a document">
-                    <div className="flex items-center space-x-4">
-                      <IoDocumentText className="size-6 cursor-pointer hover:text-gray-800" />
-                    </div>
+                    </Button>
                   </Hint>
                 </div>
               </>
@@ -239,10 +314,12 @@ const PostModal = ({
             <div className="w-full border mt-4"></div>
             <div
               className={`flex mt-5 ${
-                editedImage ? "justify-between" : "justify-end"
+                editedImage !== null || event !== undefined
+                  ? "justify-between"
+                  : "justify-end"
               }`}
             >
-              {editedImage && (
+              {(editedImage !== null || event !== undefined) && (
                 <EmojiPopover onEmojiSelect={handleEmojiSelect}>
                   <Button variant="ghost" className="rounded-full  w-fit">
                     <FaRegSmile className="size-6 cursor-pointer  text-gray-500 hover:text-gray-800" />

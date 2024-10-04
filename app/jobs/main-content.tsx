@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import JobsContainer from "./container";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Clock, MoveRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type Jobs = {
   title: string;
@@ -18,6 +19,7 @@ export type History = {
 };
 
 const JobsMainContent = () => {
+  const router = useRouter();
   const scrollRef = useRef(null);
   const [isLeftDisabled, setIsLeftDisabled] = useState(true);
   const [isRightDisabled, setIsRightDisabled] = useState(false);
@@ -88,7 +90,9 @@ const JobsMainContent = () => {
       };
     }
   }, []);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="w-1/2 mx-4">
       <div className="bg-white rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
@@ -103,6 +107,9 @@ const JobsMainContent = () => {
             ))}
           </div>
           <Button
+            onClick={() => {
+              router.push("/jobs/search");
+            }}
             variant="ghost"
             className="h-14 p-0 rounded-tr-none rounded-tl-none rounded-r-none rounded-l-none  w-full pr-3"
           >

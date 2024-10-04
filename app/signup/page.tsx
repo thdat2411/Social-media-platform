@@ -27,7 +27,7 @@ const SignUpPage = () => {
                 Email
               </label>
               <input
-                className="w-full py-2 px-4 border border-gray-300 rounded cursor-pointer text-sm"
+                className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
                 id="email"
                 required
                 type="email"
@@ -42,7 +42,7 @@ const SignUpPage = () => {
               </label>
               <div className="relative">
                 <input
-                  className="w-full py-2 px-4 border border-gray-300 rounded cursor-pointer text-sm"
+                  className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
                   id="password"
                   required
                   type="password"
@@ -75,7 +75,7 @@ const SignUpPage = () => {
               của LinkedIn.
             </p>
             <Button
-              className="w-full bg-blue-600 text-base text-white py-2 rounded-full mb-4"
+              className="w-full bg-blue-500 text-base text-white py-2 rounded-full mb-4 hover:bg-blue-700 hover:text-white"
               type="submit"
             >
               Agree and Join

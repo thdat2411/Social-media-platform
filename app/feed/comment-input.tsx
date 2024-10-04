@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
+import React, { useEffect } from "react";
 import { EmojiPopover } from "../components/emoji-popover";
 import { Button } from "@/components/ui/button";
 import { FaImage, FaRegSmile } from "react-icons/fa";
@@ -36,9 +36,19 @@ const CommentInput = ({
     isFocused ? "border-gray-500" : ""
   }`;
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (commentText.trim().length === 0 && !imageUrl && inputRef.current) {
+      inputRef.current.focus();
+    } else if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [commentText, imageUrl]);
+
   const renderInputField = () => (
     <div className={inputClass}>
       <input
+        ref={inputRef}
         className="w-full outline-none"
         placeholder="Write a comment..."
         value={commentText}

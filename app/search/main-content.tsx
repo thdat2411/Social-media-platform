@@ -1,8 +1,10 @@
+"use client";
 import useSearchingCategoriesList from "@/app/hooks/useSearchingCategoriesList";
 import { jobs } from "@/app/utils/jobs";
 import { Button } from "@/components/ui/button";
 import JobContainer from "@/app/components/job-container";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export type Lists = {
   label: string;
@@ -14,6 +16,7 @@ export type Lists = {
 const SearchMainContent = () => {
   const jobList: Lists[] = jobs;
   const lists = useSearchingCategoriesList();
+  const router = useRouter();
   return (
     <div className="w-1/2 mx-4">
       {lists.map((item) => (
@@ -35,6 +38,9 @@ const SearchMainContent = () => {
                   />
                 ))}
                 <Button
+                  onClick={() => {
+                    router.push(item.pathname);
+                  }}
                   variant="ghost"
                   className="border h-14 rounded-tr-none rounded-tl-none rounded-r-none rounded-l-none  w-full pr-3"
                 >

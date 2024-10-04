@@ -17,6 +17,8 @@ interface ImageEditModalProps {
   setOpen: (open: boolean) => void;
   setDraftContent: (draft: string | null) => void;
   setDraftImage: (image: string | null) => void;
+  nestedMediaModal?: boolean;
+  setNestedMediaModal?: (open: boolean) => void;
 }
 
 const MediaModal = ({
@@ -24,6 +26,8 @@ const MediaModal = ({
   setOpen,
   setDraftContent,
   setDraftImage,
+  nestedMediaModal,
+  setNestedMediaModal,
 }: ImageEditModalProps) => {
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [image, setImage] = useState<File | null>(null);
@@ -43,6 +47,12 @@ const MediaModal = ({
     }
   };
 
+  const handleClose = () => {
+    if (nestedMediaModal) {
+      setIsPostModalOpen(true);
+    }
+    setOpen(false);
+  };
   const validateFileType = (file: File) => file.type.startsWith("image/");
 
   const renderFileInput = () => (
@@ -84,9 +94,11 @@ const MediaModal = ({
         image={image}
         setDraftContent={setDraftContent}
         setDraftImage={setDraftImage}
+        setIsOpenEditModal={setOpen}
+        setNestedEventModal={setNestedMediaModal}
       />
       {!isPhotoEditorOpen && (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleClose}>
           <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full max-w-5xl">
             <div className="bg-white border rounded-lg">
               <DialogHeader className="p-6">

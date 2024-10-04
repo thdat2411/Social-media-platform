@@ -4,12 +4,17 @@ import { Button } from "@/components/ui/button";
 import { GoFileMedia } from "react-icons/go";
 import { MdCalendarMonth } from "react-icons/md";
 import { SiLibreofficewriter } from "react-icons/si";
+import { defaultEvent } from "../utils/utils";
+import { Event } from "./components/post-modal";
 
 interface PostInputProps {
   setIsPostModalOpen: (open: boolean) => void;
   setIsImageModalOpen: (open: boolean) => void;
   setIsEventModalOpen: (open: boolean) => void;
   draftContent?: string | null;
+  setFormData: (data: Event | undefined) => void;
+  setNestedMediaModal: (open: boolean) => void;
+  setNestedEventModal: (open: boolean) => void;
 }
 
 const PostInput = ({
@@ -17,6 +22,9 @@ const PostInput = ({
   setIsImageModalOpen,
   setIsEventModalOpen,
   draftContent,
+  setFormData,
+  setNestedMediaModal,
+  setNestedEventModal,
 }: PostInputProps) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
@@ -38,7 +46,10 @@ const PostInput = ({
       </div>
       <div className="flex mt-4 justify-around">
         <Button
-          onClick={() => setIsImageModalOpen(true)}
+          onClick={() => {
+            setIsImageModalOpen(true);
+            setNestedMediaModal(false);
+          }}
           onBlur={() => setIsImageModalOpen(false)}
           variant="ghost"
           className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2 mr-2"
@@ -47,7 +58,11 @@ const PostInput = ({
           <p>Media</p>
         </Button>
         <Button
-          onClick={() => setIsEventModalOpen(true)}
+          onClick={() => {
+            setFormData?.(defaultEvent);
+            setNestedEventModal(false);
+            setIsEventModalOpen(true);
+          }}
           variant="ghost"
           className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2  mr-2"
         >

@@ -1,17 +1,25 @@
+import { usePathname } from "next/navigation";
 import { useMemo } from "react"
 
 const useSearchingCategoriesList = () => {
+    const pathname = usePathname();
     const list = useMemo(() => [{
         label: "Jobs",
-        href: "#jobs"
+        href: "#jobs",
+        active: pathname === '/jobs/search',
+        pathname: '/jobs/search'
     },
     {
         label: "Posts",
-        href: "#posts"
+        href: "#posts",
+        active: pathname === "/search/posts",
+        pathname: '/search/posts'
     },
     {
         label: "People",
-        href: "#people"
+        href: "#people",
+        active: pathname === '/search/people',
+        pathname: '/search/people',
     },
     ], []);
     return list

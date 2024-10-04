@@ -1,6 +1,8 @@
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { FaBell, FaBriefcase, FaCommentDots, FaHome, FaUserFriends } from "react-icons/fa";
+import { MdPostAdd } from "react-icons/md";
+
 
 const useRoutes = () => {
     const pathname = usePathname();
@@ -39,6 +41,11 @@ const useRoutes = () => {
         icon: FaBell,
         active: pathname === '/notification',
 
+    },
+    {
+        label: 'Post a job',
+        href: '/job-posting',
+        icon: MdPostAdd,
     },
     ], [pathname]);
     return routes;

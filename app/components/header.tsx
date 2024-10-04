@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ConfirmModal from "./confirm-modal";
 import SearchDropDown from "./search-dropdown";
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Clock4, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +25,7 @@ const Header = () => {
   const [underlineWidths, setUnderlineWidths] = useState(
     new Array(routes.length).fill(0)
   );
-
+  const router = useRouter();
   const pathname = usePathname();
   const [isJobsPage, setIsJobsPage] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
@@ -106,7 +106,14 @@ const Header = () => {
         className="w-full bg-white border-b-[1.5px] border-black  shadow-sm flex justify-around items-center z-30 sticky top-0"
       >
         <div className="flex items-center">
-          <Image src={InLogo} alt="LinkedIn Logo" className="w-16 h-fit" />
+          <Image
+            onClick={() => {
+              router.push("/feed");
+            }}
+            src={InLogo}
+            alt="LinkedIn Logo"
+            className="w-16 h-fit cursor-pointer"
+          />
           <div
             className={`flex items-center relative bg-[#EDF3F8] px-2 rounded-lg mr-2 ${
               isJobSearchFocus ? "border-black border-2" : ""
@@ -246,7 +253,7 @@ const Header = () => {
             </Link>
           ))}
           <Image
-            src="/profile-placeholder.png"
+            src="https://github.com/shadcn.png"
             alt="Profile"
             width={40}
             height={40}

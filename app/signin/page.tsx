@@ -12,8 +12,10 @@ const SignIn = () => {
       <div className="mt-4">
         <p className="text-sm">
           New to LinkedIn?
-          <Link href="/signup" className="text-blue-600">
-            {" "}
+          <Link
+            href="/signup"
+            className="text-blue-600 hover:underline ml-1 font-semibold"
+          >
             Join now
           </Link>
         </p>

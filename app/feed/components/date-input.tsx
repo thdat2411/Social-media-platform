@@ -54,7 +54,7 @@ const DateInput = ({ date, setDate }: DateInputProps) => {
     <div className="relative">
       <input
         type="text"
-        value={date}
+        value={date ?? ""}
         onChange={handleInputChange}
         onClick={handleInputClick}
         className={`w-full border-2 rounded p-2 hover:border-2 hover:border-black ${

@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import PostModal from "./components/post-modal";
+import React, { useEffect, useState } from "react";
+import PostModal, { Event } from "./components/post-modal";
 import Post from "./post";
 import PostInput from "./post-input";
 import MediaModal from "./components/media-modal";
@@ -8,11 +8,16 @@ import EventModal from "./components/event-modal";
 
 const FeedMainContent = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [isOpenEditMode, setIsOpenEditModal] = useState(false);
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [draftContent, setDraftContent] = useState<string | null>(null);
   const [draftImage, setDraftImage] = useState<string | null>();
-
+  const [nestedMediaModal, setNestedMediaModal] = useState(false);
+  const [nestedEventModal, setNestedEventModal] = useState(false);
+  const [formData, setFormData] = useState<Event | undefined>(undefined);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <>
       <PostModal
@@ -24,14 +29,28 @@ const FeedMainContent = () => {
         setDraftContent={setDraftContent}
         setDraftImage={setDraftImage}
         setIsOpenEditModal={setIsOpenEditModal}
+        setIsEventModalOpen={setIsEventModalOpen}
+        setNestedEventModal={setNestedEventModal}
+        setNestedMediaModal={setNestedMediaModal}
+        event={formData}
+        setEvent={setFormData}
       />
       <MediaModal
-        open={isOpenEditMode}
+        open={isOpenEditModal}
         setOpen={setIsOpenEditModal}
         setDraftContent={setDraftContent}
         setDraftImage={setDraftImage}
+        nestedMediaModal={nestedMediaModal}
+        setNestedMediaModal={setNestedMediaModal}
       />
-      <EventModal open={isEventModalOpen} setOpen={setIsEventModalOpen} />
+      <EventModal
+        open={isEventModalOpen}
+        setOpen={setIsEventModalOpen}
+        nestedEventModal={nestedEventModal}
+        setNestedEventModal={setNestedEventModal}
+        formData={formData}
+        setFormData={setFormData}
+      />
       <div className="w-1/2 mx-4">
         <PostInput
           setIsPostModalOpen={() => setIsPostModalOpen(true)}
@@ -40,6 +59,9 @@ const FeedMainContent = () => {
           }}
           setIsEventModalOpen={setIsEventModalOpen}
           draftContent={draftContent}
+          setFormData={setFormData}
+          setNestedMediaModal={setNestedMediaModal}
+          setNestedEventModal={setNestedEventModal}
         />
         <Post />
       </div>

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 import LinkedLogo from "@/app/assets/LinkedIn-Logo.svg";
@@ -5,8 +6,9 @@ import { PiArticle } from "react-icons/pi";
 import { BriefcaseBusiness, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-const LandingHeader = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+import { useRouter } from "next/navigation";
+const LandingHeader = () => {
+  const router = useRouter();
   return (
     <div className="w-full flex justify-around items-center bg-white">
       <div className="flex items-center">
@@ -36,6 +38,9 @@ const LandingHeader = async () => {
         </Link>
         <div className="border-l px-3">
           <Button
+            onClick={() => {
+              router.push("/signup");
+            }}
             variant="ghost"
             className="hover:bg-slate-200 rounded-full px-4 py-1 h-12 items-center justify-center"
           >
@@ -43,6 +48,9 @@ const LandingHeader = async () => {
           </Button>
         </div>
         <Button
+          onClick={() => {
+            router.push("/signin");
+          }}
           variant="outline"
           className="text-blue-600 hover:text-blue-800 border-2 items-center justify-center border-blue-600 rounded-full px-6 h-12"
         >

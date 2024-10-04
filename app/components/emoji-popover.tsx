@@ -29,20 +29,14 @@ export const EmojiPopover = memo(function EmojiPopover({
   const onSelect = (value: EmojiClickData) => {
     onEmojiSelect(value.emoji);
     setPopoverOpen(false);
-    setTooltipOpen(false);
-  };
-  const togglePopover = (isOpen: boolean) => {
-    setPopoverOpen(isOpen);
-    if (isOpen) {
-      setTooltipOpen(true);
-    } else {
+    setTimeout(() => {
       setTooltipOpen(false);
-    }
+    }, 500);
   };
 
   return (
     <TooltipProvider>
-      <Popover open={popoverOpen} onOpenChange={togglePopover}>
+      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <Tooltip
           open={tooltipOpen}
           onOpenChange={setTooltipOpen}
