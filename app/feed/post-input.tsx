@@ -3,7 +3,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { GoFileMedia } from "react-icons/go";
 import { MdCalendarMonth } from "react-icons/md";
-import { SiLibreofficewriter } from "react-icons/si";
 import { defaultEvent } from "../utils/utils";
 import { Event } from "./components/post-modal";
 
@@ -52,7 +51,7 @@ const PostInput = ({
           }}
           onBlur={() => setIsImageModalOpen(false)}
           variant="ghost"
-          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2 mr-2"
+          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2 mr-2 hover:scale-110 transition-all"
         >
           <GoFileMedia className="size-6" color="#378FE9" />
           <p>Media</p>
@@ -64,17 +63,10 @@ const PostInput = ({
             setIsEventModalOpen(true);
           }}
           variant="ghost"
-          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2  mr-2"
+          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2  mr-2 hover:scale-110 transition-all"
         >
           <MdCalendarMonth className="size-6" color="#C37D16" />
           <p>Event</p>
-        </Button>
-        <Button
-          variant="ghost"
-          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2 mr-2"
-        >
-          <SiLibreofficewriter className="size-6" color="#E06847" />
-          <p>Write article</p>
         </Button>
       </div>
     </div>

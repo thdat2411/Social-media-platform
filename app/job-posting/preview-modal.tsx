@@ -63,16 +63,16 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
               </p>
               <div className="flex space-x-3 text-sm items-center mb-2">
                 <MdBusinessCenter className="size-6 text-[#666666]" />
-                <p>{formData.jobType}</p>
+                <p>
+                  {formData.jobType} · {formData.level}{" "}
+                </p>
               </div>
-              <div className="flex space-x-3 text-sm items-center mb-3">
+              <div className="flex space-x-3 text-sm items-center ">
                 <FaListCheck className="size-5 text-[#666666] mr-1" />
                 <p>
                   Skills:{" "}
                   {formData.skills.length === 0 && (
-                    <span className="text-muted-foreground text-sm">
-                      (None)
-                    </span>
+                    <span className="text-muted-foreground">(None)</span>
                   )}
                   {skillsToShow.map((skill, index) => (
                     <span key={index}>

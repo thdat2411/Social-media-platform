@@ -1,21 +1,22 @@
 "use client";
+import { formatDate, Posts } from "@/app/utils/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Earth, MessageSquareMore, Send } from "lucide-react";
+import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
-import { Button } from "@/components/ui/button";
-import { Earth, MessageSquareMore, Send } from "lucide-react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
-import CommentInput from "./comment-input";
-import { formatDate, Posts } from "../utils/utils";
+import CommentInput from "../../comment-input";
 import Image from "next/image";
+import Link from "next/link";
 
-const FeedPost = () => {
-  const post = Posts[0];
-  const words = post.content.split(" ");
+const PostMainContent = () => {
+  const postId = useParams().postId as string;
+  const post = Posts.find((post) => post.id === postId);
+  const words = post!.content.split(" ");
   const shouldTruncate = words.length > 20;
-  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [showCommentInput, setShowCommentInput] = useState(true);
   const [isFocused, setIsFocused] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   //   const [comments, setComments] = useState([]);
@@ -67,7 +68,7 @@ const FeedPost = () => {
   }, [commentText]);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border-[1.5px] border-[#DADEE2]">
+    <div className="w-1/2 ml-8 bg-white p-4 rounded-lg shadow-sm border-[1.5px] h-fit border-[#DADEE2]">
       <Link
         href="#"
         className="flex items-center mb-4 space-x-2 cursor-pointer"
@@ -80,11 +81,11 @@ const FeedPost = () => {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="font-bold hover:underline">{post.author}</h3>
-          <p className="text-sm text-gray-600">{post.title}</p>
+          <h3 className="font-bold hover:underline">{post!.author}</h3>
+          <p className="text-sm text-gray-600">{post!.title}</p>
           <div className="flex space-x-1 items-center justify-start">
             <p className="text-xs text-gray-600">
-              {formatDate(post.date)} <span className="text-lg ">∙</span>
+              {formatDate(post!.date)} <span className="text-lg ">∙</span>
             </p>
             <Earth className="size-4" />
           </div>
@@ -92,7 +93,7 @@ const FeedPost = () => {
       </Link>
       <p className=" text-gray-700 mb-6">
         {showFullText || !shouldTruncate ? (
-          post.content
+          post!.content
         ) : (
           <>
             {words.slice(0, 20).join(" ")} ...
@@ -105,17 +106,15 @@ const FeedPost = () => {
           </>
         )}
       </p>
-      {!post.image && (
-        <div className="flex w-full items-center justify-center">
-          <Image
-            src="https://github.com/shadcn.png"
-            alt=""
-            width={300}
-            height={100}
-            className="
+      {post!.image && (
+        <Image
+          src="https://github.com/shadcn.png"
+          alt=""
+          width={600}
+          height={100}
+          className="
           object-cover"
-          />
-        </div>
+        />
       )}
       <div className="flex items-center justify-between mt-4">
         <div className="flex">
@@ -136,7 +135,7 @@ const FeedPost = () => {
         <Button
           onClick={() => {}}
           variant="ghost"
-          className="flex items-center mr-4 hover:scale-110 transition-all duration-100"
+          className="flex items-center mr-4"
         >
           <AiOutlineLike className="size-6" />
           <span className="ml-1 text-base">Like</span>
@@ -144,7 +143,7 @@ const FeedPost = () => {
         <Button
           onClick={() => setShowCommentInput(!showCommentInput)}
           variant="ghost"
-          className="flex items-center mr-4 hover:scale-110 transition-all duration-100"
+          className="flex items-center mr-4"
         >
           <MessageSquareMore className="size-6" />
           <span className="ml-1 text-base">Comment</span>
@@ -152,7 +151,7 @@ const FeedPost = () => {
         <Button
           onClick={() => {}}
           variant="ghost"
-          className="flex items-center mr-4 hover:scale-110 transition-all duration-100"
+          className="flex items-center mr-4"
         >
           <Send className="size-6" />
           <span className="ml-1 text-base">Send</span>
@@ -176,4 +175,4 @@ const FeedPost = () => {
   );
 };
 
-export default FeedPost;
+export default PostMainContent;

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import PostModal, { Event } from "./components/post-modal";
-import Post from "./post";
+import FeedPost from "./post";
 import PostInput from "./post-input";
 import MediaModal from "./components/media-modal";
 import EventModal from "./components/event-modal";
@@ -63,7 +63,7 @@ const FeedMainContent = () => {
           setNestedMediaModal={setNestedMediaModal}
           setNestedEventModal={setNestedEventModal}
         />
-        <Post />
+        <FeedPost />
       </div>
     </>
   );

@@ -49,19 +49,22 @@ const CategoryListSidebar = () => {
       <div className="flex flex-col py-4 px-3">
         <p className="text-lg font-semibold pb-3">On this page</p>
 
-        {lists.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => handleScrollTo(item.label)}
-            className={`text-sm mb-4 text-left transition-all px-4  ${
-              activeSection === item.label.toLowerCase()
-                ? "border-l-2 border-blue-500"
-                : "text-gray-600 hover:text-gray-800"
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
+        {lists.map(
+          (item, index) =>
+            item.label !== "All" && (
+              <button
+                key={index}
+                onClick={() => handleScrollTo(item.label)}
+                className={`text-sm mb-4 text-left transition-all px-4  ${
+                  activeSection === item.label.toLowerCase()
+                    ? "border-l-2 border-blue-500"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+              >
+                {item.label}
+              </button>
+            )
+        )}
       </div>
       <div className="px-4 -mt-5 pb-4"></div>
     </aside>

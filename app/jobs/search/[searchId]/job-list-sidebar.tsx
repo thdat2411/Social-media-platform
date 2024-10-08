@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import GrayAvatar from "@/app/assets/gray-avatar.png";
+import Link from "next/link";
 interface JobListSideBarProps {
   data: JobsPost;
   isSelection: boolean;
@@ -32,7 +33,8 @@ const JobListSideBar = ({
     );
   }
   return (
-    <div
+    <Link
+      href={`/jobs/search/${data.id}`}
       className={`p-4 flex items-start space-x-4 border-b cursor-pointer justify-between ${
         isSelection ? "border-l-black border-l-2 bg-slate-200 border-b-2" : ""
       }`}
@@ -57,7 +59,7 @@ const JobListSideBar = ({
       <Button className="rounded-full p-3" variant="ghost">
         <X className="size-4 p-0" />
       </Button>
-    </div>
+    </Link>
   );
 };
 

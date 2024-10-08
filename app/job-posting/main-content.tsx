@@ -19,12 +19,14 @@ export type FormDataType = {
   jobLocation: string;
   jobType: string;
   description: string;
+  level: string;
   skills: string[];
 };
 
 const JobPostingMainContent = () => {
   const [isWorkplaceOpen, setIsWorkplaceOpen] = useState(false);
   const [isJobTypeOpen, setIsJobTypeOpen] = useState(false);
+  const [isJobLevelOpen, setIsJobLevelOpen] = useState(false);
   const [skill, setSkill] = useState("");
   const inputRef = useRef(null);
   const [inputWidth, setInputWidth] = useState("80px");
@@ -35,6 +37,7 @@ const JobPostingMainContent = () => {
     workplaceType: "On-site",
     jobLocation: "",
     jobType: "Full-time",
+    level: "Entry level",
     description: jobPostingDescription,
     skills: [],
   });
@@ -45,6 +48,13 @@ const JobPostingMainContent = () => {
     "Contract",
     "Temporary",
     "Internship",
+  ];
+  const jobLevel = [
+    "Entry level",
+    "Associate",
+    "Mid-Senior level",
+    "Director",
+    "Executive",
   ];
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -123,11 +133,14 @@ const JobPostingMainContent = () => {
               setIsWorkplaceOpen={setIsWorkplaceOpen}
               isJobTypeOpen={isJobTypeOpen}
               setIsJobTypeOpen={setIsJobTypeOpen}
+              isJobLevelOpen={isJobLevelOpen}
+              setIsJobLevelOpen={setIsJobLevelOpen}
               formData={formData}
               setFormData={setFormData}
               workplaceType={workplaceType}
               jobType={jobType}
-              isWorkPlace={true}
+              level={jobLevel}
+              whatDropdown="workplace"
             />
           </div>
           <div className="flex flex-col w-1/2 space-y-2">
@@ -149,21 +162,51 @@ const JobPostingMainContent = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col w-[400px] space-y-2 pb-6">
-          <label htmlFor="job-title" className="text-sm text-muted-foreground">
-            Job type
-          </label>
-          <JobPostingDropdown
-            isWorkplaceOpen={isWorkplaceOpen}
-            setIsWorkplaceOpen={setIsWorkplaceOpen}
-            isJobTypeOpen={isJobTypeOpen}
-            setIsJobTypeOpen={setIsJobTypeOpen}
-            formData={formData}
-            setFormData={setFormData}
-            workplaceType={workplaceType}
-            jobType={jobType}
-            isWorkPlace={false}
-          />
+        <div className="flex w-full space-x-10 pb-7">
+          <div className="flex flex-col w-1/2 space-y-2">
+            <label
+              htmlFor="job-title"
+              className="text-sm text-muted-foreground"
+            >
+              Job type
+            </label>
+            <JobPostingDropdown
+              isWorkplaceOpen={isWorkplaceOpen}
+              setIsWorkplaceOpen={setIsWorkplaceOpen}
+              isJobTypeOpen={isJobTypeOpen}
+              setIsJobTypeOpen={setIsJobTypeOpen}
+              isJobLevelOpen={isJobLevelOpen}
+              setIsJobLevelOpen={setIsJobLevelOpen}
+              formData={formData}
+              setFormData={setFormData}
+              workplaceType={workplaceType}
+              jobType={jobType}
+              level={jobLevel}
+              whatDropdown="jobType"
+            />
+          </div>
+          <div className="flex flex-col w-1/2 space-y-2">
+            <label
+              htmlFor="job-title"
+              className="text-sm text-muted-foreground"
+            >
+              Level
+            </label>
+            <JobPostingDropdown
+              isWorkplaceOpen={isWorkplaceOpen}
+              setIsWorkplaceOpen={setIsWorkplaceOpen}
+              isJobTypeOpen={isJobTypeOpen}
+              setIsJobTypeOpen={setIsJobTypeOpen}
+              isJobLevelOpen={isJobLevelOpen}
+              setIsJobLevelOpen={setIsJobLevelOpen}
+              formData={formData}
+              setFormData={setFormData}
+              workplaceType={workplaceType}
+              jobType={jobType}
+              level={jobLevel}
+              whatDropdown="jobLevel"
+            />
+          </div>
         </div>
         <div>
           <p className="font-semibold text-xl mb-4">Description*</p>

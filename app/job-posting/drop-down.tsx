@@ -13,11 +13,14 @@ interface JobPostingDropdownProps {
   setIsWorkplaceOpen: (value: boolean) => void;
   isJobTypeOpen: boolean;
   setIsJobTypeOpen: (value: boolean) => void;
+  isJobLevelOpen: boolean;
+  setIsJobLevelOpen: (value: boolean) => void;
   formData: FormDataType;
   setFormData: (value: FormDataType) => void;
   workplaceType: string[];
   jobType: string[];
-  isWorkPlace: boolean;
+  level: string[];
+  whatDropdown: "workplace" | "jobType" | "jobLevel";
 }
 
 const JobPostingDropdown = ({
@@ -25,13 +28,16 @@ const JobPostingDropdown = ({
   setIsWorkplaceOpen,
   isJobTypeOpen,
   setIsJobTypeOpen,
+  isJobLevelOpen,
+  setIsJobLevelOpen,
   formData,
   setFormData,
   workplaceType,
   jobType,
-  isWorkPlace,
+  level,
+  whatDropdown,
 }: JobPostingDropdownProps) => {
-  if (isWorkPlace) {
+  if (whatDropdown === "workplace") {
     return (
       <DropdownMenu open={isWorkplaceOpen} onOpenChange={setIsWorkplaceOpen}>
         <DropdownMenuTrigger>
@@ -40,7 +46,7 @@ const JobPostingDropdown = ({
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full flex flex-col space-y-4 py-4">
+        <DropdownMenuContent className="w-full flex flex-col  space-y-2 py-2">
           {workplaceType.map((type) => (
             <Button
               key={type}
@@ -68,7 +74,7 @@ const JobPostingDropdown = ({
         </DropdownMenuContent>
       </DropdownMenu>
     );
-  } else {
+  } else if (whatDropdown === "jobType") {
     return (
       <DropdownMenu open={isJobTypeOpen} onOpenChange={setIsJobTypeOpen}>
         <DropdownMenuTrigger>
@@ -77,15 +83,40 @@ const JobPostingDropdown = ({
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full flex flex-col py-4 justify-start">
+        <DropdownMenuContent className="w-full flex flex-col py-2 justify-start">
           {jobType.map((type) => (
             <Button
               key={type}
               variant="ghost"
               onClick={() => {
                 setFormData({ ...formData, jobType: type });
-                setIsWorkplaceOpen(false);
                 setIsJobTypeOpen(false);
+              }}
+              className="w-[390px] justify-start"
+            >
+              {type}
+            </Button>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  } else {
+    return (
+      <DropdownMenu open={isJobLevelOpen} onOpenChange={setIsJobLevelOpen}>
+        <DropdownMenuTrigger>
+          <div className="flex w-full border rounded-md justify-between p-2 border-black">
+            <p className="text-sm">{formData.level}</p>
+            <ChevronDown className="size-4" />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-full flex flex-col py-2 justify-start">
+          {level.map((type) => (
+            <Button
+              key={type}
+              variant="ghost"
+              onClick={() => {
+                setFormData({ ...formData, level: type });
+                setIsJobLevelOpen(false);
               }}
               className="w-[390px] justify-start"
             >

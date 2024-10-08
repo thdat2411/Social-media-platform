@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Jobs } from "./main-content";
+import Image from "next/image";
 
 interface JobsContainerProps {
   key: number;
@@ -21,7 +22,13 @@ const JobsContainer = ({ key, item }: JobsContainerProps) => {
       }`}
     >
       <div className="flex space-x-4">
-        <img src="https://github.com/shadcn.png" className="size-16" />
+        <Image
+          src="https://github.com/shadcn.png"
+          className="size-16"
+          width={64}
+          height={64}
+          alt=""
+        />
         <div className="flex flex-col space-y-1">
           <p className="text-lg font-semibold hover:underline">{item.title}</p>
           <p className="text-sm text-gray-600">{item.hiringName}</p>

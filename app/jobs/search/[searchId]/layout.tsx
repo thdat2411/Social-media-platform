@@ -1,5 +1,5 @@
 import React from "react";
-import SubHeader from "./sub-header";
+import SubHeader from "../../../components/sub-header";
 
 interface JobSearchLayoutProps {
   children: React.ReactNode;
