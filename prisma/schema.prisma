@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                       Int                @id @default(autoincrement())
+  email                                    String             @unique @db.VarChar(255)
+  username                                 String             @unique @db.VarChar(100)
+  password_hash                            String
+  full_name                                String             @db.VarChar(255)
+  profile_image_url                        String?
+  headline                                 String?            @db.VarChar(255)
+  location                                 String?            @db.VarChar(255)
+  bio                                      String?
+  role                                     String?            @db.VarChar(50)
+  created_at                               DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at                               DateTime?          @default(now()) @db.Timestamp(6)
+  connections_connections_user_id_1Tousers connections[]      @relation("connections_user_id_1Tousers")
+  connections_connections_user_id_2Tousers connections[]      @relation("connections_user_id_2Tousers")
+  job_applications                         job_applications[]
+  job_listings                             job_listings[]
+  messages_messages_receiver_idTousers     messages[]         @relation("messages_receiver_idTousers")
+  messages_messages_sender_idTousers       messages[]         @relation("messages_sender_idTousers")
+  posts                                    posts[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model connections {
+  id                                 Int       @id @default(autoincrement())
+  user_id_1                          Int?
+  user_id_2                          Int?
+  status                             String?   @db.VarChar(50)
+  created_at                         DateTime? @default(now()) @db.Timestamp(6)
+  updated_at                         DateTime? @default(now()) @db.Timestamp(6)
+  users_connections_user_id_1Tousers users?    @relation("connections_user_id_1Tousers", fields: [user_id_1], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_connections_user_id_2Tousers users?    @relation("connections_user_id_2Tousers", fields: [user_id_2], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id_1, user_id_2])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model job_applications {
+  id             Int           @id @default(autoincrement())
+  job_listing_id Int?
+  user_id        Int?
+  resume_url     String?
+  cover_letter   String?
+  status         String?       @db.VarChar(50)
+  created_at     DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at     DateTime?     @default(now()) @db.Timestamp(6)
+  job_listings   job_listings? @relation(fields: [job_listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([job_listing_id, user_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model job_listings {
+  id               Int                @id @default(autoincrement())
+  employer_id      Int?
+  title            String             @db.VarChar(255)
+  description      String
+  location         String?            @db.VarChar(255)
+  employment_type  String?            @db.VarChar(50)
+  salary_range     String?            @db.VarChar(100)
+  required_skills  String[]
+  created_at       DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamp(6)
+  job_applications job_applications[]
+  users            users?             @relation(fields: [employer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model messages {
+  id                                Int       @id @default(autoincrement())
+  sender_id                         Int?
+  receiver_id                       Int?
+  message_text                      String
+  created_at                        DateTime? @default(now()) @db.Timestamp(6)
+  is_read                           Boolean?  @default(false)
+  users_messages_receiver_idTousers users?    @relation("messages_receiver_idTousers", fields: [receiver_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_messages_sender_idTousers   users?    @relation("messages_sender_idTousers", fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model posts {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  content    String
+  image_url  String?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
