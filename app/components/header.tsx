@@ -1,16 +1,15 @@
 "use client";
+import InLogo from "@/app/assets/In-logo.jpg";
+import { Button } from "@/components/ui/button";
+import { Clock4, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import InLogo from "@/app/assets/In-logo.jpg";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import useRoutes from "../hooks/useRoutes";
-import { useCallback, useEffect, useRef, useState } from "react";
 import ConfirmModal from "./confirm-modal";
 import SearchDropDown from "./search-dropdown";
-import React from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { Clock4, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Header = () => {
   const [isJobSearchFocus, setIsJobSearchFocus] = useState(false);

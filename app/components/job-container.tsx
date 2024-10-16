@@ -1,7 +1,7 @@
-import Link from "next/link";
-import React from "react";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 import { Lists } from "../search/main-content";
 
 interface JobContainerProps {
@@ -30,7 +30,13 @@ const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         ) : (
-          <img src="https://github.com/shadcn.png" className="size-16" />
+          <Image
+            src="https://github.com/shadcn.png"
+            alt="Profile picture"
+            // width={64}
+            // height={64}
+            className="size-16"
+          />
         )}
         <div className="flex flex-col space-y-1">
           <p className="text-lg font-semibold hover:underline">{item.label}</p>
