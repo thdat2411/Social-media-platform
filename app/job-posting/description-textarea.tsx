@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Quill, { QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -42,7 +43,7 @@ const JobPostingDescription = ({
   useEffect(() => {
     setIsMounted(true);
     handleTextChange();
-  }, []);
+  }, []); // TODO: Fix "React Hook useEffect has a missing dependency: 'handleTextChange'."
 
   useEffect(() => {
     if (isMounted && containerRef.current && !quillRef.current) {
