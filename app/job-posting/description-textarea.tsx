@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import Quill, { QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FormDataType } from "./main-content";
 
 interface JobPostingDescriptionProps {
@@ -17,10 +17,6 @@ const JobPostingDescription = ({
   const quillRef = useRef<Quill | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [wordCount, setWordCount] = useState(0);
-  useEffect(() => {
-    setIsMounted(true);
-    handleTextChange();
-  }, []);
 
   const handleTextChange = useCallback(() => {
     let text = "";
@@ -41,7 +37,12 @@ const JobPostingDescription = ({
       .trim();
     const charCount = plainText?.length || 0;
     setWordCount(charCount);
-  }, [quillText]);
+  }, [quillText]); // TODO: Fix "React Hook useCallback has missing dependencies: 'formData' and 'setFormData'."
+
+  useEffect(() => {
+    setIsMounted(true);
+    handleTextChange();
+  }, []);
 
   useEffect(() => {
     if (isMounted && containerRef.current && !quillRef.current) {
@@ -65,7 +66,7 @@ const JobPostingDescription = ({
       quillRef.current?.off("text-change");
       quillRef.current = null;
     };
-  }, [isMounted]);
+  }, [isMounted]); // TODO: Fix "React Hook useEffect has missing dependencies: 'formData.description' and 'handleTextChange'."
 
   useEffect(() => {
     if (quillRef.current) {
@@ -73,7 +74,7 @@ const JobPostingDescription = ({
         handleTextChange();
       });
     }
-  }, [quillText]);
+  }, [quillText]); // TODO: Fix "React Hook useEffect has a missing dependency: 'handleTextChange'."
 
   return (
     <>
