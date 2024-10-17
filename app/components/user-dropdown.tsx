@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, Settings } from "lucide-react";
 import React from "react";
 
 const UserDropdown = () => {
@@ -49,7 +49,15 @@ const UserDropdown = () => {
           </Button>
           <Separator />
           <Button
-            className="flex justify-between items-center mt-3"
+            className="flex justify-between items-center my-2"
+            variant="ghost"
+          >
+            <p className="text-base">Account setting</p>
+            <Settings />
+          </Button>
+          <Separator />
+          <Button
+            className="flex justify-between items-center mt-2"
             variant="ghost"
           >
             <p className="text-base">Sign out</p>
