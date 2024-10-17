@@ -28,6 +28,7 @@ interface EventModalProps {
   nestedEventModal?: boolean;
   formData: Event | undefined;
   setFormData: (data: Event | undefined) => void;
+  isIn?: boolean;
 }
 
 const EventModal = ({
@@ -37,6 +38,7 @@ const EventModal = ({
   nestedEventModal,
   formData,
   setFormData,
+  isIn,
 }: EventModalProps) => {
   const [isTimeDropdownVisible, setTimeDropdownVisible] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -98,15 +100,16 @@ const EventModal = ({
 
   const handleCloseWithData = () => {
     if (
-      formData?.eventName ||
-      formData?.startDate !== new Date().toLocaleDateString() ||
-      formData?.startTime !== "10:00 AM" ||
-      formData?.endDate !== new Date().toLocaleDateString() ||
-      formData?.endTime !== "11:00 AM" ||
-      formData?.description ||
-      formData?.address ||
-      formData?.venue ||
-      formData?.zone
+      (formData?.eventName ||
+        formData?.startDate !== new Date().toLocaleDateString() ||
+        formData?.startTime !== "10:00 AM" ||
+        formData?.endDate !== new Date().toLocaleDateString() ||
+        formData?.endTime !== "11:00 AM" ||
+        formData?.description ||
+        formData?.address ||
+        formData?.venue ||
+        formData?.zone) &&
+      isIn === false
     ) {
       setIsConfirmModalOpen(true);
     } else {

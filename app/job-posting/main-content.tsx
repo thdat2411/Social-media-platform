@@ -75,7 +75,7 @@ const JobPostingMainContent = () => {
         setOpen={setIsReviewModalOpen}
         formData={formData}
       />
-      <h1 className="text-2xl font-semibold p-6 mb-4">
+      <h1 className="text-2xl font-semibold p-6 bg-[#F9FAFB]">
         Post a job description
       </h1>
       <Separator />

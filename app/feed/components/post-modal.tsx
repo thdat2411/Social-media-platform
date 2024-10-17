@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Pencil, X } from "lucide-react";
 import { FaRegSmile } from "react-icons/fa";
@@ -33,6 +33,7 @@ interface PostModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   image?: File | null | undefined;
+  setImage?: (image: File | null) => void;
   draftImage?: string | null;
   draftContent?: string | null;
   setDraftContent?: (draft: string | null) => void;
@@ -45,12 +46,14 @@ interface PostModalProps {
   setNestedEventModal?: (value: boolean) => void;
   event?: Event | undefined;
   setEvent?: (event: Event | undefined) => void;
+  isIn?: boolean;
 }
 
 const PostModal = ({
   open,
   setOpen,
   image,
+  setImage,
   draftContent,
   draftImage,
   setDraftContent,
@@ -63,10 +66,11 @@ const PostModal = ({
   setNestedMediaModal,
   setNestedEventModal,
   setEvent,
+  isIn,
 }: PostModalProps) => {
+  const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [postContent, setPostContent] = useState("");
   const [editedImage, setEditedImage] = useState<string | null>(null);
-  const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [debouncedPostContent] = useDebounce(postContent, 300);
 
@@ -88,16 +92,18 @@ const PostModal = ({
   }, [draftContent, draftImage, debouncedPostContent, setDraftContent]);
 
   useEffect(() => {
-    const reader = new FileReader();
-    if (image) {
-      reader.onloadend = () => {
-        setEditedImage(reader.result as string);
+    if (open) {
+      const reader = new FileReader();
+      if (image) {
+        reader.onloadend = () => {
+          setEditedImage(reader.result as string);
+        };
+        reader.readAsDataURL(image);
+      }
+      return () => {
+        reader.abort();
       };
-      reader.readAsDataURL(image);
     }
-    return () => {
-      reader.abort();
-    };
   }, [image]);
 
   const handleSaveDraft = () => {
@@ -128,9 +134,10 @@ const PostModal = ({
 
   const handleClose = () => {
     if (
-      postContent.trim() !== "" ||
-      editedImage !== null ||
-      event !== undefined
+      (postContent.trim() !== "" ||
+        editedImage !== null ||
+        event !== undefined) &&
+      isIn === false
     ) {
       setIsConfirmModalOpen(true);
     } else {
@@ -146,6 +153,7 @@ const PostModal = ({
           setDraftImage?.(null);
         }
       }
+
       setNestedEventModal?.(false);
       setNestedMediaModal?.(false);
       setOpen(false);
@@ -154,19 +162,22 @@ const PostModal = ({
 
   const handleSaveImage = (editedFile: File) => {
     setEditedImage(URL.createObjectURL(editedFile));
-    setIsPhotoEditorOpen(false);
-    setOpen(true);
   };
 
-  const handleEditButton = () => {
+  const handleEditButton = async () => {
     if (editedImage !== null) {
+      const fileName = "draft-image.jpg";
+      const response = await fetch(editedImage);
+      const blob = await response.blob();
+      const draftImageFile = new File([blob], fileName, { type: blob.type });
+      setImage?.(draftImageFile);
       setIsPhotoEditorOpen(true);
-      setOpen(false);
-    }
-    if (event !== undefined) {
+      console.log(isPhotoEditorOpen);
+      console.log(image);
+    } else if (event !== undefined) {
       setIsEventModalOpen?.(true);
-      setOpen(false);
     }
+    setOpen(false);
   };
 
   const handleOpenEvent = () => {
@@ -189,7 +200,7 @@ const PostModal = ({
     <>
       <ReactPhotoEditor
         open={isPhotoEditorOpen}
-        file={image!}
+        file={image || undefined}
         onSaveImage={handleSaveImage}
         onClose={() => {
           setIsPhotoEditorOpen(false);
@@ -215,6 +226,7 @@ const PostModal = ({
       />
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full top-1/3 mt-16 max-w-2xl">
+          <DialogTitle className="hidden">Post</DialogTitle>
           <div className="bg-white border rounded-lg p-7 relative">
             <Button
               variant="ghost"

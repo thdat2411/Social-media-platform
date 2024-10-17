@@ -11,7 +11,7 @@ const LoginForm = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   return (
-    <div className="w-full max-w-sm p-8 bg-white shadow-md rounded-lg mt-36">
+    <div className="w-full max-w-sm p-8 bg-white shadow-md rounded-lg mt-36 border">
       <h2 className="text-3xl font-semibold mb-4">Log in</h2>
       <Button
         variant="outline"

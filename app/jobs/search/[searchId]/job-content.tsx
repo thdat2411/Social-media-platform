@@ -1,3 +1,4 @@
+"use client";
 import { formatDate, JobsPost } from "@/app/utils/utils";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -6,6 +7,7 @@ import { MdBusinessCenter } from "react-icons/md";
 import { FaListCheck } from "react-icons/fa6";
 import { Pin, PinOff, SquareArrowOutUpRight } from "lucide-react";
 import Renderer from "@/app/components/renderer";
+import Link from "next/link";
 
 interface JobContentProps {
   data: JobsPost;
@@ -15,7 +17,6 @@ const JobContent = ({ data }: JobContentProps) => {
   const [showAll, setShowAll] = useState(false);
   const skillsToShow = showAll ? data.skill : data.skill.slice(0, 2);
   const additionalCount = data.skill.length - 2;
-
   const handleToggle = () => {
     setShowAll(!showAll);
   };
@@ -42,9 +43,15 @@ const JobContent = ({ data }: JobContentProps) => {
             </Button>
           )}
         </div>
-        <h1 className="text-2xl font-semibold pb-3">{data.title}</h1>
+        <Link
+          href={`/jobs/search/${data.id}`}
+          className="text-2xl font-semibold pb-3 hover:underline cursor-pointer"
+        >
+          {data.title}
+        </Link>
         <p className="text-muted-foreground text-sm">
-          {data.location} · {formatDate(data.date)}
+          {data.location} · {formatDate(data.date)} ·{" "}
+          <span className="text-green-600">{data.applicants} applicants</span>
         </p>
 
         <div className="flex space-x-2 items-center text-sm py-2">

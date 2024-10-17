@@ -20,7 +20,7 @@ const SignUpPage = () => {
         <h1 className="text-3xl mb-6">
           Make the most of your professional life
         </h1>
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto">
+        <div className="bg-white p-8 rounded-lg shadow-md border max-w-md mx-auto">
           <form className="w-[350px]">
             <div className="mb-4">
               <label className="block text-left text-sm mb-2" htmlFor="email">

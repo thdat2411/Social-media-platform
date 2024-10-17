@@ -11,6 +11,7 @@ import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Clock4, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import UserDropdown from "./user-dropdown";
 
 const Header = () => {
   const [isJobSearchFocus, setIsJobSearchFocus] = useState(false);
@@ -252,13 +253,7 @@ const Header = () => {
               </div>
             </Link>
           ))}
-          <Image
-            src="https://github.com/shadcn.png"
-            alt="Profile"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          <UserDropdown />
         </div>
       </div>
     </>

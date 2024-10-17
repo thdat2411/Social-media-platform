@@ -4,6 +4,7 @@ import JobsContainer from "./container";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Clock, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { JobsPostList } from "../utils/utils";
 
 export type Jobs = {
   title: string;
@@ -20,6 +21,7 @@ export type History = {
 
 const JobsMainContent = () => {
   const router = useRouter();
+  const jobs = JobsPostList.slice(0, 3);
   const scrollRef = useRef(null);
   const [isLeftDisabled, setIsLeftDisabled] = useState(true);
   const [isRightDisabled, setIsRightDisabled] = useState(false);
@@ -35,29 +37,6 @@ const JobsMainContent = () => {
     {
       title: "Data Analyst",
       location: "Ho Chi Minh City, Vietnam",
-    },
-  ];
-  const jobs: Jobs[] = [
-    {
-      title: "DKSH Internship Program 2024 - October Intake",
-      hiringName: "DKSH",
-      location: "Ho Chi Minh City, Vietnam",
-      isViewed: true,
-      applicantNumber: 2,
-    },
-    {
-      title: "Internship - Manual Testing",
-      hiringName: "HYRED",
-      location: "Ho Chi Minh City, Vietnam",
-      isViewed: false,
-      applicantNumber: 2,
-    },
-    {
-      title: "Vietnam SeedZ Management Trainee 2024",
-      hiringName: "L'Oréal",
-      location: "Ho Chi Minh City, Vietnam",
-      isViewed: false,
-      applicantNumber: 2,
     },
   ];
 

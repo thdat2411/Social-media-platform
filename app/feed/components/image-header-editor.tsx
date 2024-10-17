@@ -16,7 +16,6 @@ import ReactCrop, {
   PixelCrop,
   convertToPixelCrop,
 } from "react-image-crop";
-
 import "react-image-crop/dist/ReactCrop.css";
 interface ImageHeaderEditorProps {
   openImageEditor: boolean;

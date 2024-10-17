@@ -37,6 +37,7 @@ export type JobsPost = {
     jobType: string;
     level: string;
     skill: string[];
+    applicants: number;
 }
 export type Post = {
     id: string;
@@ -106,6 +107,28 @@ export const formatDate = (dateString: string) => {
     return result;
 }
 
+export const base64ToFile = (base64String: string, fileName: string): File => {
+    // Check if the base64 string has a prefix and split if necessary
+    const parts = base64String.split(",");
+    const isBase64 = parts.length === 2 && parts[0].startsWith("data:");
+
+    if (!isBase64) {
+        throw new Error("Invalid base64 string");
+    }
+
+    const base64 = parts[1];
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const blob = new Blob([bytes], { type: "image/jpeg" }); // Adjust MIME type if necessary
+    return new File([blob], fileName, { type: blob.type });
+};
+
 export const jobPostingDescription: string = '<p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Tips: Provide a summary of the role, what success in the position looks like, and how this role fits into the organization.</span></p><p><br></p><p><strong style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Responsibilities</strong></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">[Be specific when describing each of the responsibilities. Use gender-neutral, inclusive language.]</span></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Example: Determine and develop user requirements for systems in production, to ensure maximum usability</span></p><p><br></p><p><strong style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Qualifications</strong></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">[Some qualifications you may want to include are Skills, Education, Experience, or Certifications.]</span></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Example: Excellent verbal and written communication skills</span></p><p><br></p>'
 
 export const JobsPostList: JobsPost[] = [{
@@ -119,7 +142,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 }, {
     id: "2",
     title: "Software Engineer",
@@ -131,7 +155,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "3",
@@ -144,7 +169,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "4",
@@ -157,7 +183,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Director",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "5",
@@ -170,7 +197,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "6",
@@ -183,7 +211,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "7",
@@ -196,7 +225,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "8",
@@ -209,7 +239,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "9",
@@ -222,7 +253,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 {
     id: "10",
@@ -235,7 +267,8 @@ export const JobsPostList: JobsPost[] = [{
     workplaceType: "Remote",
     jobType: "Full-time",
     level: "Entry level",
-    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"]
+    skill: ["Write Communication", "Usability", "User Requirements", "User Experience", "User Interface Design", "User Research", "User Stories"],
+    applicants: 10,
 },
 ]
 

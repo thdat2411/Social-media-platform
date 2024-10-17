@@ -15,6 +15,7 @@ const FeedMainContent = () => {
   const [nestedMediaModal, setNestedMediaModal] = useState(false);
   const [nestedEventModal, setNestedEventModal] = useState(false);
   const [formData, setFormData] = useState<Event | undefined>(undefined);
+  const [image, setImage] = useState<File | null>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -23,7 +24,8 @@ const FeedMainContent = () => {
       <PostModal
         open={isPostModalOpen}
         setOpen={setIsPostModalOpen}
-        image={null}
+        image={image}
+        setImage={setImage}
         draftImage={draftImage}
         draftContent={draftContent}
         setDraftContent={setDraftContent}
@@ -34,6 +36,7 @@ const FeedMainContent = () => {
         setNestedMediaModal={setNestedMediaModal}
         event={formData}
         setEvent={setFormData}
+        isIn={false}
       />
       <MediaModal
         open={isOpenEditModal}
@@ -42,6 +45,7 @@ const FeedMainContent = () => {
         setDraftImage={setDraftImage}
         nestedMediaModal={nestedMediaModal}
         setNestedMediaModal={setNestedMediaModal}
+        isIn={false}
       />
       <EventModal
         open={isEventModalOpen}
@@ -50,6 +54,7 @@ const FeedMainContent = () => {
         setNestedEventModal={setNestedEventModal}
         formData={formData}
         setFormData={setFormData}
+        isIn={false}
       />
       <div className="w-1/2 mx-4">
         <PostInput

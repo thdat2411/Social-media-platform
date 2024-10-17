@@ -1,15 +1,14 @@
 import Link from "next/link";
 import React from "react";
-
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { Jobs } from "./main-content";
 import Image from "next/image";
+import { JobsPost } from "../utils/utils";
 
 interface JobsContainerProps {
   key: number;
-  item: Jobs;
-  lists: Jobs[];
+  item: JobsPost;
+  lists: JobsPost[];
 }
 
 const JobsContainer = ({ key, item }: JobsContainerProps) => {
@@ -30,20 +29,19 @@ const JobsContainer = ({ key, item }: JobsContainerProps) => {
           alt=""
         />
         <div className="flex flex-col space-y-1">
-          <p className="text-lg font-semibold hover:underline">{item.title}</p>
-          <p className="text-sm text-gray-600">{item.hiringName}</p>
+          <Link
+            href={`/jobs/view/${item.id}`}
+            className="text-lg font-semibold hover:underline"
+          >
+            {item.title}
+          </Link>
+          <p className="text-sm text-gray-600">{item.company}</p>
           <p className="text-sm text-[#9B9B9B]">{item.location}</p>
           <div className="flex items-center justify-start space-x-1">
-            {item.isViewed && (
-              <>
-                <p className="text-sm font-medium text-[#9B9B9B]">Viewed</p>
-                <span className="text-lg text-[#9B9B9B]">∙</span>
-              </>
-            )}
             <p className="text-sm text-[#9B9B9B]">Promoted</p>
             <span className="text-lg text-[#9B9B9B] ">∙</span>
             <p className="text-sm text-[#69AD97]">
-              {item.applicantNumber} applicants
+              {item.applicants} applicants
             </p>
           </div>
         </div>
