@@ -9,8 +9,9 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=drowssap
       - POSTGRES_DB=platform
-    # volumes:
-    #   - ./postgres_data:/var/lib/postgresql/data
+    volumes:
+      # - ./postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
     ports:
       - 5433:5432
     restart: always
