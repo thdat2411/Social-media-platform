@@ -13,7 +13,9 @@ const MyNetworkLayout = ({ children }: MyNetworkLayoutProps) => {
       {isSearchFocus && (
         <div className="fixed inset-0 bg-black bg-opacity-30 z-10" />
       )}
+
       <Header
+        // TODO: Fix properties (isSearchFocus, setIsSearchFocus) do not exist in Header.
         isSearchFocus={isSearchFocus}
         setIsSearchFocus={setIsSearchFocus}
       />

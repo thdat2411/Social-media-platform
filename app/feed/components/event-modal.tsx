@@ -1,3 +1,8 @@
+import CameraImage from "@/app/assets/camera.jpg";
+import ConfirmModal from "@/app/components/confirm-modal";
+import { defaultEvent } from "@/app/utils/utils";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -6,20 +11,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import React, { useEffect, useRef, useState } from "react";
-import CameraImage from "@/app/assets/camera.jpg";
-import Image from "next/image";
 import { format, toZonedTime } from "date-fns-tz";
-import DateInput from "./date-input";
-import TimeInput from "./time-input";
-import { Button } from "@/components/ui/button";
 import { Camera, ChevronDown, Pencil, Trash2 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 import Link from "next/link";
-import ConfirmModal from "@/app/components/confirm-modal";
+import React, { useEffect, useRef, useState } from "react";
+import DateInput from "./date-input";
 import ImageHeaderEditor from "./image-header-editor";
 import PostModal, { Event } from "./post-modal";
-import { defaultEvent } from "@/app/utils/utils";
+import TimeInput from "./time-input";
 
 interface EventModalProps {
   open: boolean;
@@ -34,7 +34,7 @@ interface EventModalProps {
 const EventModal = ({
   open,
   setOpen,
-  setNestedEventModal,
+  setNestedEventModal, // TODO: Fix "'setNestedEventModal' is defined but never used."
   nestedEventModal,
   formData,
   setFormData,
@@ -43,14 +43,14 @@ const EventModal = ({
   const [isTimeDropdownVisible, setTimeDropdownVisible] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isImageEditorModalOpen, setIsImageEditorModalOpen] = useState(false);
-  const [isEditImageOpen, setIsEditImageOpen] = useState(false);
+  const [isEditImageOpen, setIsEditImageOpen] = useState(false); // TODO: Fix "'setIsEditImageOpen' is assigned a value but never used."
   const [isEditImageDropdownOpen, setIsEditImageDropdownOpen] = useState(false);
   const [isHavingText, setIsHavingText] = useState(false);
   const [triggerReset, setTriggerReset] = useState(false);
   const [isEndDateTimeVisible, setEndDateTimeVisible] = useState(false);
   const [timeZones, setTimeZones] = useState<string[]>([]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const timezonedropdownRef = useRef<HTMLDivElement>(null);
+  const timezoneDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const zones = Intl.supportedValuesOf("timeZone");
@@ -88,11 +88,12 @@ const EventModal = ({
       setFormData(defaultEvent);
       setTriggerReset(false);
     }
-  }, [isHavingText, triggerReset]);
+  }, [isHavingText, triggerReset]); // TODO: Fix "React Hook useEffect has a missing dependency: 'setFormData'."
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
-      timezonedropdownRef.current &&
-      !timezonedropdownRef.current.contains(event.target as Node)
+      timezoneDropdownRef.current &&
+      !timezoneDropdownRef.current.contains(event.target as Node)
     ) {
       setTimeDropdownVisible(false);
     }

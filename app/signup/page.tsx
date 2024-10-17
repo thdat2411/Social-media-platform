@@ -1,11 +1,9 @@
-/* eslint-disable react/no-unescaped-entities */
+import LinkedInLogo from "@/app/assets/LinkedIn-Logo.svg";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { FcGoogle } from "react-icons/fc";
-import LinkedInLogo from "@/app/assets/LinkedIn-Logo.svg";
 import SignUpFooter from "./footer";
 
 const SignUpPage = () => {
@@ -60,8 +58,8 @@ const SignUpPage = () => {
               <label htmlFor="remember">Remember me</label>
             </div>
             <p className="text-xs text-gray-600 mb-4 text-center">
-              By clicking Agree and Join or Continue, you agree to LinkedIn's{" "}
-              {""}
+              By clicking Agree and Join or Continue, you agree to
+              LinkedIn&apos;s {""}
               <a className="text-blue-600" href="#">
                 User Agreement
               </a>

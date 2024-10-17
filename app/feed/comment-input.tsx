@@ -1,10 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React, { useEffect } from "react";
-import { EmojiPopover } from "../components/emoji-popover";
 import { Button } from "@/components/ui/button";
-import { FaImage, FaRegSmile } from "react-icons/fa";
 import { X } from "lucide-react";
 import Image from "next/image";
+import React, { useEffect } from "react";
+import { FaImage, FaRegSmile } from "react-icons/fa";
+import { EmojiPopover } from "../components/emoji-popover";
 
 interface CommentInputProps {
   commentText: string;
@@ -37,13 +37,14 @@ const CommentInput = ({
   }`;
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (commentText.trim().length === 0 && !imageUrl && inputRef.current) {
       inputRef.current.focus();
     } else if (textareaRef.current) {
       textareaRef.current.focus();
     }
-  }, [commentText, imageUrl]);
+  }, [commentText, imageUrl]); // TODO: Fix "React Hook useEffect has a missing dependency: 'textareaRef'."
 
   const renderInputField = () => (
     <div className={inputClass}>

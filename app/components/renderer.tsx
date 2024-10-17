@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface RendererProps {
   value: string;
@@ -9,14 +9,15 @@ const Renderer = ({ value }: RendererProps) => {
   const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
-    if (renderRef.current) {
-      renderRef.current.innerHTML = value;
+    const currentRef = renderRef.current;
+    if (currentRef) {
+      currentRef.innerHTML = value;
       const isEmpty = !value.replace(/<(.|\n)*?>/g, "").trim().length;
       setIsEmpty(isEmpty);
     }
     return () => {
-      if (renderRef.current) {
-        renderRef.current.innerHTML = "";
+      if (currentRef) {
+        currentRef.innerHTML = "";
       }
     };
   }, [value]);
