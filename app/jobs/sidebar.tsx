@@ -7,7 +7,7 @@ import React from "react";
 const JobSidebar = () => {
   const router = useRouter();
   return (
-    <aside className="w-1/4 bg-white border border-[#DADEE2] rounded-lg shadow-sm h-fit">
+    <aside className="w-1/4 bg-white border border-[#DADEE2] rounded-lg shadow-sm h-fit max-[700px]:w-full">
       <div className="p-4 space-y-2 flex flex-col">
         <Button className="flex items-center space-x-3 hover:bg-slate-200 bg-white text-black justify-start">
           <Bookmark />

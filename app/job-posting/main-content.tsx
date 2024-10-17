@@ -268,7 +268,7 @@ const JobPostingMainContent = () => {
         </div>
       </div>
       <Separator />
-      <div className="flex justify-between items-center p-6">
+      <div className="flex justify-between items-center p-6 flex-wrap">
         <Button
           onClick={() => {
             setIsReviewModalOpen(true);

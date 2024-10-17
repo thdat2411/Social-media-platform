@@ -29,6 +29,7 @@ const Header = () => {
   const pathname = usePathname();
   const [isJobsPage, setIsJobsPage] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleMouseEnter = useCallback(
     (index: number) => {
@@ -85,6 +86,19 @@ const Header = () => {
     setIsJobsPage(/\/jobs(\/search)?(\/.*)?/.test(pathname));
   }, [pathname]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 900);
+    };
+
+    handleResize(); // Check on initial load
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       {(isJobSearchFocus || isLocationSearchFocus) && (
@@ -103,9 +117,9 @@ const Header = () => {
       />
       <div
         ref={headerRef}
-        className="w-full bg-white border-b-[1.5px] border-black  shadow-sm flex justify-around items-center z-30 sticky top-0"
+        className="w-full bg-white border-b-[1.5px] border-black  shadow-sm flex justify-around max-[700px]:justify-start items-center z-30 sticky top-0"
       >
-        <div className="flex items-center">
+        <div className="flex items-center max-[700px]:w-full ">
           <Image
             onClick={() => {
               router.push("/feed");
@@ -114,51 +128,53 @@ const Header = () => {
             alt="LinkedIn Logo"
             className="w-16 h-fit cursor-pointer"
           />
-          <div
-            className={`flex items-center relative bg-[#EDF3F8] px-2 rounded-lg mr-2 ${
-              isJobSearchFocus ? "border-black border-2" : ""
-            }`}
-          >
-            <IoSearchSharp
-              size={20}
-              className="text-gray-500  transition-all duration-300"
-            />
-            <input
-              type="text"
-              value={jobSearchValue}
-              placeholder={`${
-                !isJobsPage ? "Search" : "Title, skills or company"
+          <div className="max-[700px]:flex-1">
+            <div
+              className={`flex items-center relative bg-[#EDF3F8] px-2 rounded-lg mr-2   ${
+                isJobSearchFocus ? "border-black border-2" : ""
               }`}
-              className={`bg-transparent text-sm py-2 px-2  focus:outline-none  ${
-                isJobSearchFocus && !isJobsPage
-                  ? "transition-all duration-300 w-80"
-                  : !isJobSearchFocus && !isJobsPage
-                  ? "transition-all duration-300 w-44"
-                  : "w-44 "
-              }`}
-              onChange={(e) => setJobSearchValue(e.target.value)}
-              onFocus={() => setIsJobSearchFocus!(true)}
-              onBlur={handleSearchJobBlur}
-              onClick={(e) => e.stopPropagation()}
-            />
-            {isJobSearchFocus && (
-              <div
-                className="absolute top-12 left-0 w-96 bg-white border border-gray-300 rounded-md shadow-lg"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <SearchDropDown
-                  recentItem={recentItem}
-                  trysearchItem={trysearchItem}
-                  setIsSeeAll={setIsSeeAll}
-                  setIsConfirmModalOpen={setIsConfirmModalOpen}
-                  setJobSearchValue={setJobSearchValue}
-                  setIsSearchFocus={setIsJobSearchFocus!}
-                  isSeeAll={isSeeAll}
-                />
-              </div>
-            )}
+            >
+              <IoSearchSharp
+                size={20}
+                className="text-gray-500  transition-all duration-300"
+              />
+              <input
+                type="text"
+                value={jobSearchValue}
+                placeholder={`${
+                  !isJobsPage ? "Search" : "Title, skills or company"
+                }`}
+                className={`bg-transparent text-sm py-2 px-2  focus:outline-none ${
+                  isJobSearchFocus && !isJobsPage
+                    ? "transition-all duration-300 w-80  "
+                    : !isJobSearchFocus && !isJobsPage
+                    ? "transition-all duration-300 w-44 "
+                    : " w-44"
+                }`}
+                onChange={(e) => setJobSearchValue(e.target.value)}
+                onFocus={() => setIsJobSearchFocus!(true)}
+                onBlur={handleSearchJobBlur}
+                onClick={(e) => e.stopPropagation()}
+              />
+              {isJobSearchFocus && (
+                <div
+                  className="absolute top-12 left-0 max-[400px]:-left-5 w-96 max-[700px]:w-full max-[700px]:overflow-auto  bg-white border border-gray-300 rounded-md shadow-lg"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <SearchDropDown
+                    recentItem={recentItem}
+                    trysearchItem={trysearchItem}
+                    setIsSeeAll={setIsSeeAll}
+                    setIsConfirmModalOpen={setIsConfirmModalOpen}
+                    setJobSearchValue={setJobSearchValue}
+                    setIsSearchFocus={setIsJobSearchFocus!}
+                    isSeeAll={isSeeAll}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           {isJobsPage && (
             <div
@@ -171,7 +187,7 @@ const Header = () => {
                 type="text"
                 value={locationValue}
                 placeholder="City, state or zip code"
-                className="bg-transparent text-sm py-2 px-2 w-40 focus:outline-none"
+                className="bg-transparent text-sm py-2 px-2 w-40 max-[700px]:w-full focus:outline-none"
                 onFocus={() => setIsLocationSearchFocus!(true)}
                 onBlur={() => setIsLocationSearchFocus!(false)}
                 onClick={(e) => e.stopPropagation()}
@@ -204,56 +220,59 @@ const Header = () => {
             </div>
           )}
         </div>
-
-        <div className="flex items-center space-x-10 text-gray-600">
-          {routes.map((route, index) => (
-            <Link
-              key={route.label}
-              href={route.href}
-              className={`link flex flex-col items-center justify-center hover:text-[#0A66C2] relative cursor-pointer ${
-                route.active ? "text-gray-800" : ""
-              } group`}
-            >
-              <div
-                className={`flex flex-col items-center justify-center h-16 ${
-                  underlineWidths[index] > 0 ? "flex-grow" : ""
-                }`}
+        {!isMobile && (
+          <div className="flex items-center space-x-10 text-gray-600 ">
+            {routes.map((route, index) => (
+              <Link
+                key={route.label}
+                href={route.href}
+                className={`link flex flex-col items-center justify-center hover:text-[#0A66C2] relative cursor-pointer ${
+                  route.active ? "text-gray-800" : ""
+                } group`}
               >
-                <route.icon
-                  className={`size-6 mt-2 ${
-                    route.active ? "text-[#0A66C2]" : ""
+                <div
+                  className={`flex flex-col items-center justify-center h-16 ${
+                    underlineWidths[index] > 0 ? "flex-grow" : ""
                   }`}
-                />
-                <p
-                  className={`text-xs ${route.active ? "text-[#0A66C2]" : ""}`}
                 >
-                  {route.label}
-                </p>
+                  <route.icon
+                    className={`size-6 mt-2 ${
+                      route.active ? "text-[#0A66C2]" : ""
+                    }`}
+                  />
+                  <p
+                    className={`text-xs ${
+                      route.active ? "text-[#0A66C2]" : ""
+                    }`}
+                  >
+                    {route.label}
+                  </p>
 
-                {!route.active ? (
-                  <span
-                    className={`absolute bottom-0 h-0.5 bg-[#0A66C2]  rounded-full`}
-                    style={{
-                      width: route.active
-                        ? "64px"
-                        : `${underlineWidths[index]}px`,
-                      transition: "width 0.5s ease-in-out",
-                      transform: `scaleX(${
-                        route.active ? 1 : underlineWidths[index] / 16
-                      })`,
-                      transformOrigin: "center",
-                    }}
-                  />
-                ) : (
-                  <span
-                    className={`absolute bottom-0 justify-between  h-0.5 bg-[#0A66C2] rounded-full w-16`}
-                  />
-                )}
-              </div>
-            </Link>
-          ))}
-          <UserDropdown />
-        </div>
+                  {!route.active ? (
+                    <span
+                      className={`absolute bottom-0 h-0.5 bg-[#0A66C2]  rounded-full`}
+                      style={{
+                        width: route.active
+                          ? "64px"
+                          : `${underlineWidths[index]}px`,
+                        transition: "width 0.5s ease-in-out",
+                        transform: `scaleX(${
+                          route.active ? 1 : underlineWidths[index] / 16
+                        })`,
+                        transformOrigin: "center",
+                      }}
+                    />
+                  ) : (
+                    <span
+                      className={`absolute bottom-0 justify-between  h-0.5 bg-[#0A66C2] rounded-full w-16`}
+                    />
+                  )}
+                </div>
+              </Link>
+            ))}
+            <UserDropdown />
+          </div>
+        )}
       </div>
     </>
   );

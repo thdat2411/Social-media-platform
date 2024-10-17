@@ -73,7 +73,7 @@ const JobsMainContent = () => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="w-1/2 mx-4">
+    <div className="w-1/2 mx-4 max-[700px]:w-full max-[700px]:mx-0">
       <div className="bg-white rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
         <div className="flex flex-col  space-y-2">
           <p className="font-semibold text-xl pt-4  px-4 ">Job picks for you</p>

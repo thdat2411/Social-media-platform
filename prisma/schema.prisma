@@ -8,91 +8,148 @@ datasource db {
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model users {
-  id                                       Int                @id @default(autoincrement())
-  email                                    String             @unique @db.VarChar(255)
-  username                                 String             @unique @db.VarChar(100)
+model user {
+  id                                       String            @id @default(cuid())
+  email                                    String            @unique @db.VarChar(255)
+  username                                 String            @unique @db.VarChar(100)
   password_hash                            String
-  full_name                                String             @db.VarChar(255)
+  full_name                                String?           @db.VarChar(255)
   profile_image_url                        String?
-  headline                                 String?            @db.VarChar(255)
-  location                                 String?            @db.VarChar(255)
+  headline                                 String?           @db.VarChar(255)
+  location                                 String?           @db.VarChar(255)
   bio                                      String?
-  role                                     String?            @db.VarChar(50)
-  created_at                               DateTime?          @default(now()) @db.Timestamp(6)
-  updated_at                               DateTime?          @default(now()) @db.Timestamp(6)
-  connections_connections_user_id_1Tousers connections[]      @relation("connections_user_id_1Tousers")
-  connections_connections_user_id_2Tousers connections[]      @relation("connections_user_id_2Tousers")
-  job_applications                         job_applications[]
-  job_listings                             job_listings[]
-  messages_messages_receiver_idTousers     messages[]         @relation("messages_receiver_idTousers")
-  messages_messages_sender_idTousers       messages[]         @relation("messages_sender_idTousers")
-  posts                                    posts[]
+  role                                     String?           @db.VarChar(50)
+  created_at                               DateTime?         @default(now()) @db.Timestamp(6)
+  updated_at                               DateTime?         @default(now()) @db.Timestamp(6)
+  connections_connections_user_id_1Tousers connection[]      @relation("connections_user_id_1Tousers")
+  connections_connections_user_id_2Tousers connection[]      @relation("connections_user_id_2Tousers")
+  job_applications                         job_application[]
+  job_listings                             job_listing[]
+  messages_messages_receiver_idTousers     message[]         @relation("messages_receiver_idTousers")
+  messages_messages_sender_idTousers       message[]         @relation("messages_sender_idTousers")
+  posts                                    post[]
+  account                                  account[]
+  comment                                  comment[]
+  Like                                     Like[]
+}
+
+model account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model connections {
-  id                                 Int       @id @default(autoincrement())
-  user_id_1                          Int?
-  user_id_2                          Int?
+model connection {
+  id                                 String    @id @default(cuid())
+  user_id_1                          String?
+  user_id_2                          String?
   status                             String?   @db.VarChar(50)
   created_at                         DateTime? @default(now()) @db.Timestamp(6)
   updated_at                         DateTime? @default(now()) @db.Timestamp(6)
-  users_connections_user_id_1Tousers users?    @relation("connections_user_id_1Tousers", fields: [user_id_1], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users_connections_user_id_2Tousers users?    @relation("connections_user_id_2Tousers", fields: [user_id_2], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_connections_user_id_1Tousers user?     @relation("connections_user_id_1Tousers", fields: [user_id_1], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_connections_user_id_2Tousers user?     @relation("connections_user_id_2Tousers", fields: [user_id_2], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([user_id_1, user_id_2])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model job_applications {
-  id             Int           @id @default(autoincrement())
-  job_listing_id Int?
-  user_id        Int?
+model job_application {
+  id             String       @id @default(cuid())
+  job_listing_id String?
+  user_id        String?
   resume_url     String?
   cover_letter   String?
-  status         String?       @db.VarChar(50)
-  created_at     DateTime?     @default(now()) @db.Timestamp(6)
-  updated_at     DateTime?     @default(now()) @db.Timestamp(6)
-  job_listings   job_listings? @relation(fields: [job_listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users          users?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  status         String?      @db.VarChar(50)
+  created_at     DateTime?    @default(now()) @db.Timestamp(6)
+  updated_at     DateTime?    @default(now()) @db.Timestamp(6)
+  job_listings   job_listing? @relation(fields: [job_listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          user?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([job_listing_id, user_id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model job_listings {
-  id               Int                @id @default(autoincrement())
-  employer_id      Int?
-  title            String             @db.VarChar(255)
+model job_listing {
+  id               String            @id @default(cuid())
+  employer_id      String?
+  title            String            @db.VarChar(255)
   description      String
-  location         String?            @db.VarChar(255)
-  employment_type  String?            @db.VarChar(50)
-  salary_range     String?            @db.VarChar(100)
+  location         String?           @db.VarChar(255)
+  workplace_type   String?           @db.VarChar(50)
+  job_type         String?           @db.VarChar(50)
+  level            String?           @db.VarChar(50)
+  salary_range     String?           @db.VarChar(100)
   required_skills  String[]
-  created_at       DateTime?          @default(now()) @db.Timestamp(6)
-  updated_at       DateTime?          @default(now()) @db.Timestamp(6)
-  job_applications job_applications[]
-  users            users?             @relation(fields: [employer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  created_at       DateTime?         @default(now()) @db.Timestamp(6)
+  updated_at       DateTime?         @default(now()) @db.Timestamp(6)
+  job_applications job_application[]
+  user             user?             @relation(fields: [employer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-model messages {
-  id                                Int       @id @default(autoincrement())
-  sender_id                         Int?
-  receiver_id                       Int?
+model message {
+  id                                String    @id @default(cuid())
+  sender_id                         String?
+  receiver_id                       String?
   message_text                      String
   created_at                        DateTime? @default(now()) @db.Timestamp(6)
   is_read                           Boolean?  @default(false)
-  users_messages_receiver_idTousers users?    @relation("messages_receiver_idTousers", fields: [receiver_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users_messages_sender_idTousers   users?    @relation("messages_sender_idTousers", fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_messages_receiver_idTousers user?     @relation("messages_receiver_idTousers", fields: [receiver_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_messages_sender_idTousers   user?     @relation("messages_sender_idTousers", fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-model posts {
-  id         Int       @id @default(autoincrement())
-  user_id    Int?
+model post {
+  id         String    @id @default(cuid())
+  user_id    String?
   content    String
   image_url  String?
   created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime? @default(now()) @db.Timestamp(6)
-  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user       user?     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  comment    comment[]
+}
+
+model comment {
+  id         String    @id @default(cuid())
+  post_id    String
+  user_id    String
+  content    String
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @updatedAt
+  parent_id  String? // For replies to other comments
+
+  post post @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user user @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  parentComment comment?  @relation("CommentReplies", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  replies       comment[] @relation("CommentReplies")
+
+  likes Like[] // For tracking likes on this comment
+}
+
+model Like {
+  id         String @id @default(cuid())
+  user_id    String
+  comment_id String
+
+  user    user    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  comment comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, comment_id]) // Ensures a user can like a comment only once
 }

@@ -56,7 +56,7 @@ const FeedMainContent = () => {
         setFormData={setFormData}
         isIn={false}
       />
-      <div className="w-1/2 mx-4">
+      <div className="w-1/2 max-[700px]:w-full mx-4 max-[700px]:mx-0 max-[700px]:my-2 max-[1000px]:w-1/2 pb-6 overflow-y-auto ">
         <PostInput
           setIsPostModalOpen={() => setIsPostModalOpen(true)}
           setIsImageModalOpen={() => {

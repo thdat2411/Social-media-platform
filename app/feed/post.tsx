@@ -117,7 +117,7 @@ const FeedPost = () => {
           />
         </div>
       )}
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-4 flex-wrap">
         <div className="flex">
           <div className="flex text-gray-400 rounded-full bg-blue-600 size-6 items-center justify-center">
             <AiOutlineLike className="size-4" color="white" />
@@ -132,7 +132,7 @@ const FeedPost = () => {
         </button>
       </div>
       <Separator className="mt-2" />
-      <div className="flex items-center justify-around mt-2">
+      <div className="flex items-center justify-around mt-2 flex-wrap">
         <Button
           onClick={() => {}}
           variant="ghost"

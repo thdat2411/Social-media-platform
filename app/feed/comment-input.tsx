@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { FaImage, FaRegSmile } from "react-icons/fa";
@@ -115,11 +115,8 @@ const CommentInput = ({
           </EmojiPopover>
           {!imageUrl && renderImageUpload()}
         </div>
-        <Button
-          type="submit"
-          className="bg-[#0A66C2] hover:bg-blue-800 text-white"
-        >
-          Comment
+        <Button variant="ghost" type="submit" className="rounded-full p-3c">
+          <SendHorizontal className="size-5" />
         </Button>
       </div>
     </div>

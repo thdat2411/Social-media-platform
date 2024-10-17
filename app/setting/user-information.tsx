@@ -5,6 +5,7 @@ import PasswordField from "./password-field";
 import { Separator } from "@/components/ui/separator";
 
 const UserInformation = () => {
+  const [userFullName, setUserFullName] = useState("Full name");
   const [userName, setUserName] = useState("User name");
   const [userPhone, setUserPhone] = useState("User phone");
   const [userAddress, setUserAddress] = useState("User address");
@@ -19,6 +20,19 @@ const UserInformation = () => {
       <p className="text-2xl px-16 pt-12 py-6">Basic Info</p>
       <Separator />
       <div className="flex flex-col w-full justify-between px-16 py-2">
+        <EditableField
+          label="Full name"
+          value={userFullName}
+          setValue={(value) => {
+            setUserFullName(value);
+            setEditingField(null);
+          }}
+          isEditing={editingField === "full name"}
+          onEdit={(value) => handleEdit(value!)}
+        />
+        <Separator />
+      </div>
+      <div className="flex flex-col w-full justify-between px-16 ">
         <EditableField
           label="Name"
           value={userName}

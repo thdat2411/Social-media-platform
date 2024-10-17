@@ -34,6 +34,10 @@ const EditableField = ({
       setError("Phone number must contain only digits.");
       return false;
     }
+    if (label.includes("Full name") && /\d/.test(value)) {
+      setError("Full name must not contain digits.");
+      return false;
+    }
     setError("");
     return true;
   };
