@@ -1,15 +1,49 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const { register, handleSubmit, watch } = useForm<FieldValues>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+  const emailValue = watch("email");
+  const passwordValue = watch("password");
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    setIsLoading(true);
+
+    const callback = await signIn("credentials", {
+      ...data,
+      redirect: false,
+    });
+
+    if (callback?.error) {
+      setError(callback.error);
+    } else if (callback?.ok) {
+      router.push("/feed");
+    }
+
+    setIsLoading(false);
+  };
+
   return (
     <div className="w-full max-w-sm p-8 bg-white shadow-md rounded-lg mt-36 border">
       <h2 className="text-3xl font-semibold mb-4">Log in</h2>
@@ -37,70 +71,93 @@ const LoginForm = () => {
         </div>
         <FcGoogle className="size-7" />
       </Button>
-      <Button
-        variant="outline"
-        className="w-full border-gray-600 flex items-center justify-center border rounded-full p-2 mb-4 mt-4"
-      >
-        <i className="fab fa-apple text-2xl mr-2"></i>
-        <span>Sign in with Apple</span>
-      </Button>
       <div className="flex items-center my-4">
         <hr className="flex-1 border-gray-300" />
         <span className="px-2 text-gray-500">or</span>
         <hr className="flex-1 border-gray-300" />
       </div>
-      <div className="relative mb-4">
-        <input
-          className={`w-full border rounded-md p-2 transition-all ${
-            isEmailFocused ? "pt-5" : "pt-2"
-          }`}
-          placeholder=" "
-          type="text"
-          onFocus={() => setIsEmailFocused(true)}
-          onBlur={() => setIsEmailFocused(false)}
-        />
-        <label
-          className={`absolute left-2 top-2 text-gray-400 transition-all ${
-            isEmailFocused ? "text-xs transform -translate-y-1" : "text-sm"
-          }`}
+      {error !== "" && (
+        <p className="text-red-500 text-sm mb-2  font-medium ml-1">{error}</p>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="relative mb-4">
+          <input
+            className={`w-full border rounded-md p-2 transition-all ${
+              isEmailFocused || emailValue ? "pt-5" : "pt-2"
+            }`}
+            {...register("email", { required: true })}
+            placeholder=""
+            type="text"
+            disabled={isLoading}
+            onFocus={() => setIsEmailFocused(true)}
+            onBlur={() => setIsEmailFocused(false)}
+            required
+          />
+          <label
+            className={`absolute left-2 top-2 text-gray-400 transition-all ${
+              isEmailFocused || emailValue
+                ? "text-xs transform -translate-y-1"
+                : "text-sm"
+            }`}
+          >
+            Email or phone
+          </label>
+        </div>
+        <div className="relative mb-4">
+          <div
+            className={`flex w-full border rounded-md p-2 transition-all items-center ${
+              isPasswordFocused || passwordValue ? "pt-5" : "pt-2"
+            } ${isPasswordFocused ? " outline outline-1 border-black" : " "}`}
+            onBlur={() => setIsPasswordFocused(false)}
+          >
+            <input
+              className={`w-full focus:outline-none
+              }`}
+              {...register("password", { required: true })}
+              placeholder=" "
+              disabled={isLoading}
+              type={!showPassword ? "password" : "text"}
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => setIsPasswordFocused(false)}
+              required
+            />
+            <label
+              className={`absolute left-2 top-2 text-gray-400 transition-all ${
+                isPasswordFocused || passwordValue
+                  ? "text-xs transform -translate-y-1"
+                  : "text-sm"
+              }`}
+            >
+              Password
+            </label>
+            {showPassword ? (
+              <Eye
+                onClick={() => setShowPassword(false)}
+                className="size-6 cursor-pointer"
+              />
+            ) : (
+              <EyeOff
+                onClick={() => setShowPassword(true)}
+                className="size-6 cursor-pointer"
+              />
+            )}
+          </div>
+        </div>
+        <Link
+          className="text-blue-600 text-sm mb-4 block font-bold hover:underline mt-2"
+          href="#"
         >
-          Email or phone
-        </label>
-      </div>
-
-      <div className="relative mb-4">
-        <input
-          className={`w-full border rounded-md p-2 transition-all ${
-            isPasswordFocused ? "pt-5" : "pt-2"
-          }`}
-          placeholder=" "
-          type="password"
-          onFocus={() => setIsPasswordFocused(true)}
-          onBlur={() => setIsPasswordFocused(false)}
-        />
-        <label
-          className={`absolute left-2 top-2 text-gray-400 transition-all ${
-            isPasswordFocused ? "text-xs transform -translate-y-1" : "text-sm"
-          }`}
+          Forgot password?
+        </Link>
+        <Button
+          type="submit"
+          variant="outline"
+          disabled={isLoading}
+          className="w-full hover:bg-blue-800  bg-blue-600 text-white hover:text-white rounded-full h-12  text-lg font-bold p-2 mt-4"
         >
-          Password
-        </label>
-        <span className="absolute right-2 top-2 text-blue-600 cursor-pointer">
-          Display
-        </span>
-      </div>
-      <Link
-        className="text-blue-600 text-sm mb-4 block font-bold hover:underline mt-2"
-        href="#"
-      >
-        Forgot password?
-      </Link>
-      <Button
-        variant="outline"
-        className="w-full hover:bg-blue-800  bg-blue-600 text-white hover:text-white rounded-full h-12  text-lg font-bold p-2 mt-4"
-      >
-        Log in
-      </Button>
+          Log in
+        </Button>
+      </form>
     </div>
   );
 };

@@ -25,7 +25,7 @@ const SearchDropDown = ({
     <div className="p-4">
       {!isSeeAll ? (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center max-[700px]:overflow-auto overflow-hidden ">
             <span className="font-semibold">Recent searches</span>
             <Button
               onClick={() => {

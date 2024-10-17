@@ -99,7 +99,7 @@ const SettingPage = () => {
                 />
               </div>
             </div>
-            <div className="absolute top-12 right-1/3 mr-20">
+            <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
               <DropdownMenu
                 open={isAvatarDropdownOpen}
                 onOpenChange={setIsAvatarDropdownOpen}

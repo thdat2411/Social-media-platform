@@ -34,7 +34,7 @@ const PostInput = ({
         </Avatar>
         <Button
           variant="outline"
-          className="flex w-full rounded-full items-center justify-start h-12 border-slate-800 text-slate-500"
+          className="flex w-full rounded-full items-center justify-start h-12 border-slate-800 text-slate-500 overflow-x-auto overflow-hidden"
           onClick={() => setIsPostModalOpen(true)}
           onBlur={() => setIsPostModalOpen(false)}
         >
@@ -43,7 +43,7 @@ const PostInput = ({
           </p>
         </Button>
       </div>
-      <div className="flex mt-4 justify-around">
+      <div className="flex mt-4 justify-around flex-wrap">
         <Button
           onClick={() => {
             setIsImageModalOpen(true);

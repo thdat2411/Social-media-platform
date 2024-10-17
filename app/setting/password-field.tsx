@@ -64,7 +64,7 @@ const PasswordField = ({
   return (
     <>
       <div className="flex w-full justify-between px-4 py-2 rounded-lg">
-        <div className="flex w-full items-center ">
+        <div className="flex w-full items-center">
           <p className="text-sm w-[210px] self-start py-4 ">{title}</p>
           {isEditing ? (
             <div className="flex flex-col w-[500px] items-center py-2 ">

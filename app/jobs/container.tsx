@@ -37,7 +37,7 @@ const JobsContainer = ({ key, item }: JobsContainerProps) => {
           </Link>
           <p className="text-sm text-gray-600">{item.company}</p>
           <p className="text-sm text-[#9B9B9B]">{item.location}</p>
-          <div className="flex items-center justify-start space-x-1">
+          <div className="flex items-center justify-start space-x-1 flex-wrap">
             <p className="text-sm text-[#9B9B9B]">Promoted</p>
             <span className="text-lg text-[#9B9B9B] ">∙</span>
             <p className="text-sm text-[#69AD97]">

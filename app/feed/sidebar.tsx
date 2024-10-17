@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const FeedSideBar = () => {
   return (
-    <div className="flex flex-col w-1/4 space-y-4">
+    <div className="flex flex-col min-[1200px]:w-1/4 max-[1200px]:w-1/3 max-[700px]:w-full space-y-4">
       <aside className=" bg-[#F9FAFB]  rounded-lg shadow-sm h-fit border">
         <div className="flex flex-col">
           <div className="h-fit">

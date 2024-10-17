@@ -86,7 +86,7 @@ const SubHeader = () => {
   if (isWhatCategory !== "All") {
     return (
       <div className="w-screen py-3 shadow-lg z-20 sticky top-0 ">
-        <div className="flex w-[860px] space-x-2 justify-end">
+        <div className="flex w-[860px] max-[1260px]:justify-center max-[1260px]:w-full  space-x-2 justify-end">
           <DropdownMenu open={isCateogryOpen} onOpenChange={setIsCategoryOpen}>
             <DropdownMenuTrigger asChild>
               <Button className="rounded-full w-fit flex py-2 px-3 items-center bg-blue-500 text-white hover:bg-blue-700 space-x-2">
