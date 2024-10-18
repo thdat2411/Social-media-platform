@@ -9,6 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
@@ -44,10 +45,29 @@ const LoginForm = () => {
     setIsLoading(false);
   };
 
+  const socialAction = () => {
+    setIsLoading(true);
+
+    signIn("google", {
+      redirect: false,
+    })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error(callback.error);
+        }
+        if (callback?.ok && !callback.error) {
+          toast.success("Logged in!");
+          router.push("/feed");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
+
   return (
     <div className="w-full max-w-sm p-8 bg-white shadow-md rounded-lg mt-36 border">
       <h2 className="text-3xl font-semibold mb-4">Log in</h2>
       <Button
+        onClick={socialAction}
         variant="outline"
         className="w-full border-gray-600 flex space-x-2 border rounded-full px-4 py-4 justify-between"
       >
