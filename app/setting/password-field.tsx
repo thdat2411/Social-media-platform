@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Pencil, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 interface PasswordFieldProps {
@@ -63,16 +63,16 @@ const PasswordField = ({
 
   return (
     <>
-      <div className="flex w-full justify-between px-4 py-2 rounded-lg">
+      <div className="flex w-full justify-between rounded-lg px-4 py-2">
         <div className="flex w-full items-center">
-          <p className="text-sm w-[210px] self-start py-4 ">{title}</p>
+          <p className="w-[210px] self-start py-4 text-sm">{title}</p>
           {isEditing ? (
-            <div className="flex flex-col w-[500px] items-center py-2 ">
-              <div className="flex w-full space-x-4 ">
-                <div className="flex flex-col w-full space-y-2">
+            <div className="flex w-[500px] flex-col items-center py-2">
+              <div className="flex w-full space-x-4">
+                <div className="flex w-full flex-col space-y-2">
                   <div className="relative">
                     {currentPasswordError && (
-                      <p className="text-red-500 text-xs mb-1">
+                      <p className="mb-1 text-xs text-red-500">
                         {currentPasswordError}
                       </p>
                     )}
@@ -84,7 +84,7 @@ const PasswordField = ({
                       placeholder="Current Password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      className={`text-muted-foreground text-sm border rounded-lg p-2 mb-2 w-full hover:border-black ${
+                      className={`mb-2 w-full rounded-lg border p-2 text-sm text-muted-foreground hover:border-black ${
                         currentPasswordError
                           ? "border-red-500"
                           : "border-gray-300"
@@ -100,12 +100,12 @@ const PasswordField = ({
                       placeholder="New Password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="text-muted-foreground text-sm border rounded-lg p-2 mb-2 w-full hover:border-black border-gray-300"
+                      className="mb-2 w-full rounded-lg border border-gray-300 p-2 text-sm text-muted-foreground hover:border-black"
                     />
                   </div>
                   <div className="relative">
                     {retypePasswordError && (
-                      <p className="text-red-500 text-xs mb-1">
+                      <p className="mb-1 text-xs text-red-500">
                         {retypePasswordError}
                       </p>
                     )}
@@ -117,7 +117,7 @@ const PasswordField = ({
                       placeholder="Re-type New Password"
                       value={retypeNewPassword}
                       onChange={(e) => setRetypeNewPassword(e.target.value)}
-                      className={`text-muted-foreground text-sm border rounded-lg p-2 mb-2 w-full hover:border-black ${
+                      className={`mb-2 w-full rounded-lg border p-2 text-sm text-muted-foreground hover:border-black ${
                         retypePasswordError
                           ? "border-red-500"
                           : "border-gray-300"
@@ -129,7 +129,7 @@ const PasswordField = ({
                   variant="ghost"
                   type="button"
                   onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                  className="p-3 rounded-full"
+                  className="rounded-full p-3"
                 >
                   {isPasswordVisible ? (
                     <EyeOff className="size-5" />
@@ -138,7 +138,7 @@ const PasswordField = ({
                   )}
                 </Button>
               </div>
-              <div className="flex space-x-4 justify-end w-[500px] pt-4">
+              <div className="flex w-[500px] justify-end space-x-4 pt-4">
                 <Button
                   onClick={() => onEdit(null)}
                   variant="outline"
@@ -148,14 +148,14 @@ const PasswordField = ({
                 </Button>
                 <Button
                   onClick={handleSave}
-                  className=" w-1/2 hover:bg-blue-600 hover:text-white"
+                  className="w-1/2 hover:bg-blue-600 hover:text-white"
                 >
                   Save
                 </Button>
               </div>
             </div>
           ) : (
-            <p className="text-muted-foreground text-sm">••••••••••••••••</p>
+            <p className="text-sm text-muted-foreground">••••••••••••••••</p>
           )}
         </div>
         {!isEditing && (

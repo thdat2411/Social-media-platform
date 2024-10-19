@@ -1,9 +1,9 @@
 "use client";
+import { useJobId } from "@/app/hooks/useJobId";
 import { JobsPost, JobsPostList } from "@/app/utils/utils";
 import React, { useEffect, useState } from "react";
-import JobListSideBar from "./job-list-sidebar";
 import JobContent from "./job-content";
-import { useJobId } from "@/app/hooks/useJobId";
+import JobListSideBar from "./job-list-sidebar";
 
 const JobSearchPage = () => {
   const jobId = useJobId();
@@ -16,23 +16,23 @@ const JobSearchPage = () => {
     }, 2000);
   }, []);
   return (
-    <div className="flex flex-1 overflow-hidden z-10">
-      <div className="w-full flex justify-center ">
-        <div className="w-4/6  flex-shrik flex">
-          <aside className=" bg-white w-2/5">
+    <div className="z-10 flex flex-1 overflow-hidden">
+      <div className="flex w-full justify-center">
+        <div className="flex-shrik flex w-4/6">
+          <aside className="w-2/5 bg-white">
             {!isLoading ? (
-              <div className="p-4 border border-t-0">
+              <div className="border border-t-0 p-4">
                 <h2 className="text-xl font-bold">intern in Vietnam</h2>
                 <p className="text-gray-600">{jobs.length} results</p>
               </div>
             ) : (
-              <div className="p-4 border  border-t-0">
-                <div className="w-[300px] h-4 bg-gray-400 rounded-full mb-2" />
-                <div className="w-[200px] h-4 bg-gray-400 rounded-full" />
+              <div className="border border-t-0 p-4">
+                <div className="mb-2 h-4 w-[300px] rounded-full bg-gray-400" />
+                <div className="h-4 w-[200px] rounded-full bg-gray-400" />
               </div>
             )}
             <div className="h-[77vh] overflow-y-auto border border-t-0">
-              <div className="border-b ">
+              <div className="border-b">
                 {jobs.map((job, index) => (
                   <JobListSideBar
                     key={index}
@@ -44,7 +44,7 @@ const JobSearchPage = () => {
               </div>
             </div>
           </aside>
-          <div className="flex flex-col w-3/5 p-10 h-[85vh] overflow-y-auto border border-l-0 border-t-0 bg-white">
+          <div className="flex h-[85vh] w-3/5 flex-col overflow-y-auto border border-l-0 border-t-0 bg-white p-10">
             <JobContent data={jobs[Number(jobId) - 1]} />
           </div>
         </div>

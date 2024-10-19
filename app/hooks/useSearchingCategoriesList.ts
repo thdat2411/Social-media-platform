@@ -30,7 +30,7 @@ const useSearchingCategoriesList = () => {
         pathname: "/search/people",
       },
     ],
-    [pathname]
+    [pathname],
   );
   return list;
 };

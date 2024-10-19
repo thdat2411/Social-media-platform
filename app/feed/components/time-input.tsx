@@ -1,5 +1,5 @@
 import { Clock } from "lucide-react";
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface TimeInputProps {
   selectedTime: string;
@@ -49,7 +49,7 @@ const TimeInput = ({ selectedTime, setSelectedTime }: TimeInputProps) => {
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className={`flex items-center border-2 rounded cursor-pointer p-1 ${
+        className={`flex cursor-pointer items-center rounded border-2 p-1 ${
           isDropdownVisible ? "border-black" : "border-gray-400"
         }`}
         onClick={() => setDropdownVisible((prev) => !prev)}
@@ -58,18 +58,18 @@ const TimeInput = ({ selectedTime, setSelectedTime }: TimeInputProps) => {
           type="text"
           value={selectedTime}
           readOnly
-          className="w-full border-none rounded focus:outline-none"
+          className="w-full rounded border-none focus:outline-none"
           placeholder="Select time"
         />
         <Clock size={24} className="ml-2" />
       </div>
       {isDropdownVisible && (
-        <div className="absolute z-10 w-full max-h-[150px] overflow-y-auto bg-white border border-black rounded shadow-lg">
+        <div className="absolute z-10 max-h-[150px] w-full overflow-y-auto rounded border border-black bg-white shadow-lg">
           {timeSlots.map((time, index) => (
             <div
               key={index}
               onClick={() => handleTimeSelect(time)}
-              className="p-2 hover:bg-gray-200 cursor-pointer"
+              className="cursor-pointer p-2 hover:bg-gray-200"
             >
               {time}
             </div>

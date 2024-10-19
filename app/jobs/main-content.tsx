@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import JobsContainer from "./container";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Clock, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import { JobsPostList } from "../utils/utils";
+import JobsContainer from "./container";
 
 export type Jobs = {
   title: string;
@@ -73,14 +73,14 @@ const JobsMainContent = () => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="w-1/2 mx-4 max-[700px]:w-full max-[700px]:mx-0">
-      <div className="bg-white rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
-        <div className="flex flex-col  space-y-2">
-          <p className="font-semibold text-xl pt-4  px-4 ">Job picks for you</p>
-          <p className="text-sm text-[#919191] px-4">
+    <div className="mx-4 w-1/2 max-[700px]:mx-0 max-[700px]:w-full">
+      <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white shadow-sm">
+        <div className="flex flex-col space-y-2">
+          <p className="px-4 pt-4 text-xl font-semibold">Job picks for you</p>
+          <p className="px-4 text-sm text-[#919191]">
             Based on your profile and search history
           </p>
-          <div className="flex flex-col w-full space-y-3 p-4">
+          <div className="flex w-full flex-col space-y-3 p-4">
             {jobs.map((item, index) => (
               <JobsContainer key={index} item={item} lists={jobs} />
             ))}
@@ -90,22 +90,22 @@ const JobsMainContent = () => {
               router.push("/jobs/search");
             }}
             variant="ghost"
-            className="h-14 p-0 rounded-tr-none rounded-tl-none rounded-r-none rounded-l-none  w-full pr-3"
+            className="h-14 w-full rounded-l-none rounded-r-none rounded-tl-none rounded-tr-none p-0 pr-3"
           >
             <p>Show all</p>
             <MoveRight />
           </Button>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
-        <div className="flex flex-col  space-y-2">
+      <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white shadow-sm">
+        <div className="flex flex-col space-y-2">
           <div className="flex items-center justify-between">
-            <p className="font-semibold text-xl pt-4 p-4 ">Job picks for you</p>
+            <p className="p-4 pt-4 text-xl font-semibold">Job picks for you</p>
             <div className="flex items-center space-x-3 p-4">
               <Button
                 variant="ghost"
-                className={`bg-white rounded-full p-2 border-2 border-black ${
-                  isLeftDisabled ? "opacity-50 cursor-not-allowed" : ""
+                className={`rounded-full border-2 border-black bg-white p-2 ${
+                  isLeftDisabled ? "cursor-not-allowed opacity-50" : ""
                 }`}
                 onClick={() => scroll("left")}
                 disabled={isLeftDisabled}
@@ -114,7 +114,7 @@ const JobsMainContent = () => {
               </Button>
               <Button
                 variant="ghost"
-                className="bg-white rounded-full p-2 border-2 border-black"
+                className="rounded-full border-2 border-black bg-white p-2"
                 onClick={() => scroll("right")}
                 disabled={isRightDisabled}
               >
@@ -123,7 +123,7 @@ const JobsMainContent = () => {
             </div>
           </div>
           <div
-            className="flex w-full pb-4 px-4 overflow-x-hidden"
+            className="flex w-full overflow-x-hidden px-4 pb-4"
             ref={scrollRef}
           >
             <div className="flex space-x-2 py-4">
@@ -131,7 +131,7 @@ const JobsMainContent = () => {
                 <Button
                   variant="ghost"
                   key={index}
-                  className="flex-shrink-0 space-x-2 rounded-lg p-6 border-[#DADEE2] border"
+                  className="flex-shrink-0 space-x-2 rounded-lg border border-[#DADEE2] p-6"
                 >
                   <Clock className="size-6" />
                   <p className="text-sm font-medium">

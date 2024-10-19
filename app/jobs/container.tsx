@@ -1,8 +1,8 @@
-import Link from "next/link";
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import { JobsPost } from "../utils/utils";
 
 interface JobsContainerProps {
@@ -16,7 +16,7 @@ const JobsContainer = ({ key, item }: JobsContainerProps) => {
     <Link
       key={key}
       href="#"
-      className={`flex justify-between items-start p-4 border-b-[#DADEE2] border-b-2 mr-3 ${
+      className={`mr-3 flex items-start justify-between border-b-2 border-b-[#DADEE2] p-4 ${
         key === 2 ? "border-none" : ""
       }`}
     >
@@ -37,16 +37,16 @@ const JobsContainer = ({ key, item }: JobsContainerProps) => {
           </Link>
           <p className="text-sm text-gray-600">{item.company}</p>
           <p className="text-sm text-[#9B9B9B]">{item.location}</p>
-          <div className="flex items-center justify-start space-x-1 flex-wrap">
+          <div className="flex flex-wrap items-center justify-start space-x-1">
             <p className="text-sm text-[#9B9B9B]">Promoted</p>
-            <span className="text-lg text-[#9B9B9B] ">∙</span>
+            <span className="text-lg text-[#9B9B9B]">∙</span>
             <p className="text-sm text-[#69AD97]">
               {item.applicants} applicants
             </p>
           </div>
         </div>
       </div>
-      <Button variant="ghost" className="rounded-full border-none ml-3 p-3">
+      <Button variant="ghost" className="ml-3 rounded-full border-none p-3">
         <X className="size-5" />
       </Button>
     </Link>

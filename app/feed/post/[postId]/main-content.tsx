@@ -4,12 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Earth, MessageSquareMore, Send } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
 import CommentInput from "../../comment-input";
-import Image from "next/image";
-import Link from "next/link";
 
 const PostMainContent = () => {
   const postId = useParams().postId as string;
@@ -41,7 +41,7 @@ const PostMainContent = () => {
     setCommentText((prev) => prev + emoji);
   };
   const handleImageUpload: React.ChangeEventHandler<HTMLInputElement> = (
-    event
+    event,
   ) => {
     const file = event.target.files?.[0] || null;
     if (file) {
@@ -62,16 +62,16 @@ const PostMainContent = () => {
       (textareaRef.current as HTMLTextAreaElement).focus();
       (textareaRef.current as HTMLTextAreaElement).setSelectionRange(
         commentText.length,
-        commentText.length
+        commentText.length,
       );
     }
   }, [commentText]);
 
   return (
-    <div className="w-1/2 ml-8 bg-white p-4 rounded-lg shadow-sm border-[1.5px] h-fit border-[#DADEE2]">
+    <div className="ml-8 h-fit w-1/2 rounded-lg border-[1.5px] border-[#DADEE2] bg-white p-4 shadow-sm">
       <Link
         href="#"
-        className="flex items-center mb-4 space-x-2 cursor-pointer"
+        className="mb-4 flex cursor-pointer items-center space-x-2"
       >
         <Avatar>
           <AvatarImage
@@ -83,22 +83,22 @@ const PostMainContent = () => {
         <div>
           <h3 className="font-bold hover:underline">{post!.author}</h3>
           <p className="text-sm text-gray-600">{post!.title}</p>
-          <div className="flex space-x-1 items-center justify-start">
+          <div className="flex items-center justify-start space-x-1">
             <p className="text-xs text-gray-600">
-              {formatDate(post!.date)} <span className="text-lg ">∙</span>
+              {formatDate(post!.date)} <span className="text-lg">∙</span>
             </p>
             <Earth className="size-4" />
           </div>
         </div>
       </Link>
-      <p className=" text-gray-700 mb-6">
+      <p className="mb-6 text-gray-700">
         {showFullText || !shouldTruncate ? (
           post!.content
         ) : (
           <>
             {words.slice(0, 20).join(" ")} ...
             <button
-              className="text-gray-400 cursor-pointer hover:underline hover:text-blue-500 "
+              className="cursor-pointer text-gray-400 hover:text-blue-500 hover:underline"
               onClick={() => setShowFullText(true)}
             >
               Read more
@@ -112,30 +112,29 @@ const PostMainContent = () => {
           alt=""
           width={600}
           height={100}
-          className="
-          object-cover"
+          className="object-cover"
         />
       )}
-      <div className="flex items-center justify-between mt-4">
+      <div className="mt-4 flex items-center justify-between">
         <div className="flex">
-          <div className="flex text-gray-400 rounded-full bg-blue-600 size-6 items-center justify-center">
+          <div className="flex size-6 items-center justify-center rounded-full bg-blue-600 text-gray-400">
             <AiOutlineLike className="size-4" color="white" />
           </div>
-          <span className="text-sm ml-1 items-center flex">299</span>
+          <span className="ml-1 flex items-center text-sm">299</span>
         </div>
         <button
           onClick={() => setShowCommentInput(true)}
-          className="text-gray-400 cursor-pointer hover:underline text-sm hover:text-blue-600"
+          className="cursor-pointer text-sm text-gray-400 hover:text-blue-600 hover:underline"
         >
           6 comments
         </button>
       </div>
       <Separator className="mt-2" />
-      <div className="flex items-center justify-around mt-2">
+      <div className="mt-2 flex items-center justify-around">
         <Button
           onClick={() => {}}
           variant="ghost"
-          className="flex items-center mr-4"
+          className="mr-4 flex items-center"
         >
           <AiOutlineLike className="size-6" />
           <span className="ml-1 text-base">Like</span>
@@ -143,7 +142,7 @@ const PostMainContent = () => {
         <Button
           onClick={() => setShowCommentInput(!showCommentInput)}
           variant="ghost"
-          className="flex items-center mr-4"
+          className="mr-4 flex items-center"
         >
           <MessageSquareMore className="size-6" />
           <span className="ml-1 text-base">Comment</span>
@@ -151,7 +150,7 @@ const PostMainContent = () => {
         <Button
           onClick={() => {}}
           variant="ghost"
-          className="flex items-center mr-4"
+          className="mr-4 flex items-center"
         >
           <Send className="size-6" />
           <span className="ml-1 text-base">Send</span>

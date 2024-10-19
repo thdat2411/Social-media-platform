@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import React, { useState } from "react";
+import ConfirmModal from "../components/confirm-modal";
 import ButtonTransferInput from "./button-transfer-input";
 import TypeSelection from "./type-selection";
-import ConfirmModal from "../components/confirm-modal";
 
 interface EditJobPreferenceModalProps {
   open: boolean;
@@ -101,12 +101,12 @@ const EditJobPreferenceModal = ({
         width="400"
       />
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-white max-h-[800px] overflow-hidden max-w-xl absolute -mt-8">
+        <DialogContent className="absolute -mt-8 max-h-[800px] max-w-xl overflow-hidden bg-white">
           <DialogHeader className="p-3">
             <DialogTitle className="text-xl">User Name</DialogTitle>
           </DialogHeader>
           <Separator />
-          <div className="px-2 flex flex-col pb-10 space-y-8 h-[500px] overflow-y-auto">
+          <div className="flex h-[500px] flex-col space-y-8 overflow-y-auto px-2 pb-10">
             <p className="text-xs text-muted-foreground">*Indicate required</p>
             {/*Job titles*/}
             <ButtonTransferInput
@@ -156,7 +156,7 @@ const EditJobPreferenceModal = ({
             {/*Start date*/}
             <div className="flex flex-col space-y-2">
               <p className="text-sm text-muted-foreground">Start date</p>
-              <div className="flex items-center ">
+              <div className="flex items-center">
                 <input
                   type="radio"
                   id="immediate"
@@ -196,10 +196,10 @@ const EditJobPreferenceModal = ({
             />
           </div>
           <Separator />
-          <DialogFooter className="flex justify-end items-center">
+          <DialogFooter className="flex items-center justify-end">
             <Button
               variant="ghost"
-              className="rounded-full px-6 py-2 bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+              className="rounded-full bg-blue-500 px-6 py-2 text-white hover:bg-blue-700 hover:text-white"
               onClick={() => setIsConfirmModalOpen(true)}
             >
               <p>Save</p>

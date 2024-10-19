@@ -27,9 +27,9 @@ const UserDropdown = () => {
           </div>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[300px] absolute -right-20">
+      <DropdownMenuContent className="absolute -right-20 w-[300px]">
         <div className="flex flex-col">
-          <div className="flex p-4 space-x-3 cursor-pointer">
+          <div className="flex cursor-pointer space-x-3 p-4">
             <Avatar>
               <AvatarImage
                 src="https://github.com/shadcn.png"
@@ -44,12 +44,12 @@ const UserDropdown = () => {
               </p>
             </div>
           </div>
-          <Button className="w-full rounded-full bg-transparent border-blue-500  text-blue-500 hover:bg-blue-100 hover:border-blue-700 border-2 mb-2">
+          <Button className="mb-2 w-full rounded-full border-2 border-blue-500 bg-transparent text-blue-500 hover:border-blue-700 hover:bg-blue-100">
             <p className="text-base">View profile</p>
           </Button>
           <Separator />
           <Button
-            className="flex justify-between items-center my-2"
+            className="my-2 flex items-center justify-between"
             variant="ghost"
           >
             <p className="text-base">Account setting</p>
@@ -57,7 +57,7 @@ const UserDropdown = () => {
           </Button>
           <Separator />
           <Button
-            className="flex justify-between items-center mt-2"
+            className="mt-2 flex items-center justify-between"
             variant="ghost"
           >
             <p className="text-base">Sign out</p>

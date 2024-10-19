@@ -1,17 +1,17 @@
 "use client";
 import { formatDate, Posts } from "@/app/utils/utils";
-import { Separator } from "@/components/ui/separator";
-import React, { useState } from "react";
-import Image from "next/image";
-import { ChevronLeft, ChevronRight, Earth, Ellipsis } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { FaBookmark, FaLink } from "react-icons/fa";
+import { Separator } from "@/components/ui/separator";
+import { ChevronLeft, ChevronRight, Earth, Ellipsis } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { FaBookmark, FaLink } from "react-icons/fa";
 import { toast } from "sonner";
 
 const SavedPostMainContent = () => {
@@ -50,30 +50,30 @@ const SavedPostMainContent = () => {
         <Button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-4 text-center h-fit rounded-full hover:bg-blue-500 hover:text-white ${
+          className={`h-fit rounded-full px-4 text-center hover:bg-blue-500 hover:text-white ${
             i === currentPage
               ? "bg-blue-500 text-white hover:bg-blue-700"
               : "bg-white text-gray-600"
           }`}
         >
           <p className="text-sm">{i}</p>
-        </Button>
+        </Button>,
       );
     }
 
     return pageButtons;
   };
   return (
-    <div className="w-1/2 ml-8 border rounded-lg">
+    <div className="ml-8 w-1/2 rounded-lg border">
       <div className="flex flex-col">
         <div className="bg-[#F9FAFB]">
-          <p className="font-medium text-2xl p-7">Saved Posts</p>
+          <p className="p-7 text-2xl font-medium">Saved Posts</p>
         </div>
         <Separator />
         {currentPagePosts.map((post) => (
           <>
-            <div key={post.id} className="flex p-6 cursor-pointer">
-              <div className="flex flex-col justify-between w-full">
+            <div key={post.id} className="flex cursor-pointer p-6">
+              <div className="flex w-full flex-col justify-between">
                 <div
                   className="flex"
                   onClick={() => router.push(`/feed/post/${post.id}`)}
@@ -84,14 +84,14 @@ const SavedPostMainContent = () => {
                     width={60}
                     height={60}
                   />
-                  <div className="flex flex-col ml-3">
+                  <div className="ml-3 flex flex-col">
                     <p className="font-semibold hover:underline">
                       {post.author}
                     </p>
                     <p className="text-sm">{post.title}</p>
-                    <div className="flex items-center text-muted-foreground text-xs">
+                    <div className="flex items-center text-xs text-muted-foreground">
                       <p>{formatDate(post.date)} ∙ </p>
-                      <Earth className="size-4 ml-2" />
+                      <Earth className="ml-2 size-4" />
                     </div>
                   </div>
                 </div>
@@ -101,16 +101,16 @@ const SavedPostMainContent = () => {
                 <DropdownMenuTrigger asChild className="">
                   <Button
                     variant="ghost"
-                    className="rounded-full hover:bg-[#F4F2EE] p-3 "
+                    className="rounded-full p-3 hover:bg-[#F4F2EE]"
                   >
                     <Ellipsis />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="flex flex-col items-center justify-start w-[200px] absolute -right-6">
+                <DropdownMenuContent className="absolute -right-6 flex w-[200px] flex-col items-center justify-start">
                   <Button
                     onClick={() => {}}
                     variant="ghost"
-                    className="w-full flex items-center justify-start space-x-2"
+                    className="flex w-full items-center justify-start space-x-2"
                   >
                     <FaBookmark />
                     <p>Unsave</p>
@@ -118,7 +118,7 @@ const SavedPostMainContent = () => {
                   <Button
                     onClick={() => copyLink(post.id)}
                     variant="ghost"
-                    className="w-full flex items-center justify-start space-x-2"
+                    className="flex w-full items-center justify-start space-x-2"
                   >
                     <FaLink />
                     <p>Copy link</p>
@@ -129,7 +129,7 @@ const SavedPostMainContent = () => {
             <Separator />
           </>
         ))}
-        <div className="flex justify-center space-x-7 my-4 items-center">
+        <div className="my-4 flex items-center justify-center space-x-7">
           <Button
             variant="ghost"
             onClick={() => handlePageChange(currentPage - 1)}

@@ -10,11 +10,11 @@ import { MoveLeft } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import ReactCrop, {
-  centerCrop,
-  makeAspectCrop,
   Crop,
   PixelCrop,
+  centerCrop,
   convertToPixelCrop,
+  makeAspectCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 interface ImageHeaderEditorProps {
@@ -48,7 +48,7 @@ const ImageHeaderEditor = ({
   function centerAspectCrop(
     mediaWidth: number,
     mediaHeight: number,
-    aspect: number
+    aspect: number,
   ) {
     return centerCrop(
       makeAspectCrop(
@@ -58,10 +58,10 @@ const ImageHeaderEditor = ({
         },
         aspect,
         mediaWidth,
-        mediaHeight
+        mediaHeight,
       ),
       mediaWidth,
-      mediaHeight
+      mediaHeight,
     );
   }
 
@@ -70,7 +70,7 @@ const ImageHeaderEditor = ({
       setCrop(undefined);
       const reader = new FileReader();
       reader.addEventListener("load", () =>
-        setImgSrc(reader.result?.toString() || "")
+        setImgSrc(reader.result?.toString() || ""),
       );
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -159,7 +159,7 @@ const ImageHeaderEditor = ({
         0,
         0,
         pixelCrop.width,
-        pixelCrop.height
+        pixelCrop.height,
       );
 
       return new Promise<string>((resolve) => {
@@ -190,9 +190,9 @@ const ImageHeaderEditor = ({
         width={"350"}
       />
       <Dialog open={openImageEditor} onOpenChange={handleClose}>
-        <DialogContent className="p-0 bg-gray-50 w-full max-w-xl">
-          <DialogHeader className="flex p-7 justify-between">
-            <div className="flex space-x-4 text-lg items-center">
+        <DialogContent className="w-full max-w-xl bg-gray-50 p-0">
+          <DialogHeader className="flex justify-between p-7">
+            <div className="flex items-center space-x-4 text-lg">
               <Button
                 onClick={handleReturn}
                 variant="ghost"
@@ -203,7 +203,7 @@ const ImageHeaderEditor = ({
               <p>Edit cover photo</p>
             </div>
           </DialogHeader>
-          <div className="flex flex-col w-full px-7 pb-7 space-y-7">
+          <div className="flex w-full flex-col space-y-7 px-7 pb-7">
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -226,7 +226,7 @@ const ImageHeaderEditor = ({
               <Button
                 onClick={handleToggleAspectClick}
                 variant="outline"
-                className="rounded-full border-2 border-gray-500 hover:border-black items-center w-fit"
+                className="w-fit items-center rounded-full border-2 border-gray-500 hover:border-black"
               >
                 Toogle
               </Button>
@@ -235,7 +235,7 @@ const ImageHeaderEditor = ({
           <DialogFooter className="p-6">
             <label
               htmlFor="changeImage"
-              className="flex items-center rounded-full border-2 px-4 cursor-pointer border-gray-500 hover:border-2 hover:border-black mr-4"
+              className="mr-4 flex cursor-pointer items-center rounded-full border-2 border-gray-500 px-4 hover:border-2 hover:border-black"
             >
               <p className="text-sm">Change photo</p>
             </label>

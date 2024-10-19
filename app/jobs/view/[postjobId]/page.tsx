@@ -5,8 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaLinkedin, FaListCheck } from "react-icons/fa6";
 import { MdBusinessCenter } from "react-icons/md";
@@ -23,12 +22,12 @@ const JobViewPage = () => {
   };
   return (
     <div className="relative">
-      <div className="flex w-full mt-4 mx-auto justify-center space-x-6">
-        <div className="w-1/2 flex flex-col space-y-6 items-center pt-4 pb-6 justify-center">
-          <div className=" w-full border shadow-md rounded-lg">
+      <div className="mx-auto mt-4 flex w-full justify-center space-x-6">
+        <div className="flex w-1/2 flex-col items-center justify-center space-y-6 pb-6 pt-4">
+          <div className="w-full rounded-lg border shadow-md">
             <div className="flex justify-between">
-              <div className="flex flex-col p-6 space-y-2">
-                <div className="flex space-x-3 items-center">
+              <div className="flex flex-col space-y-2 p-6">
+                <div className="flex items-center space-x-3">
                   <Image
                     src="https://github.com/shadcn.png"
                     alt=""
@@ -44,14 +43,14 @@ const JobViewPage = () => {
                     {jobPost!.applicants} applicants
                   </span>
                 </p>
-                <div className="flex space-x-3 text-sm items-center pb-2">
+                <div className="flex items-center space-x-3 pb-2 text-sm">
                   <MdBusinessCenter className="size-6 text-[#666666]" />
                   <p>
                     {jobPost!.jobType} · {jobPost!.level}{" "}
                   </p>
                 </div>
-                <div className="flex space-x-3 text-sm items-center pb-4">
-                  <FaListCheck className="size-5 text-[#666666] mr-1" />
+                <div className="flex items-center space-x-3 pb-4 text-sm">
+                  <FaListCheck className="mr-1 size-5 text-[#666666]" />
                   <p className="break-words">
                     Skills:{" "}
                     {jobPost!.skill.length === 0 && (
@@ -73,15 +72,15 @@ const JobViewPage = () => {
                     )}
                   </p>
                 </div>
-                <Button className="rounded-full bg-blue-500 w-fit space-x-3 hover:bg-blue-700 ">
+                <Button className="w-fit space-x-3 rounded-full bg-blue-500 hover:bg-blue-700">
                   <FaLinkedin className="size-5" />
                   <p className="text-base">Apply</p>
                 </Button>
               </div>
             </div>
           </div>
-          <div className="w-full border shadow-md rounded-lg">
-            <div className="flex flex-col p-6 space-y-4">
+          <div className="w-full rounded-lg border shadow-md">
+            <div className="flex flex-col space-y-4 p-6">
               <p className="text-xl font-semibold">Meet the hiring team</p>
               <div className="flex justify-between">
                 <div className="flex space-x-3">
@@ -93,7 +92,7 @@ const JobViewPage = () => {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col items-center">
-                    <p className="font-semibold self-start hover:underline cursor-pointer">
+                    <p className="cursor-pointer self-start font-semibold hover:underline">
                       Thai Dat
                     </p>
                     <p className="text-sm">
@@ -106,7 +105,7 @@ const JobViewPage = () => {
                 </div>
                 <Button
                   variant="outline"
-                  className="rounded-full h-fit space-x-3 border hover:border-2 border-black"
+                  className="h-fit space-x-3 rounded-full border border-black hover:border-2"
                 >
                   <Send className="size-5" />
                   <p className="text-base">Message</p>
@@ -114,20 +113,20 @@ const JobViewPage = () => {
               </div>
             </div>
           </div>
-          <div className="w-full border shadow-md rounded-lg ">
+          <div className="w-full rounded-lg border shadow-md">
             <div className="flex flex-col p-6">
               <p className="text-xl font-semibold">About the job</p>
               <Renderer value={jobPost!.description} />
             </div>
           </div>
         </div>
-        <div className="w-1/5 h-fit border shadow-md rounded-lg p-6 mt-4">
+        <div className="mt-4 h-fit w-1/5 rounded-lg border p-6 shadow-md">
           <div className="flex items-center justify-center space-x-4">
             <p>Looking for talent?</p>
             <Button
               onClick={() => router.push("/job-posting")}
               variant="outline"
-              className="rounded-full border border-blue-500 hover:border-blue-700 text-blue-500 px-7 py-3 hover:border-2 hover:text-blue-500"
+              className="rounded-full border border-blue-500 px-7 py-3 text-blue-500 hover:border-2 hover:border-blue-700 hover:text-blue-500"
             >
               Post a job
             </Button>

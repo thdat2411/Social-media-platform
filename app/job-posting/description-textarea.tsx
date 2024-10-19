@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import Quill, { QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -82,7 +81,7 @@ const JobPostingDescription = ({
       <div className="border border-black">
         <div ref={containerRef} style={{ height: "400px" }} />
       </div>
-      <p className="text-end text-muted-foreground mt-2 text-sm">
+      <p className="mt-2 text-end text-sm text-muted-foreground">
         {wordCount}/10,000
       </p>
     </>

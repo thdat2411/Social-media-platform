@@ -1,19 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'placehold.co',
-          pathname: '/**',
-        },
-        {
-          protocol: 'https',
-          hostname: 'github.com',
-          pathname: '/**',
-        },
-      ],
-    },
-  }
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "github.com",
+        pathname: "/**",
+      },
+    ],
+  },
+  // serverRuntimeConfig: {
+  //   port: 3001,
+  // },
+};
 
 export default nextConfig;

@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import useSearchingCategoriesList from "@/app/hooks/useSearchingCategoriesList";
+import React, { useEffect, useState } from "react";
 
 const CategoryListSidebar = () => {
   const lists = useSearchingCategoriesList();
@@ -15,7 +15,7 @@ const CategoryListSidebar = () => {
           }
         });
       },
-      { threshold: 1 }
+      { threshold: 1 },
     );
 
     lists.forEach((item) => {
@@ -45,9 +45,9 @@ const CategoryListSidebar = () => {
     }
   };
   return (
-    <aside className="w-1/4 bg-white border border-[#DADEE2] rounded-lg shadow-sm h-fit sticky top-20">
-      <div className="flex flex-col py-4 px-3">
-        <p className="text-lg font-semibold pb-3">On this page</p>
+    <aside className="sticky top-20 h-fit w-1/4 rounded-lg border border-[#DADEE2] bg-white shadow-sm">
+      <div className="flex flex-col px-3 py-4">
+        <p className="pb-3 text-lg font-semibold">On this page</p>
 
         {lists.map(
           (item, index) =>
@@ -55,7 +55,7 @@ const CategoryListSidebar = () => {
               <button
                 key={index}
                 onClick={() => handleScrollTo(item.label)}
-                className={`text-sm mb-4 text-left transition-all px-4  ${
+                className={`mb-4 px-4 text-left text-sm transition-all ${
                   activeSection === item.label.toLowerCase()
                     ? "border-l-2 border-blue-500"
                     : "text-gray-600 hover:text-gray-800"
@@ -63,10 +63,10 @@ const CategoryListSidebar = () => {
               >
                 {item.label}
               </button>
-            )
+            ),
         )}
       </div>
-      <div className="px-4 -mt-5 pb-4"></div>
+      <div className="-mt-5 px-4 pb-4"></div>
     </aside>
   );
 };

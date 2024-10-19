@@ -26,9 +26,9 @@ const TypeSelection = ({
               onClick={() => handleFunction(type)}
               variant="outline"
               key={index}
-              className={`rounded-full space-x-1 mr-3 mb-3 ${
+              className={`mb-3 mr-3 space-x-1 rounded-full ${
                 types.includes(type)
-                  ? "bg-blue-500 hover:bg-blue-700 text-white hover:text-white"
+                  ? "bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
                   : "border-2 border-[#ACACAC] hover:border-[#878787]"
               }`}
             >

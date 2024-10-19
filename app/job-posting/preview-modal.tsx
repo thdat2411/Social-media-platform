@@ -1,4 +1,6 @@
 "use client";
+import CompanyImage from "@/app/assets/company.png";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -6,15 +8,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import React, { useState } from "react";
-import CompanyImage from "@/app/assets/company.png";
-import { FormDataType } from "./main-content";
 import { FaListCheck } from "react-icons/fa6";
 import { MdBusinessCenter } from "react-icons/md";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import Renderer from "../components/renderer";
+import { FormDataType } from "./main-content";
 
 interface PreviewModalProps {
   open: boolean;
@@ -32,8 +32,8 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-0 bg-gray-50 w-full max-w-2xl ">
-        <div className="bg-white border rounded-lg flex flex-col">
+      <DialogContent className="w-full max-w-2xl bg-gray-50 p-0">
+        <div className="flex flex-col rounded-lg border bg-white">
           <DialogHeader className="p-6">
             <DialogTitle className="text-xl font-medium">
               Preview job post
@@ -41,34 +41,34 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
           </DialogHeader>
           <Separator className="p-0" />
 
-          <div className="flex flex-col p-6 max-h-[70vh] overflow-y-auto">
-            <p className="text-muted-foreground text-sm pb-4 text-justify">
+          <div className="flex max-h-[70vh] flex-col overflow-y-auto p-6">
+            <p className="pb-4 text-justify text-sm text-muted-foreground">
               This is a preview of what your job post will look like to job
               seekers, which includes details about your job such as company
               size and location, as well as information around when you created
               your LinkedIn profile. Candidates will answer screening questions
               when they apply.
             </p>
-            <div className="border p-6 rounded-lg flex flex-col">
+            <div className="flex flex-col rounded-lg border p-6">
               <Image
                 src={CompanyImage}
                 alt="Company Image"
                 width={45}
                 height={45}
               />
-              <p className="font-semibold text-2xl mt-2">{formData.jobTitle}</p>
-              <p className="text-sm mb-10">
+              <p className="mt-2 text-2xl font-semibold">{formData.jobTitle}</p>
+              <p className="mb-10 text-sm">
                 {" "}
                 · {formData.jobLocation} ({formData.workplaceType})
               </p>
-              <div className="flex space-x-3 text-sm items-center mb-2">
+              <div className="mb-2 flex items-center space-x-3 text-sm">
                 <MdBusinessCenter className="size-6 text-[#666666]" />
                 <p>
                   {formData.jobType} · {formData.level}{" "}
                 </p>
               </div>
-              <div className="flex space-x-3 text-sm items-center ">
-                <FaListCheck className="size-5 text-[#666666] mr-1" />
+              <div className="flex items-center space-x-3 text-sm">
+                <FaListCheck className="mr-1 size-5 text-[#666666]" />
                 <p>
                   Skills:{" "}
                   {formData.skills.length === 0 && (
@@ -90,7 +90,7 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
                   )}
                 </p>
               </div>
-              <p className="text-muted-foreground text-sm my-3">Posted by</p>
+              <p className="my-3 text-sm text-muted-foreground">Posted by</p>
               <div className="flex items-center space-x-2">
                 <Avatar>
                   <AvatarImage
@@ -99,7 +99,7 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col mb-3">
+                <div className="mb-3 flex flex-col">
                   <p className="font-medium">Thai Dat</p>
                   <p className="text-sm">
                     Student at HCMC University of Technology and Education

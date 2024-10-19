@@ -1,8 +1,8 @@
 "use client";
+import { Separator } from "@/components/ui/separator";
 import React, { useState } from "react";
 import EditableField from "./editable-field";
 import PasswordField from "./password-field";
-import { Separator } from "@/components/ui/separator";
 
 const UserInformation = () => {
   const [userFullName, setUserFullName] = useState("Full name");
@@ -17,9 +17,9 @@ const UserInformation = () => {
 
   return (
     <div className="flex flex-col pb-10">
-      <p className="text-2xl px-16 pt-12 py-6">Basic Info</p>
+      <p className="px-16 py-6 pt-12 text-2xl">Basic Info</p>
       <Separator />
-      <div className="flex flex-col w-full justify-between px-16 py-2">
+      <div className="flex w-full flex-col justify-between px-16 py-2">
         <EditableField
           label="Full name"
           value={userFullName}
@@ -32,7 +32,7 @@ const UserInformation = () => {
         />
         <Separator />
       </div>
-      <div className="flex flex-col w-full justify-between px-16 ">
+      <div className="flex w-full flex-col justify-between px-16">
         <EditableField
           label="Name"
           value={userName}
@@ -46,7 +46,7 @@ const UserInformation = () => {
         <Separator />
       </div>
 
-      <div className="flex flex-col w-full justify-between px-16">
+      <div className="flex w-full flex-col justify-between px-16">
         <EditableField
           label="Address"
           value={userAddress}
@@ -60,7 +60,7 @@ const UserInformation = () => {
         <Separator />
       </div>
 
-      <div className="flex flex-col w-full justify-between px-16">
+      <div className="flex w-full flex-col justify-between px-16">
         <EditableField
           label="Phone"
           value={userPhone}
@@ -73,9 +73,9 @@ const UserInformation = () => {
         />
       </div>
       <Separator />
-      <p className="text-2xl px-16 pt-6 py-6">Account settings</p>
+      <p className="px-16 py-6 pt-6 text-2xl">Account settings</p>
       <Separator />
-      <div className="flex flex-col w-full justify-between px-16">
+      <div className="flex w-full flex-col justify-between px-16">
         <PasswordField
           title="Password"
           value=""

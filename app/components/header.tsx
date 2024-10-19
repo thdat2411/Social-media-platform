@@ -23,7 +23,7 @@ const Header = () => {
   const [isSeeAll, setIsSeeAll] = useState(false);
   const routes = useRoutes();
   const [underlineWidths, setUnderlineWidths] = useState(
-    new Array(routes.length).fill(0)
+    new Array(routes.length).fill(0),
   );
   const router = useRouter();
   const pathname = usePathname();
@@ -41,7 +41,7 @@ const Header = () => {
         });
       }
     },
-    [routes, setUnderlineWidths]
+    [routes, setUnderlineWidths],
   );
 
   const handleMouseLeave = useCallback(
@@ -54,7 +54,7 @@ const Header = () => {
         });
       }
     },
-    [routes, setUnderlineWidths]
+    [routes, setUnderlineWidths],
   );
 
   const handleSearchJobBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -102,7 +102,7 @@ const Header = () => {
   return (
     <>
       {(isJobSearchFocus || isLocationSearchFocus) && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 z-10" />
+        <div className="fixed inset-0 z-10 bg-black bg-opacity-30" />
       )}
       <ConfirmModal
         open={isConfirmModalOpen}
@@ -117,26 +117,26 @@ const Header = () => {
       />
       <div
         ref={headerRef}
-        className="w-full bg-white border-b-[1.5px] border-black  shadow-sm flex justify-around max-[700px]:justify-start items-center z-30 sticky top-0"
+        className="sticky top-0 z-30 flex w-full items-center justify-around border-b-[1.5px] border-black bg-white shadow-sm max-[700px]:justify-start"
       >
-        <div className="flex items-center max-[700px]:w-full ">
+        <div className="flex items-center max-[700px]:w-full">
           <Image
             onClick={() => {
               router.push("/feed");
             }}
             src={InLogo}
             alt="LinkedIn Logo"
-            className="w-16 h-fit cursor-pointer"
+            className="h-fit w-16 cursor-pointer"
           />
           <div className="max-[700px]:flex-1">
             <div
-              className={`flex items-center relative bg-[#EDF3F8] px-2 rounded-lg mr-2   ${
-                isJobSearchFocus ? "border-black border-2" : ""
+              className={`relative mr-2 flex items-center rounded-lg bg-[#EDF3F8] px-2 ${
+                isJobSearchFocus ? "border-2 border-black" : ""
               }`}
             >
               <IoSearchSharp
                 size={20}
-                className="text-gray-500  transition-all duration-300"
+                className="text-gray-500 transition-all duration-300"
               />
               <input
                 type="text"
@@ -144,12 +144,12 @@ const Header = () => {
                 placeholder={`${
                   !isJobsPage ? "Search" : "Title, skills or company"
                 }`}
-                className={`bg-transparent text-sm py-2 px-2  focus:outline-none ${
+                className={`bg-transparent px-2 py-2 text-sm focus:outline-none ${
                   isJobSearchFocus && !isJobsPage
-                    ? "transition-all duration-300 w-80  "
+                    ? "w-80 transition-all duration-300"
                     : !isJobSearchFocus && !isJobsPage
-                    ? "transition-all duration-300 w-44 "
-                    : " w-44"
+                      ? "w-44 transition-all duration-300"
+                      : "w-44"
                 }`}
                 onChange={(e) => setJobSearchValue(e.target.value)}
                 onFocus={() => setIsJobSearchFocus!(true)}
@@ -158,7 +158,7 @@ const Header = () => {
               />
               {isJobSearchFocus && (
                 <div
-                  className="absolute top-12 left-0 max-[400px]:-left-5 w-96 max-[700px]:w-full max-[700px]:overflow-auto  bg-white border border-gray-300 rounded-md shadow-lg"
+                  className="absolute left-0 top-12 w-96 rounded-md border border-gray-300 bg-white shadow-lg max-[700px]:w-full max-[700px]:overflow-auto max-[400px]:-left-5"
                   onMouseDown={(e) => {
                     e.preventDefault();
                   }}
@@ -178,8 +178,8 @@ const Header = () => {
           </div>
           {isJobsPage && (
             <div
-              className={`flex items-center relative bg-[#EDF3F8] px-2 rounded-lg ${
-                isLocationSearchFocus ? "border-black border-2" : ""
+              className={`relative flex items-center rounded-lg bg-[#EDF3F8] px-2 ${
+                isLocationSearchFocus ? "border-2 border-black" : ""
               }`}
             >
               <MapPin size={20} className="text-gray-500" />
@@ -187,20 +187,20 @@ const Header = () => {
                 type="text"
                 value={locationValue}
                 placeholder="City, state or zip code"
-                className="bg-transparent text-sm py-2 px-2 w-40 max-[700px]:w-full focus:outline-none"
+                className="w-40 bg-transparent px-2 py-2 text-sm focus:outline-none max-[700px]:w-full"
                 onFocus={() => setIsLocationSearchFocus!(true)}
                 onBlur={() => setIsLocationSearchFocus!(false)}
                 onClick={(e) => e.stopPropagation()}
               />
               {isLocationSearchFocus && (
                 <div
-                  className="absolute top-12 left-0 w-96 bg-white border border-gray-300 rounded-md shadow-lg"
+                  className="absolute left-0 top-12 w-96 rounded-md border border-gray-300 bg-white shadow-lg"
                   onMouseDown={(e) => {
                     e.preventDefault();
                   }}
                 >
-                  <div className="p-4 space-y-3">
-                    <span className="font-semibold ">Recently</span>
+                  <div className="space-y-3 p-4">
+                    <span className="font-semibold">Recently</span>
                     {recentItem.map((item, index) => (
                       <Button
                         onClick={() => {
@@ -208,7 +208,7 @@ const Header = () => {
                         }}
                         variant="ghost"
                         key={index}
-                        className="flex w-full justify-start items-center mb-2"
+                        className="mb-2 flex w-full items-center justify-start"
                       >
                         <Clock4 size={16} className="mr-2" />
                         <span>{item}</span>
@@ -221,22 +221,22 @@ const Header = () => {
           )}
         </div>
         {!isMobile && (
-          <div className="flex items-center space-x-10 text-gray-600 ">
+          <div className="flex items-center space-x-10 text-gray-600">
             {routes.map((route, index) => (
               <Link
                 key={route.label}
                 href={route.href}
-                className={`link flex flex-col items-center justify-center hover:text-[#0A66C2] relative cursor-pointer ${
+                className={`link relative flex cursor-pointer flex-col items-center justify-center hover:text-[#0A66C2] ${
                   route.active ? "text-gray-800" : ""
                 } group`}
               >
                 <div
-                  className={`flex flex-col items-center justify-center h-16 ${
+                  className={`flex h-16 flex-col items-center justify-center ${
                     underlineWidths[index] > 0 ? "flex-grow" : ""
                   }`}
                 >
                   <route.icon
-                    className={`size-6 mt-2 ${
+                    className={`mt-2 size-6 ${
                       route.active ? "text-[#0A66C2]" : ""
                     }`}
                   />
@@ -250,7 +250,7 @@ const Header = () => {
 
                   {!route.active ? (
                     <span
-                      className={`absolute bottom-0 h-0.5 bg-[#0A66C2]  rounded-full`}
+                      className={`absolute bottom-0 h-0.5 rounded-full bg-[#0A66C2]`}
                       style={{
                         width: route.active
                           ? "64px"
@@ -264,7 +264,7 @@ const Header = () => {
                     />
                   ) : (
                     <span
-                      className={`absolute bottom-0 justify-between  h-0.5 bg-[#0A66C2] rounded-full w-16`}
+                      className={`absolute bottom-0 h-0.5 w-16 justify-between rounded-full bg-[#0A66C2]`}
                     />
                   )}
                 </div>

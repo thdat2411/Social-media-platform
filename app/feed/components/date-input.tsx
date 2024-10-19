@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,7 +21,7 @@ const DateInput = ({ date, setDate }: DateInputProps) => {
         setCalendarVisible(false);
       }
     },
-    [setDate]
+    [setDate],
   );
 
   const handleInputClick = () => {
@@ -57,7 +57,7 @@ const DateInput = ({ date, setDate }: DateInputProps) => {
         value={date ?? ""}
         onChange={handleInputChange}
         onClick={handleInputClick}
-        className={`w-full border-2 rounded p-2 hover:border-2 hover:border-black ${
+        className={`w-full rounded border-2 p-2 hover:border-2 hover:border-black ${
           calendarVisible ? "border-black" : "border-gray-400"
         }`}
         placeholder="Select a date"
@@ -70,7 +70,7 @@ const DateInput = ({ date, setDate }: DateInputProps) => {
             selected={startDate}
             onChange={handleDateChange}
             inline
-            className="bg-white border border-black rounded"
+            className="rounded border border-black bg-white"
           />
         </div>
       )}

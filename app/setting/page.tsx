@@ -45,11 +45,11 @@ const SettingPage = () => {
         setOpen={setIsPicModalOpen}
         image={"https://github.com/shadcn.png"}
       />
-      <div className="max-w-4xl mx-auto bg-white border rounded-lg shadow-md my-7">
+      <div className="mx-auto my-7 max-w-4xl rounded-lg border bg-white shadow-md">
         <div className="flex flex-col">
           <div className="relative">
-            <div className="h-40 bg-gray-200 rounded-t-lg">
-              <div className="flex justify-end p-2 ">
+            <div className="h-40 rounded-t-lg bg-gray-200">
+              <div className="flex justify-end p-2">
                 <DropdownMenu
                   open={isBgDropdownOpen}
                   onOpenChange={setIsBgDropdownOpen}
@@ -57,26 +57,26 @@ const SettingPage = () => {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="rounded-full bg-white p-3 cursor-pointer"
+                      className="cursor-pointer rounded-full bg-white p-3"
                     >
                       <Camera className="size-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="absolute -right-4">
-                    <div className="flex flex-col p-1 space-y-2 w-full">
+                    <div className="flex w-full flex-col space-y-2 p-1">
                       <Button
                         onClick={() => {
                           setIsPicModalOpen(true);
                           setIsBgDropdownOpen(false);
                         }}
                         variant="ghost"
-                        className="w-full flex justify-start "
+                        className="flex w-full justify-start"
                       >
                         <p>Show Image</p>
                       </Button>
                       <Button
                         variant="ghost"
-                        className="w-full flex justify-start"
+                        className="flex w-full justify-start"
                         onClick={() => {
                           document.getElementById("avatarImageUpload")?.click();
                           setIsBgDropdownOpen(false);
@@ -99,7 +99,7 @@ const SettingPage = () => {
                 />
               </div>
             </div>
-            <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
+            <div className="absolute left-1/2 top-16 -translate-x-1/2 transform">
               <DropdownMenu
                 open={isAvatarDropdownOpen}
                 onOpenChange={setIsAvatarDropdownOpen}
@@ -108,26 +108,26 @@ const SettingPage = () => {
                   <Avatar>
                     <AvatarImage
                       src="https://github.com/shadcn.png"
-                      className="size-44 rounded-full cursor-pointer"
+                      className="size-44 cursor-pointer rounded-full"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <div className="flex flex-col p-1 space-y-2 w-full">
+                  <div className="flex w-full flex-col space-y-2 p-1">
                     <Button
                       onClick={() => {
                         setIsAvatarDropdownOpen(false);
                         setIsPicModalOpen(true);
                       }}
                       variant="ghost"
-                      className="w-full flex justify-start "
+                      className="flex w-full justify-start"
                     >
                       <p>Show Image</p>
                     </Button>
                     <Button
                       variant="ghost"
-                      className="w-full flex justify-start"
+                      className="flex w-full justify-start"
                       onClick={() => {
                         document.getElementById("avatarImageUpload")?.click();
                         setIsAvatarDropdownOpen(false);

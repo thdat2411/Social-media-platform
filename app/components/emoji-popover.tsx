@@ -1,16 +1,16 @@
-import React, { memo, useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import React, { memo, useState } from "react";
 
 interface EmojiPopoverProps {
   children: React.ReactNode;
@@ -45,11 +45,11 @@ export const EmojiPopover = memo(function EmojiPopover({
           <PopoverTrigger asChild>
             <TooltipTrigger asChild>{children}</TooltipTrigger>
           </PopoverTrigger>
-          <TooltipContent className="bg-black text-white border border-white/5">
-            <p className="font-medium text-xs">{hint}</p>
+          <TooltipContent className="border border-white/5 bg-black text-white">
+            <p className="text-xs font-medium">{hint}</p>
           </TooltipContent>
         </Tooltip>
-        <PopoverContent className="p-0 w-full border-none shadow-none">
+        <PopoverContent className="w-full border-none p-0 shadow-none">
           <EmojiPicker onEmojiClick={onSelect} />
         </PopoverContent>
       </Popover>

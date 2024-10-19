@@ -7,7 +7,7 @@ interface JobSearchLayoutProps {
 
 const JobSearchLayout = ({ children }: JobSearchLayoutProps) => {
   return (
-    <div className="overflow-hidden h-[93vh]">
+    <div className="h-[93vh] overflow-hidden">
       <SubHeader />
       {children}
     </div>

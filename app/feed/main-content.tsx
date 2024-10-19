@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import EventModal from "./components/event-modal";
+import MediaModal from "./components/media-modal";
 import PostModal, { Event } from "./components/post-modal";
 import FeedPost from "./post";
 import PostInput from "./post-input";
-import MediaModal from "./components/media-modal";
-import EventModal from "./components/event-modal";
 
 const FeedMainContent = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -56,7 +56,7 @@ const FeedMainContent = () => {
         setFormData={setFormData}
         isIn={false}
       />
-      <div className="w-1/2 max-[700px]:w-full mx-4 max-[700px]:mx-0 max-[700px]:my-2 max-[1000px]:w-1/2 pb-6 overflow-y-auto ">
+      <div className="mx-4 w-1/2 overflow-y-auto pb-6 max-[1000px]:w-1/2 max-[700px]:mx-0 max-[700px]:my-2 max-[700px]:w-full">
         <PostInput
           setIsPostModalOpen={() => setIsPostModalOpen(true)}
           setIsImageModalOpen={() => {

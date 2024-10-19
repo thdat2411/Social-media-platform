@@ -1,4 +1,5 @@
 "use client";
+import EditorImage from "@/app/assets/editor-image.png";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +9,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import React, { useState } from "react";
-import PostModal from "./post-modal";
-import EditorImage from "@/app/assets/editor-image.png";
 import PhotoEditor from "./photo-editor";
+import PostModal from "./post-modal";
 
 interface ImageEditModalProps {
   open: boolean;
@@ -63,7 +63,7 @@ const MediaModal = ({
     <>
       <label
         htmlFor="imageUpload"
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
+        className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
       >
         {isValid ? "Upload from computer" : "Try again"}
       </label>
@@ -98,15 +98,15 @@ const MediaModal = ({
         isIn={isIn}
       />
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full max-w-5xl">
-          <div className="bg-white border rounded-lg">
+        <DialogContent className="w-full max-w-5xl overflow-hidden bg-gray-50 p-0">
+          <div className="rounded-lg border bg-white">
             <DialogHeader className="p-6">
               <DialogTitle className="text-xl font-medium">Editor</DialogTitle>
             </DialogHeader>
             <Separator className="p-0" />
 
             <div
-              className={`flex flex-col items-center h-[700px] ${
+              className={`flex h-[700px] flex-col items-center ${
                 isValid ? "bg-white" : "bg-red-300"
               }`}
             >
@@ -117,10 +117,10 @@ const MediaModal = ({
                 width={350}
                 height={350}
               />
-              <h2 className="text-lg font-semibold mb-2">
+              <h2 className="mb-2 text-lg font-semibold">
                 {isValid ? "Select files to begin" : "Something went wrong"}
               </h2>
-              <p className="text-gray-500 mb-4">
+              <p className="mb-4 text-gray-500">
                 {isValid
                   ? "Share images or a single video in your post."
                   : "File(s) not supported. Upload a supported content type."}

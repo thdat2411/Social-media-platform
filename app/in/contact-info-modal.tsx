@@ -24,13 +24,13 @@ interface ContactInfoModalProps {
 const ContactInfoModal = ({ open, setOpen }: ContactInfoModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-white absolute top-72    ">
+      <DialogContent className="absolute top-72 bg-white">
         <DialogHeader className="p-3">
           <DialogTitle>User Name</DialogTitle>
         </DialogHeader>
         <Separator />
-        <div className="px-2 flex flex-col pb-2 space-y-4">
-          <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col space-y-4 px-2 pb-2">
+          <div className="mb-4 flex items-center justify-between">
             <p className="text-lg">Contact Info</p>
             <Button variant="ghost" className="rounded-full p-3">
               <Pencil className="size-5" />
@@ -40,7 +40,7 @@ const ContactInfoModal = ({ open, setOpen }: ContactInfoModalProps) => {
             <FaLinkedin className="size-6" />
             <div className="flex flex-col">
               <p className="font-medium">Your profile</p>
-              <Link href="#" className="hover:underline text-sm text-blue-500">
+              <Link href="#" className="text-sm text-blue-500 hover:underline">
                 linkedin.com/in/username
               </Link>
             </div>
@@ -56,7 +56,7 @@ const ContactInfoModal = ({ open, setOpen }: ContactInfoModalProps) => {
             <FaEnvelope className="size-5" />
             <div className="flex flex-col">
               <p className="font-medium">Email</p>
-              <Link href="#" className="hover:underline text-sm text-blue-500">
+              <Link href="#" className="text-sm text-blue-500 hover:underline">
                 User email
               </Link>
             </div>
@@ -65,7 +65,7 @@ const ContactInfoModal = ({ open, setOpen }: ContactInfoModalProps) => {
             <FaCalendarAlt className="size-5" />
             <div className="flex flex-col">
               <p className="font-medium">Birthday</p>
-              <p className="hover:underline text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground hover:underline">
                 MM/dd
               </p>
             </div>

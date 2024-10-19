@@ -2,9 +2,9 @@
 
 import {
   Tooltip,
+  TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  TooltipContent,
 } from "@/components/ui/tooltip";
 
 interface HintProps {
@@ -27,9 +27,9 @@ export const Hint = ({
         <TooltipContent
           side={side}
           align={align}
-          className="bg-black text-white border border-white/5"
+          className="border border-white/5 bg-black text-white"
         >
-          <p className="font-medium text-xs">{label}</p>
+          <p className="text-xs font-medium">{label}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

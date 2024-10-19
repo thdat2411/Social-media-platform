@@ -26,7 +26,7 @@ const PostInput = ({
   setNestedEventModal,
 }: PostInputProps) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
+    <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white p-4 shadow-sm">
       <div className="flex items-center space-x-2">
         <Avatar className="size-14">
           <AvatarImage src="https://github.com/shadcn.png" />
@@ -34,7 +34,7 @@ const PostInput = ({
         </Avatar>
         <Button
           variant="outline"
-          className="flex w-full rounded-full items-center justify-start h-12 border-slate-800 text-slate-500 overflow-x-auto overflow-hidden"
+          className="flex h-12 w-full items-center justify-start overflow-hidden overflow-x-auto rounded-full border-slate-800 text-slate-500"
           onClick={() => setIsPostModalOpen(true)}
           onBlur={() => setIsPostModalOpen(false)}
         >
@@ -43,7 +43,7 @@ const PostInput = ({
           </p>
         </Button>
       </div>
-      <div className="flex mt-4 justify-around flex-wrap">
+      <div className="mt-4 flex flex-wrap justify-around">
         <Button
           onClick={() => {
             setIsImageModalOpen(true);
@@ -51,7 +51,7 @@ const PostInput = ({
           }}
           onBlur={() => setIsImageModalOpen(false)}
           variant="ghost"
-          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2 mr-2 hover:scale-110 transition-all"
+          className="mr-2 space-x-2 rounded-lg bg-white px-4 py-2 text-gray-700 transition-all hover:scale-110"
         >
           <GoFileMedia className="size-6" color="#378FE9" />
           <p>Media</p>
@@ -63,7 +63,7 @@ const PostInput = ({
             setIsEventModalOpen(true);
           }}
           variant="ghost"
-          className="bg-white text-gray-700 py-2 px-4 rounded-lg space-x-2  mr-2 hover:scale-110 transition-all"
+          className="mr-2 space-x-2 rounded-lg bg-white px-4 py-2 text-gray-700 transition-all hover:scale-110"
         >
           <MdCalendarMonth className="size-6" color="#C37D16" />
           <p>Event</p>

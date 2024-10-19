@@ -1,14 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import Image from "next/image";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
+import { ChevronDown } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { toast } from "sonner";
+import Image from "next/image";
 import Link from "next/link";
+import React, { useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 
 const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,12 +35,12 @@ const SignUpForm = () => {
   };
   return (
     <>
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
       <form className="w-[350px]" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
-          <label className="block text-left text-sm mb-2">Name</label>
+          <label className="mb-2 block text-left text-sm">Name</label>
           <input
-            className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
+            className="w-full rounded border border-gray-300 px-4 py-2 text-sm"
             required
             type="text"
             disabled={isLoading}
@@ -48,9 +48,9 @@ const SignUpForm = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-left text-sm mb-2">Email</label>
+          <label className="mb-2 block text-left text-sm">Email</label>
           <input
-            className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
+            className="w-full rounded border border-gray-300 px-4 py-2 text-sm"
             required
             type="email"
             disabled={isLoading}
@@ -58,10 +58,10 @@ const SignUpForm = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-left mb-2 text-sm">Password</label>
+          <label className="mb-2 block text-left text-sm">Password</label>
           <div className="relative">
             <input
-              className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
+              className="w-full rounded border border-gray-300 px-4 py-2 text-sm"
               required
               type="password"
               disabled={isLoading}
@@ -79,7 +79,7 @@ const SignUpForm = () => {
           <input className="mr-2" id="remember" type="checkbox" />
           <label htmlFor="remember">Remember me</label>
         </div>
-        <p className="text-xs text-gray-600 mb-4 text-center">
+        <p className="mb-4 text-center text-xs text-gray-600">
           By clicking Agree and Join or Continue, you agree to LinkedIn&apos;s{" "}
           {""}
           <a className="text-blue-600" href="#">
@@ -95,21 +95,21 @@ const SignUpForm = () => {
           của LinkedIn.
         </p>
         <Button
-          className="w-full bg-blue-500 text-base text-white py-2 rounded-full mb-4 hover:bg-blue-700 hover:text-white"
+          className="mb-4 w-full rounded-full bg-blue-500 py-2 text-base text-white hover:bg-blue-700 hover:text-white"
           type="submit"
           disabled={isLoading}
         >
           Agree and Join
         </Button>
-        <div className="flex items-center mb-4">
+        <div className="mb-4 flex items-center">
           <hr className="flex-grow border-gray-300" />
           <span className="mx-2 text-gray-500">or</span>
           <hr className="flex-grow border-gray-300" />
         </div>
-        <div className="flex items-center justify-center w-full">
+        <div className="flex w-full items-center justify-center">
           <Button
             variant="outline"
-            className="w-[320px] border-gray-600 flex space-x-2 border rounded-full px-4 py-4 justify-between"
+            className="flex w-[320px] justify-between space-x-2 rounded-full border border-gray-600 px-4 py-4"
           >
             <div className="flex items-center space-x-2">
               <Image
@@ -125,17 +125,17 @@ const SignUpForm = () => {
                   <span className="text-gray-600">
                     thaidat.0901485160@gmail.com
                   </span>
-                  <ChevronDown className="size-3 mt-0.5" />
+                  <ChevronDown className="mt-0.5 size-3" />
                 </div>
               </div>
             </div>
             <FcGoogle className="size-6" />
           </Button>
         </div>
-        <p className="text-center text-gray-600 mt-10">
+        <p className="mt-10 text-center text-gray-600">
           Already have a LinkedIn account? {""}
           <Link
-            className="text-blue-600 font-medium   hover:underline"
+            className="font-medium text-blue-600 hover:underline"
             href="/signin"
           >
             Sign in
