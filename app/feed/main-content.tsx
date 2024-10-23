@@ -5,8 +5,13 @@ import FeedPost from "./post";
 import PostInput from "./post-input";
 import MediaModal from "./components/media-modal";
 import EventModal from "./components/event-modal";
+import { user } from "@prisma/client";
 
-const FeedMainContent = () => {
+interface FeedMainContentProps {
+  user: user;
+}
+
+const FeedMainContent = ({ user }: FeedMainContentProps) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -37,6 +42,7 @@ const FeedMainContent = () => {
         event={formData}
         setEvent={setFormData}
         isIn={false}
+        user={user}
       />
       <MediaModal
         open={isOpenEditModal}
@@ -46,6 +52,7 @@ const FeedMainContent = () => {
         nestedMediaModal={nestedMediaModal}
         setNestedMediaModal={setNestedMediaModal}
         isIn={false}
+        user={user}
       />
       <EventModal
         open={isEventModalOpen}
@@ -55,6 +62,7 @@ const FeedMainContent = () => {
         formData={formData}
         setFormData={setFormData}
         isIn={false}
+        user={user}
       />
       <div className="w-1/2 max-[700px]:w-full mx-4 max-[700px]:mx-0 max-[700px]:my-2 max-[1000px]:w-1/2 pb-6 overflow-y-auto ">
         <PostInput
@@ -67,6 +75,7 @@ const FeedMainContent = () => {
           setFormData={setFormData}
           setNestedMediaModal={setNestedMediaModal}
           setNestedEventModal={setNestedEventModal}
+          user={user}
         />
         <FeedPost />
       </div>

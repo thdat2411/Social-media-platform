@@ -11,9 +11,15 @@ interface PictureModalProps {
 const PictureModal = ({ open, setOpen, image }: PictureModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-white">
-        <Image src={image!} alt="user-avatar" width={400} height={400} />
-      </DialogContent>
+      {image ? (
+        <DialogContent className="bg-white">
+          <Image src={image!} alt="user-avatar" width={400} height={400} />
+        </DialogContent>
+      ) : (
+        <DialogContent className="bg-white">
+          <p className="mt-2">Image not found</p>
+        </DialogContent>
+      )}
     </Dialog>
   );
 };

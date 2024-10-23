@@ -11,8 +11,13 @@ import useRoutes from "../hooks/useRoutes";
 import ConfirmModal from "./confirm-modal";
 import SearchDropDown from "./search-dropdown";
 import UserDropdown from "./user-dropdown";
+import { user } from "@prisma/client";
 
-const Header = () => {
+interface HeaderProps {
+  user: user;
+}
+
+const Header = ({ user }: HeaderProps) => {
   const [isJobSearchFocus, setIsJobSearchFocus] = useState(false);
   const [isLocationSearchFocus, setIsLocationSearchFocus] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -83,7 +88,9 @@ const Header = () => {
   }, [headerRef, routes, underlineWidths, handleMouseEnter, handleMouseLeave]);
 
   useEffect(() => {
-    setIsJobsPage(/\/jobs(\/search)?(\/.*)?/.test(pathname));
+    return setIsJobsPage(
+      pathname !== null && /\/jobs(\/search)?(\/.*)?/.test(pathname)
+    );
   }, [pathname]);
 
   useEffect(() => {
@@ -91,7 +98,7 @@ const Header = () => {
       setIsMobile(window.innerWidth < 900);
     };
 
-    handleResize(); // Check on initial load
+    handleResize();
 
     window.addEventListener("resize", handleResize);
     return () => {
@@ -270,7 +277,7 @@ const Header = () => {
                 </div>
               </Link>
             ))}
-            <UserDropdown />
+            <UserDropdown user={user} />
           </div>
         )}
       </div>

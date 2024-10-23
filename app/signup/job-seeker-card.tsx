@@ -1,0 +1,220 @@
+import { user } from "@prisma/client";
+import React, { useEffect, useState } from "react";
+import { debounce } from "lodash";
+import axios from "axios";
+import OccupationData from "../utils/occupations.json";
+import { capitalizeFirstLetter } from "../utils/utils";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+
+interface JobSeekerCardProps {
+  userData: user | null;
+}
+
+const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
+  const jobTitles = OccupationData.occupations;
+  const router = useRouter();
+  const [jobInputValue, setJobInputValue] = useState("");
+  const [locationInputValue, setLocationInputValue] = useState("");
+  const [jobSuggestions, setJobSuggestions] = useState<string[]>([]);
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
+  const [isLocationFocused, setIsLocationFocused] = useState(false);
+  const [isJobFocused, setIsJobFocused] = useState(false);
+  const [prevJobSuggestions, setPrevJobSuggestions] = useState<string[]>([]);
+  const [prevLocationSuggestions, setPrevLocationSuggestions] = useState<
+    string[]
+  >([]);
+
+  const fetchLocations = async (keyword: string) => {
+    try {
+      const formattedKeyword = keyword.split(" ").join("+");
+      const response = await fetch(
+        `http://api.geonames.org/searchJSON?q=${formattedKeyword}&country=VN&maxRows=20&username=thaidat`
+      );
+      const data = await response.json();
+      console.log(data);
+      const locationList = data.geonames.map(
+        (location: { toponymName: string }) => location.toponymName
+      );
+      setLocations(locationList);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLocations(locationInputValue);
+  }, [locationInputValue]);
+
+  const debouncedFilterSuggestions = debounce((value) => {
+    if (!value) {
+      setJobSuggestions([]);
+      setLocationSuggestions([]);
+      return;
+    }
+    if (isJobFocused) {
+      const filteredTitles = jobTitles
+        .filter((title) => title.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 20);
+
+      setJobSuggestions(filteredTitles);
+    } else if (isLocationFocused) {
+      setLocationSuggestions(locations);
+    }
+  }, 300);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setJobInputValue(value);
+    debouncedFilterSuggestions(value);
+  };
+
+  const handleJobSuggestionClick = (title: string) => {
+    setJobInputValue(capitalizeFirstLetter(title));
+    setPrevJobSuggestions(jobSuggestions);
+    setJobSuggestions([]);
+    setIsJobFocused(false);
+  };
+  const handleLocationSuggestionClick = (location: string) => {
+    setLocationInputValue(location);
+    setPrevLocationSuggestions(locationSuggestions);
+    setLocationSuggestions([]);
+    setIsLocationFocused(false);
+  };
+
+  const handleBlur = (isJob: boolean) => {
+    setTimeout(() => {
+      if (isJob) {
+        setIsJobFocused(false);
+      } else {
+        setIsLocationFocused(false);
+      }
+    }, 250);
+  };
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocationInputValue(value);
+    debouncedFilterSuggestions(value);
+  };
+
+  const handleDisableSubmit = (): boolean => {
+    const isJobValid = prevJobSuggestions.includes(jobInputValue.toLowerCase());
+    const isLocationValid =
+      prevLocationSuggestions.includes(locationInputValue);
+    return !(
+      jobInputValue &&
+      locationInputValue &&
+      isJobValid &&
+      isLocationValid
+    );
+  };
+  const handleSumbit = async () => {
+    try {
+      console.log(userData);
+      const userReponse = await axios.post("/api/register/user", userData);
+      const jobSeekerData = {
+        userId: userReponse.data.id,
+        job_titles: [jobInputValue],
+        location_on_site: locationInputValue,
+      };
+      const userLoginData = {
+        email: userData?.email,
+        password: userData?.password_hash,
+      };
+      await axios
+        .post("/api/register/job-preference", jobSeekerData)
+        .then(() => {
+          signIn("credentials", {
+            ...userLoginData,
+            redirect: false,
+          })
+            .then((callback) => {
+              if (callback?.error) {
+                toast.error(callback.error);
+              }
+              if (callback?.ok && !callback.error) {
+                router.push("/feed");
+                toast.success("Logged in!");
+              }
+            })
+            .catch((error) => {
+              console.error("Error signing in:", error);
+            });
+        });
+    } catch (error) {
+      console.error("Error submitting job preference:", error);
+    }
+  };
+
+  return (
+    <>
+      <p className="text-3xl font-medium">
+        Let me know your career expectation
+      </p>
+      <div className="flex flex-col relative">
+        <p className="text-lg font-medium">
+          What position do you want to find?
+        </p>
+        <input
+          type="text"
+          className="border border-gray-300 rounded mt-2 px-4 py-2 text-lg h-12"
+          value={jobInputValue}
+          onChange={handleInputChange}
+          onFocus={() => setIsJobFocused(true)}
+          onBlur={() => handleBlur(true)}
+        />
+        {isJobFocused && jobSuggestions.length > 0 && (
+          <ul className="border border-gray-300 rounded-lg mt-2 bg-white absolute z-10 top-[80px] w-full max-h-32 overflow-y-auto">
+            {jobSuggestions.map((title) => (
+              <li
+                key={title}
+                className="p-3 text-sm cursor-pointer hover:bg-gray-200"
+                onClick={() => handleJobSuggestionClick(title)}
+              >
+                {capitalizeFirstLetter(title)}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div className="flex flex-col relative pb-6">
+        <p className="text-lg font-medium">
+          What location do you want to work?
+        </p>
+        <input
+          type="text"
+          className="border border-gray-300 rounded mt-2 py-2 px-4 h-12"
+          value={locationInputValue}
+          onChange={handleLocationChange}
+          onFocus={() => setIsLocationFocused(true)}
+          onBlur={() => handleBlur(false)}
+        />
+        {isLocationFocused && locationSuggestions.length > 0 && (
+          <ul className="border border-gray-300 rounded-lg mt-2 bg-white absolute z-10 top-[75px] w-full max-h-32 overflow-y-auto">
+            {locationSuggestions.map((location, index) => (
+              <li
+                key={index}
+                className="p-3 text-sm cursor-pointer hover:bg-gray-200"
+                onClick={() => handleLocationSuggestionClick(location)}
+              >
+                {location}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <Button
+        onClick={handleSumbit}
+        className="w-fit self-end bg-blue-500 hover:bg-blue-700"
+        disabled={handleDisableSubmit()}
+      >
+        <span className="text-lg">Get started</span>
+      </Button>
+    </>
+  );
+};
+
+export default JobSeekerCard;

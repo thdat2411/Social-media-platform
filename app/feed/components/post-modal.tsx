@@ -15,6 +15,7 @@ import { useDebounce } from "use-debounce";
 import Event from "./event-post-field";
 import EventPostField from "./event-post-field";
 import { defaultEvent } from "@/app/utils/utils";
+import { user } from "@prisma/client";
 export type Event = {
   eventName: string;
   description: string;
@@ -47,6 +48,7 @@ interface PostModalProps {
   event?: Event | undefined;
   setEvent?: (event: Event | undefined) => void;
   isIn?: boolean;
+  user: user;
 }
 
 const PostModal = ({
@@ -67,12 +69,14 @@ const PostModal = ({
   setNestedEventModal,
   setEvent,
   isIn,
+  user,
 }: PostModalProps) => {
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [postContent, setPostContent] = useState("");
   const [editedImage, setEditedImage] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [debouncedPostContent] = useDebounce(postContent, 300);
+  const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostContent(e.target.value);
@@ -234,10 +238,12 @@ const PostModal = ({
             >
               <Avatar>
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  src={user?.image || undefined}
                   className="size-12"
                 />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback className="bg-blue-300 text-white text-2xl">
+                  {avatarFallBack}
+                </AvatarFallback>
               </Avatar>
               <div className="ml-2 flex flex-col">
                 <div className="font-semibold text-lg text-left">Thái Đạt</div>

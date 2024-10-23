@@ -23,9 +23,9 @@ const SubHeader = () => {
   const isWhatCategory =
     pathName === "/search"
       ? "All"
-      : pathName.includes("jobs")
+      : pathName?.includes("jobs")
       ? "Jobs"
-      : pathName.includes("posts")
+      : pathName?.includes("posts")
       ? "Posts"
       : "People";
 
@@ -100,7 +100,7 @@ const SubHeader = () => {
                   href={item.pathname}
                   key={item.label}
                   className={`${
-                    item.pathname.includes(pathName)
+                    pathName && item.pathname.includes(pathName)
                       ? "border-l-2 border-l-blue-500"
                       : ""
                   } hover:bg-[#EDF3F8] py-2 px-4`}

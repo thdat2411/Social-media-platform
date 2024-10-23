@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Camera } from "lucide-react";
 import React, { useState } from "react";
-import CroppieModal from "../in/croppie-modal";
-import PictureModal from "../in/pic-modal";
+import CroppieModal from "../in/[userId]/croppie-modal";
+import PictureModal from "../in/[userId]/pic-modal";
 import UserInformation from "./user-information";
 
 const SettingPage = () => {

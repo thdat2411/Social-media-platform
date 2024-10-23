@@ -5,6 +5,7 @@ import { GoFileMedia } from "react-icons/go";
 import { MdCalendarMonth } from "react-icons/md";
 import { defaultEvent } from "../utils/utils";
 import { Event } from "./components/post-modal";
+import { user } from "@prisma/client";
 
 interface PostInputProps {
   setIsPostModalOpen: (open: boolean) => void;
@@ -14,6 +15,7 @@ interface PostInputProps {
   setFormData: (data: Event | undefined) => void;
   setNestedMediaModal: (open: boolean) => void;
   setNestedEventModal: (open: boolean) => void;
+  user: user;
 }
 
 const PostInput = ({
@@ -24,13 +26,17 @@ const PostInput = ({
   setFormData,
   setNestedMediaModal,
   setNestedEventModal,
+  user,
 }: PostInputProps) => {
+  const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
       <div className="flex items-center space-x-2">
         <Avatar className="size-14">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={user.image!} />
+          <AvatarFallback className="bg-blue-300 text-white text-xl">
+            {avatarFallBack}
+          </AvatarFallback>
         </Avatar>
         <Button
           variant="outline"

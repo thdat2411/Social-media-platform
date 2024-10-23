@@ -11,11 +11,14 @@ datasource db {
 model user {
   id                                       String            @id @default(cuid())
   email                                    String            @unique @db.VarChar(255)
-  username                                 String            @unique @db.VarChar(100)
-  password_hash                            String
+  emailVerified                            DateTime?         @db.Timestamp(6)
+  name                                     String            @db.VarChar(100)
+  password_hash                            String?
   full_name                                String?           @db.VarChar(255)
-  profile_image_url                        String?
-  headline                                 String?           @db.VarChar(255)
+  image                                    String?
+  headline_image                           String?           @db.VarChar(255)
+  phone_number                             Int?
+  birth_date                               DateTime?
   location                                 String?           @db.VarChar(255)
   bio                                      String?
   role                                     String?           @db.VarChar(50)
@@ -30,7 +33,7 @@ model user {
   posts                                    post[]
   account                                  account[]
   comment                                  comment[]
-  Like                                     Like[]
+  job_preference                           job_preference[]
 }
 
 model account {
@@ -140,16 +143,31 @@ model comment {
   parentComment comment?  @relation("CommentReplies", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   replies       comment[] @relation("CommentReplies")
 
-  likes Like[] // For tracking likes on this comment
+  likes like[] // For tracking likes on this comment
 }
 
-model Like {
-  id         String @id @default(cuid())
-  user_id    String
+model like {
+  id         String  @id @default(cuid())
   comment_id String
+  comment    comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId     String?
 
-  user    user    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  comment comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  @@unique([comment_id]) // Ensures a user can like a comment only once
+}
 
-  @@unique([user_id, comment_id]) // Ensures a user can like a comment only once
+model job_preference {
+  id               String    @id @default(cuid())
+  user_id          String
+  job_titles       String[]
+  location_type    String[]
+  location_on_site String?
+  location_remote  String?
+  start_date       String?
+  employment_types String[]
+  created_at       DateTime? @default(now())
+  updated_at       DateTime? @updatedAt
+
+  user user @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id])
 }

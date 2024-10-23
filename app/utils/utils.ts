@@ -13,6 +13,13 @@ export const defaultEvent = {
     zone: "",
     headerImage: "",
 }
+export const capitalizeFirstLetter = (string: string) => {
+    return string
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
 
 type Category = {
     title: string;
@@ -271,4 +278,5 @@ export const JobsPostList: JobsPost[] = [{
     applicants: 10,
 },
 ]
+
 

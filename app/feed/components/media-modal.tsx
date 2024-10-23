@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import PostModal from "./post-modal";
 import EditorImage from "@/app/assets/editor-image.png";
 import PhotoEditor from "./photo-editor";
+import { user } from "@prisma/client";
 
 interface ImageEditModalProps {
   open: boolean;
@@ -20,6 +21,7 @@ interface ImageEditModalProps {
   nestedMediaModal?: boolean;
   setNestedMediaModal?: (open: boolean) => void;
   isIn?: boolean;
+  user: user;
 }
 
 const MediaModal = ({
@@ -30,6 +32,7 @@ const MediaModal = ({
   nestedMediaModal,
   setNestedMediaModal,
   isIn,
+  user,
 }: ImageEditModalProps) => {
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [uploadImage, setUploadImage] = useState<File | null>(null);
@@ -96,6 +99,7 @@ const MediaModal = ({
         setIsOpenEditModal={setOpen}
         setNestedEventModal={setNestedMediaModal}
         isIn={isIn}
+        user={user}
       />
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full max-w-5xl">

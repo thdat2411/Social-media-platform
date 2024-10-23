@@ -10,6 +10,6 @@ docker compose down && docker compose up --build -d
 
 - PowerShell:
 
-  ```shell
-  docker exec postgres pg_dump -U admin -d platform > ./backup/backup_$(Get-Date -Format "yyyyMMdd_HHmmss").sql
+  ```powershell
+  docker exec postgres pg_dump -d platform > ./backups/platform_$(Get-Date -Format "yyyyMMdd_HHmmss").sql
   ```

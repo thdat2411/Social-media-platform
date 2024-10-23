@@ -1,22 +1,32 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-const LoadingPage = ({ duration }: { duration: number }) => {
+const LoadingPage = () => {
   const [progress, setProgress] = useState(0);
+  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
+        const newProgress = prev + direction * 20; // Adjust increment for speed
+        if (newProgress >= 100) {
+          setDirection(-1); // Change to right to left
           return 100;
         }
-        return Math.min(prev + 100 / (duration / 100), 100);
+        if (newProgress <= 0) {
+          setDirection(1); // Change to left to right
+          return 0;
+        }
+        return newProgress;
       });
     }, 100);
 
-    return () => clearInterval(interval);
-  }, [duration]);
+    // Simulate loading completion after a short delay
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [progress, direction]);
   return (
     <div className="flex mt-48 justify-center h-screen">
       <div className="text-center">

@@ -10,13 +10,16 @@ import { Separator } from "@/components/ui/separator";
 import Croppie from "croppie";
 import "croppie/croppie.css";
 import { Button } from "@/components/ui/button";
-
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 interface CroppieModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   image: string | null;
   setImage: (image: string | null) => void;
   isAvatarImage?: boolean;
+  userId: string;
 }
 
 const CroppieModal = ({
@@ -25,10 +28,13 @@ const CroppieModal = ({
   image,
   setImage,
   isAvatarImage,
+  userId,
 }: CroppieModalProps) => {
+  const router = useRouter();
   const croppieRef = useRef<HTMLDivElement | null>(null);
   const [croppieInstance, setCroppieInstance] = useState<Croppie | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const options = {
@@ -49,7 +55,7 @@ const CroppieModal = ({
       const instance = new Croppie(croppieRef.current, options);
       setCroppieInstance(instance);
       if (image) {
-        instance.bind({ url: image }).catch((err) => {
+        instance.bind({ url: image }).catch((err: unknown) => {
           console.error("Error binding image:", err);
         });
       }
@@ -62,11 +68,27 @@ const CroppieModal = ({
   }, [open, image, croppieInstance]);
 
   const handleCrop = () => {
+    setIsLoading(true);
     if (croppieInstance) {
-      croppieInstance.result({ type: "base64" }).then((base64) => {
+      croppieInstance.result({ type: "base64" }).then((base64: string) => {
         setCroppedImage(base64);
       });
     }
+
+    const updatedData = {
+      image: croppedImage,
+      userId,
+    };
+    console.log(updatedData);
+    axios
+      .put("/api/user/update-image", updatedData)
+      .then(() => {
+        toast.success("Image updated successfully");
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onClose();
+      });
   };
 
   const onClose = () => {
@@ -76,6 +98,7 @@ const CroppieModal = ({
     if (croppieInstance) {
       setCroppieInstance(null);
     }
+    router.refresh();
   };
 
   return (
@@ -92,6 +115,7 @@ const CroppieModal = ({
           <Separator className="p-0" />
           <div className="flex justify-end items-center p-4">
             <Button
+              disabled={isLoading}
               className=" bg-blue-500 text-white rounded"
               onClick={handleCrop}
             >

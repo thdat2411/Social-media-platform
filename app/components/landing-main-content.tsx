@@ -1,13 +1,41 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LandingImage from "@/app/assets/landing-image.jpg";
-
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const LandingMainContent = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const session = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (session?.status === "authenticated") {
+      router.push("/feed");
+    }
+  }, [session?.status, router]);
+
+  const socialAction = () => {
+    setIsLoading(true);
+
+    signIn("google", {
+      redirect: false,
+    })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error(callback.error);
+        }
+        if (callback?.ok && !callback.error) {
+          toast.success("Logged in!");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
   return (
     <main className="flex max-[700px]:flex-col justify-center space-x-10 max-[700px]:space-x-0 max-[700px]:space-y-10 mt-20 ">
       <div className="flex flex-col w-[550px] max-[700px]:w-full max-[700px]:justify-center max-[700px]:self-center">
@@ -16,6 +44,8 @@ const LandingMainContent = () => {
         </h1>
         <div className="max-[700px]:self-center">
           <Button
+            disabled={isLoading}
+            onClick={socialAction}
             variant="outline"
             className="mt-8 w-[400px] border-gray-600 bg-white flex space-x-2 border rounded-full px-4 py-4 h-11 justify-between"
           >
@@ -40,8 +70,10 @@ const LandingMainContent = () => {
             <FcGoogle className="size-7" />
           </Button>
           <Button
+            onClick={() => router.push("/signin")}
             variant="outline"
             className="mt-6 border w-[400px] bg-white border-gray-600 rounded-full px-6 py-2"
+            disabled={isLoading}
           >
             Đăng nhập bằng email
           </Button>

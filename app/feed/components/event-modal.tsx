@@ -20,6 +20,7 @@ import DateInput from "./date-input";
 import ImageHeaderEditor from "./image-header-editor";
 import PostModal, { Event } from "./post-modal";
 import TimeInput from "./time-input";
+import { user } from "@prisma/client";
 
 interface EventModalProps {
   open: boolean;
@@ -29,6 +30,7 @@ interface EventModalProps {
   formData: Event | undefined;
   setFormData: (data: Event | undefined) => void;
   isIn?: boolean;
+  user: user;
 }
 
 const EventModal = ({
@@ -39,6 +41,7 @@ const EventModal = ({
   formData,
   setFormData,
   isIn,
+  user,
 }: EventModalProps) => {
   const [isTimeDropdownVisible, setTimeDropdownVisible] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -206,6 +209,7 @@ const EventModal = ({
         setEvent={setFormData}
         setIsHavingText={setIsHavingText}
         setTriggerReset={setTriggerReset}
+        user={user}
       />
       {formData !== undefined && (
         <Dialog open={open} onOpenChange={handleCloseWithData}>

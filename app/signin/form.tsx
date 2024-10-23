@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
@@ -17,6 +18,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const session = useSession();
 
   const { register, handleSubmit, watch } = useForm<FieldValues>({
     defaultValues: {
@@ -24,30 +26,59 @@ const LoginForm = () => {
       password: "",
     },
   });
+
   const emailValue = watch("email");
   const passwordValue = watch("password");
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    setIsLoading(true);
-
-    const callback = await signIn("credentials", {
-      ...data,
-      redirect: false,
-    });
-
-    if (callback?.error) {
-      setError(callback.error);
-    } else if (callback?.ok) {
+  useEffect(() => {
+    if (session?.status === "authenticated") {
       router.push("/feed");
     }
+  }, [session?.status, router]);
 
-    setIsLoading(false);
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
+    setError("");
+
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    })
+      .then((callback) => {
+        if (callback?.error) {
+          setError(callback.error);
+        }
+        if (callback?.ok) {
+          toast.success("Logged in!");
+          router.push("/feed");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const socialAction = () => {
+    setIsLoading(true);
+
+    signIn("google", {
+      redirect: false,
+    })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error(callback.error);
+        }
+        if (callback?.ok) {
+          toast.success("Logged in!");
+          router.push("/feed");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <div className="w-full max-w-sm p-8 bg-white shadow-md rounded-lg mt-36 border">
       <h2 className="text-3xl font-semibold mb-4">Log in</h2>
       <Button
+        onClick={socialAction}
         variant="outline"
         className="w-full border-gray-600 flex space-x-2 border rounded-full px-4 py-4 justify-between"
       >
@@ -82,31 +113,29 @@ const LoginForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative mb-4">
           <input
-            className={`w-full border rounded-md p-2 transition-all ${
-              isEmailFocused || emailValue ? "pt-5" : "pt-2"
-            }`}
             {...register("email", { required: true })}
-            placeholder=""
-            type="text"
+            className={`w-full border rounded-md p-2 transition-all ${
+              isEmailFocused || emailValue !== "" ? "pt-5" : "pt-2"
+            }`}
+            type="email"
             disabled={isLoading}
             onFocus={() => setIsEmailFocused(true)}
             onBlur={() => setIsEmailFocused(false)}
-            required
           />
           <label
             className={`absolute left-2 top-2 text-gray-400 transition-all ${
-              isEmailFocused || emailValue
+              isEmailFocused || emailValue !== ""
                 ? "text-xs transform -translate-y-1"
                 : "text-sm"
             }`}
           >
-            Email or phone
+            Email
           </label>
         </div>
         <div className="relative mb-4">
           <div
             className={`flex w-full border rounded-md p-2 transition-all items-center ${
-              isPasswordFocused || passwordValue ? "pt-5" : "pt-2"
+              isPasswordFocused || passwordValue !== "" ? "pt-5" : "pt-2"
             } ${isPasswordFocused ? " outline outline-1 border-black" : " "}`}
             onBlur={() => setIsPasswordFocused(false)}
           >
@@ -119,11 +148,10 @@ const LoginForm = () => {
               type={!showPassword ? "password" : "text"}
               onFocus={() => setIsPasswordFocused(true)}
               onBlur={() => setIsPasswordFocused(false)}
-              required
             />
             <label
               className={`absolute left-2 top-2 text-gray-400 transition-all ${
-                isPasswordFocused || passwordValue
+                isPasswordFocused || passwordValue !== "" || passwordValue
                   ? "text-xs transform -translate-y-1"
                   : "text-sm"
               }`}

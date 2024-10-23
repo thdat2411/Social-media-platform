@@ -13,13 +13,23 @@ import PictureModal from "./pic-modal";
 import ContactInfoModal from "./contact-info-modal";
 import EditJobPreferenceModal from "./edit-job-preference-modal";
 import JobPreferenceModal from "./job-preferences-modal";
-import PostModal, { Event } from "../feed/components/post-modal";
-import MediaModal from "../feed/components/media-modal";
-import EventModal from "../feed/components/event-modal";
+import PostModal, { Event } from "../../feed/components/post-modal";
+import MediaModal from "../../feed/components/media-modal";
+import EventModal from "../../feed/components/event-modal";
 import UserActivity from "./user-activity";
-import ListUser from "../components/list-user";
+import ListUser from "../../components/list-user";
+import { post, user } from "@prisma/client";
 
-const UserProfileMainContent = () => {
+interface UserProfileMainContentProps {
+  user: user;
+  userPosts: post[];
+}
+
+const UserProfileMainContent = ({
+  user,
+  userPosts,
+}: UserProfileMainContentProps) => {
+  const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [isCroppieModalOpen, setIsCroppieModalOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -57,11 +67,12 @@ const UserProfileMainContent = () => {
         image={userAvatar}
         setImage={setUserAvatar}
         isAvatarImage={isAvatarImage}
+        userId={user.id}
       />
       <PictureModal
         open={isPicModalOpen}
         setOpen={setIsPicModalOpen}
-        image={"https://github.com/shadcn.png"}
+        image={user.image ?? ""}
       />
       <ContactInfoModal
         open={isContactInfoModalOpen}
@@ -85,12 +96,14 @@ const UserProfileMainContent = () => {
         setNestedMediaModal={setNestedMediaModal}
         event={formData}
         setEvent={setFormData}
+        user={user}
       />
       <MediaModal
         open={isOpenEditModal}
         setOpen={setIsOpenEditModal}
         nestedMediaModal={nestedMediaModal}
         setNestedMediaModal={setNestedMediaModal}
+        user={user}
       />
       <EventModal
         open={isEventModalOpen}
@@ -99,6 +112,7 @@ const UserProfileMainContent = () => {
         setNestedEventModal={setNestedEventModal}
         formData={formData}
         setFormData={setFormData}
+        user={user}
       />
       <div className="flex w-full space-x-20 ">
         <div className="flex flex-col w-2/3">
@@ -163,12 +177,14 @@ const UserProfileMainContent = () => {
                   onOpenChange={setIsAvatarDropdownOpen}
                 >
                   <DropdownMenuTrigger asChild>
-                    <Avatar>
+                    <Avatar className="size-36">
                       <AvatarImage
-                        src="https://github.com/shadcn.png"
-                        className="size-36 rounded-full cursor-pointer"
+                        src={user.image ?? ""}
+                        className=" rounded-full cursor-pointer"
                       />
-                      <AvatarFallback>CN</AvatarFallback>
+                      <AvatarFallback className="bg-blue-300 text-white text-5xl">
+                        {avatarFallBack}
+                      </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="absolute -left-16 top-2">
@@ -245,7 +261,12 @@ const UserProfileMainContent = () => {
               </Button>
             </div>
           </div>
-          <UserActivity setIsPostModalOpen={setIsPostModalOpen} />
+          {/* User activity */}
+          <UserActivity
+            setIsPostModalOpen={setIsPostModalOpen}
+            user={user}
+            userPosts={userPosts}
+          />
         </div>
         <ListUser />
       </div>

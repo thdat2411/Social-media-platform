@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import React, { useState } from "react";
 import ButtonTransferInput from "./button-transfer-input";
 import TypeSelection from "./type-selection";
-import ConfirmModal from "../components/confirm-modal";
+import ConfirmModal from "../../components/confirm-modal";
 
 interface EditJobPreferenceModalProps {
   open: boolean;

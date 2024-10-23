@@ -1,7 +1,10 @@
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import AuthContext from "./context/AuthContext";
+import LoadingPage from "./loading";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,9 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster />
-        {children}
+        <Suspense fallback={<LoadingPage />}>
+          <AuthContext>
+            <Toaster />
+            {children}
+          </AuthContext>
+        </Suspense>
       </body>
     </html>
   );
 }
+

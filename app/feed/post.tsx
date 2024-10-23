@@ -72,11 +72,8 @@ const FeedPost = () => {
         href="#"
         className="flex items-center mb-4 space-x-2 cursor-pointer"
       >
-        <Avatar>
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            className="size-14"
-          />
+        <Avatar className="size-14">
+          <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>

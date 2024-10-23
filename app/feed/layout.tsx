@@ -1,15 +1,20 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Header from "../components/header";
+import getCurrentUser from "../actions/getCurrentUser";
+import LoadingPage from "../loading";
 
 interface FeedLayoutProps {
   children: React.ReactNode;
 }
 
-const FeedLayout = ({ children }: FeedLayoutProps) => {
+const FeedLayout = async ({ children }: FeedLayoutProps) => {
+  const user = await getCurrentUser();
   return (
     <div className="h-full">
-      <Header />
-      {children}
+      <Suspense fallback={<LoadingPage />}>
+        <Header user={user!} />
+        {children}
+      </Suspense>
     </div>
   );
 };

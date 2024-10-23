@@ -1,18 +1,26 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import axios from "axios";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
 import Link from "next/link";
 
-const SignUpForm = () => {
+import { user } from "@prisma/client";
+import axios from "axios";
+
+interface SignUpFormProps {
+  setIsRegister: (value: boolean) => void;
+  setData: (value: user | null) => void;
+  data: user | null;
+}
+
+const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const { register, handleSubmit } = useForm<FieldValues>({
     defaultValues: {
       name: "",
@@ -20,25 +28,46 @@ const SignUpForm = () => {
       password: "",
     },
   });
-
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (value) => {
     setIsLoading(true);
-
-    axios
-      .post(`/api/register`, data)
-      .then(() => {
-        signIn("credentials", data);
-        toast.success("Sign up successfully");
-      })
-      .catch((error) => setError(error.message))
-      .finally(() => setIsLoading(false));
+    console.log(value.email);
+    const response = await axios.post("/api/register/check-email", {
+      email: value.email,
+    });
+    const isValidEmail = response.data.isValid;
+    if (isValidEmail === false) {
+      setError("This email has already been registered");
+      setIsLoading(false);
+    } else if (isValidEmail === true) {
+      setData({
+        ...data,
+        email: value.email,
+        password_hash: value.password,
+        image: data?.image || null,
+        name: value.name || null,
+        id: data?.id || "",
+        emailVerified: data?.emailVerified || null,
+        full_name: data?.full_name || null,
+        location: data?.location || null,
+        birth_date: data?.birth_date || null,
+        headline_image: data?.headline_image || null,
+        phone_number: data?.phone_number || null,
+        bio: data?.bio || null,
+        role: data?.role || null,
+        created_at: data?.created_at || null,
+        updated_at: data?.updated_at || null,
+      });
+      setIsRegister(true);
+      setIsLoading(false);
+    }
   };
   return (
     <>
-      {error && <p className="text-red-600 text-sm">{error}</p>}
       <form className="w-[350px]" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
-          <label className="block text-left text-sm mb-2">Name</label>
+          <label className="block text-left text-sm mb-2 font-medium">
+            Name
+          </label>
           <input
             className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
             required
@@ -47,37 +76,61 @@ const SignUpForm = () => {
             {...register("name", { required: "Name is required" })}
           />
         </div>
+
         <div className="mb-4">
-          <label className="block text-left text-sm mb-2">Email</label>
+          <label className="block text-left text-sm mb-2 font-medium">
+            Email
+          </label>
           <input
-            className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
+            className={`w-full py-2 px-4 border border-gray-300 rounded text-sm ${
+              error ? "border-red-600" : ""
+            }`}
             required
             type="email"
             disabled={isLoading}
-            {...register("email", { required: "Email is required" })}
+            {...register("email", {
+              required: "Email is required",
+              onChange: () => setError(""),
+            })}
           />
+          {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         </div>
+
         <div className="mb-4">
-          <label className="block text-left mb-2 text-sm">Password</label>
-          <div className="relative">
+          <label className="block text-left mb-2 text-sm font-medium">
+            Password
+          </label>
+          <div
+            className={`flex rounded-md ${
+              isPasswordFocused
+                ? "outline outline-2 border-black"
+                : "outline outline-1 outline-gray-300 "
+            }`}
+          >
             <input
-              className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
+              onClick={() => setIsPasswordFocused(true)}
+              className="w-full focus:outline-none px-4"
               required
-              type="password"
+              type={showPassword ? "text" : "password"}
               disabled={isLoading}
-              {...register("password", { required: "Password is required" })}
+              {...register("password", {
+                required: "Password is required",
+                onBlur: () => setIsPasswordFocused(false),
+              })}
             />
-            <button
-              className="absolute right-2 top-2 text-blue-600"
+            <Button
               type="button"
+              className="rounded-full"
+              onClick={() => setShowPassword(!showPassword)}
+              variant="ghost"
             >
-              Show
-            </button>
+              {showPassword ? (
+                <EyeOff className="size-5" />
+              ) : (
+                <Eye className="size-5" />
+              )}
+            </Button>
           </div>
-        </div>
-        <div className="mb-4 flex items-center text-sm">
-          <input className="mr-2" id="remember" type="checkbox" />
-          <label htmlFor="remember">Remember me</label>
         </div>
         <p className="text-xs text-gray-600 mb-4 text-center">
           By clicking Agree and Join or Continue, you agree to LinkedIn&apos;s{" "}
@@ -135,7 +188,7 @@ const SignUpForm = () => {
         <p className="text-center text-gray-600 mt-10">
           Already have a LinkedIn account? {""}
           <Link
-            className="text-blue-600 font-medium   hover:underline"
+            className="text-blue-600 font-medium hover:underline"
             href="/signin"
           >
             Sign in
