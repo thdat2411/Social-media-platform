@@ -1,11 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
-import React, { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
+import React, { useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
 
 import { user } from "@prisma/client";
 import axios from "axios";
@@ -65,11 +65,11 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
     <>
       <form className="w-[350px]" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
-          <label className="block text-left text-sm mb-2 font-medium">
+          <label className="mb-2 block text-left text-sm font-medium">
             Name
           </label>
           <input
-            className="w-full py-2 px-4 border border-gray-300 rounded text-sm"
+            className="w-full rounded border border-gray-300 px-4 py-2 text-sm"
             required
             type="text"
             disabled={isLoading}
@@ -78,11 +78,11 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-left text-sm mb-2 font-medium">
+          <label className="mb-2 block text-left text-sm font-medium">
             Email
           </label>
           <input
-            className={`w-full py-2 px-4 border border-gray-300 rounded text-sm ${
+            className={`w-full rounded border border-gray-300 px-4 py-2 text-sm ${
               error ? "border-red-600" : ""
             }`}
             required
@@ -93,23 +93,23 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
               onChange: () => setError(""),
             })}
           />
-          {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+          {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
 
         <div className="mb-4">
-          <label className="block text-left mb-2 text-sm font-medium">
+          <label className="mb-2 block text-left text-sm font-medium">
             Password
           </label>
           <div
             className={`flex rounded-md ${
               isPasswordFocused
-                ? "outline outline-2 border-black"
-                : "outline outline-1 outline-gray-300 "
+                ? "border-black outline outline-2"
+                : "outline outline-1 outline-gray-300"
             }`}
           >
             <input
               onClick={() => setIsPasswordFocused(true)}
-              className="w-full focus:outline-none px-4"
+              className="w-full px-4 focus:outline-none"
               required
               type={showPassword ? "text" : "password"}
               disabled={isLoading}
@@ -132,7 +132,7 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
             </Button>
           </div>
         </div>
-        <p className="text-xs text-gray-600 mb-4 text-center">
+        <p className="mb-4 text-center text-xs text-gray-600">
           By clicking Agree and Join or Continue, you agree to LinkedIn&apos;s{" "}
           {""}
           <a className="text-blue-600" href="#">
@@ -148,21 +148,21 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
           của LinkedIn.
         </p>
         <Button
-          className="w-full bg-blue-500 text-base text-white py-2 rounded-full mb-4 hover:bg-blue-700 hover:text-white"
+          className="mb-4 w-full rounded-full bg-blue-500 py-2 text-base text-white hover:bg-blue-700 hover:text-white"
           type="submit"
           disabled={isLoading}
         >
           Agree and Join
         </Button>
-        <div className="flex items-center mb-4">
+        <div className="mb-4 flex items-center">
           <hr className="flex-grow border-gray-300" />
           <span className="mx-2 text-gray-500">or</span>
           <hr className="flex-grow border-gray-300" />
         </div>
-        <div className="flex items-center justify-center w-full">
+        <div className="flex w-full items-center justify-center">
           <Button
             variant="outline"
-            className="w-[320px] border-gray-600 flex space-x-2 border rounded-full px-4 py-4 justify-between"
+            className="flex w-[320px] justify-between space-x-2 rounded-full border border-gray-600 px-4 py-4"
           >
             <div className="flex items-center space-x-2">
               <Image
@@ -178,17 +178,17 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
                   <span className="text-gray-600">
                     thaidat.0901485160@gmail.com
                   </span>
-                  <ChevronDown className="size-3 mt-0.5" />
+                  <ChevronDown className="mt-0.5 size-3" />
                 </div>
               </div>
             </div>
             <FcGoogle className="size-6" />
           </Button>
         </div>
-        <p className="text-center text-gray-600 mt-10">
+        <p className="mt-10 text-center text-gray-600">
           Already have a LinkedIn account? {""}
           <Link
-            className="text-blue-600 font-medium hover:underline"
+            className="font-medium text-blue-600 hover:underline"
             href="/signin"
           >
             Sign in

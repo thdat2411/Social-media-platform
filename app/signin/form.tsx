@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
 const LoginForm = () => {
@@ -74,31 +74,31 @@ const LoginForm = () => {
       .finally(() => setIsLoading(false));
   };
 
-  const socialAction = () => {
-    setIsLoading(true);
+  // const socialAction = () => {
+  //   setIsLoading(true);
 
-    signIn("google", {
-      redirect: false,
-    })
-      .then((callback) => {
-        if (callback?.error) {
-          toast.error(callback.error);
-        }
-        if (callback?.ok && !callback.error) {
-          toast.success("Logged in!");
-          router.push("/feed");
-        }
-      })
-      .finally(() => setIsLoading(false));
-  };
+  //   signIn("google", {
+  //     redirect: false,
+  //   })
+  //     .then((callback) => {
+  //       if (callback?.error) {
+  //         toast.error(callback.error);
+  //       }
+  //       if (callback?.ok && !callback.error) {
+  //         toast.success("Logged in!");
+  //         router.push("/feed");
+  //       }
+  //     })
+  //     .finally(() => setIsLoading(false));
+  // };
 
   return (
-    <div className="w-full max-w-sm p-8 bg-white shadow-md rounded-lg mt-36 border">
-      <h2 className="text-3xl font-semibold mb-4">Log in</h2>
+    <div className="mt-36 w-full max-w-sm rounded-lg border bg-white p-8 shadow-md">
+      <h2 className="mb-4 text-3xl font-semibold">Log in</h2>
       <Button
         onClick={socialAction}
         variant="outline"
-        className="w-full border-gray-600 flex space-x-2 border rounded-full px-4 py-4 justify-between"
+        className="flex w-full justify-between space-x-2 rounded-full border border-gray-600 px-4 py-4"
       >
         <div className="flex items-center space-x-2">
           <Image
@@ -114,25 +114,25 @@ const LoginForm = () => {
               <span className="text-gray-600">
                 thaidat.0901485160@gmail.com
               </span>
-              <ChevronDown className="size-3 mt-0.5" />
+              <ChevronDown className="mt-0.5 size-3" />
             </div>
           </div>
         </div>
         <FcGoogle className="size-7" />
       </Button>
-      <div className="flex items-center my-4">
+      <div className="my-4 flex items-center">
         <hr className="flex-1 border-gray-300" />
         <span className="px-2 text-gray-500">or</span>
         <hr className="flex-1 border-gray-300" />
       </div>
       {error !== "" && (
-        <p className="text-red-500 text-sm mb-2  font-medium ml-1">{error}</p>
+        <p className="mb-2 ml-1 text-sm font-medium text-red-500">{error}</p>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative mb-4">
           <input
             {...register("email", { required: true })}
-            className={`w-full border rounded-md p-2 transition-all ${
+            className={`w-full rounded-md border p-2 transition-all ${
               isEmailFocused || emailValue !== "" ? "pt-5" : "pt-2"
             }`}
             type="email"
@@ -143,7 +143,7 @@ const LoginForm = () => {
           <label
             className={`absolute left-2 top-2 text-gray-400 transition-all ${
               isEmailFocused || emailValue !== ""
-                ? "text-xs transform -translate-y-1"
+                ? "-translate-y-1 transform text-xs"
                 : "text-sm"
             }`}
           >
@@ -152,14 +152,13 @@ const LoginForm = () => {
         </div>
         <div className="relative mb-4">
           <div
-            className={`flex w-full border rounded-md p-2 transition-all items-center ${
+            className={`flex w-full items-center rounded-md border p-2 transition-all ${
               isPasswordFocused || passwordValue !== "" ? "pt-5" : "pt-2"
-            } ${isPasswordFocused ? " outline outline-1 border-black" : " "}`}
+            } ${isPasswordFocused ? "border-black outline outline-1" : " "}`}
             onBlur={() => setIsPasswordFocused(false)}
           >
             <input
-              className={`w-full focus:outline-none
-              }`}
+              className={`} w-full focus:outline-none`}
               {...register("password", { required: true })}
               placeholder=" "
               disabled={isLoading}
@@ -170,7 +169,7 @@ const LoginForm = () => {
             <label
               className={`absolute left-2 top-2 text-gray-400 transition-all ${
                 isPasswordFocused || passwordValue !== "" || passwordValue
-                  ? "text-xs transform -translate-y-1"
+                  ? "-translate-y-1 transform text-xs"
                   : "text-sm"
               }`}
             >
@@ -190,7 +189,7 @@ const LoginForm = () => {
           </div>
         </div>
         <Link
-          className="text-blue-600 text-sm mb-4 block font-bold hover:underline mt-2"
+          className="mb-4 mt-2 block text-sm font-bold text-blue-600 hover:underline"
           href="#"
         >
           Forgot password?
@@ -199,7 +198,7 @@ const LoginForm = () => {
           type="submit"
           variant="outline"
           disabled={isLoading}
-          className="w-full hover:bg-blue-800  bg-blue-600 text-white hover:text-white rounded-full h-12  text-lg font-bold p-2 mt-4"
+          className="mt-4 h-12 w-full rounded-full bg-blue-600 p-2 text-lg font-bold text-white hover:bg-blue-800 hover:text-white"
         >
           Log in
         </Button>

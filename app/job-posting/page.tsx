@@ -3,7 +3,7 @@ import JobPostingMainContent from "./main-content";
 
 const JobPostingPage = () => {
   return (
-    <div className="max-w-4xl mx-auto bg-white border rounded-lg shadow-md my-7">
+    <div className="mx-auto my-7 max-w-4xl rounded-lg border bg-white shadow-md">
       <JobPostingMainContent />
     </div>
   );

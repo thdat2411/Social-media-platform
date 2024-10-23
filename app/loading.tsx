@@ -28,19 +28,22 @@ const LoadingPage = () => {
     };
   }, [progress, direction]);
   return (
-    <div className="flex mt-48 justify-center h-screen">
+    <div className="mt-48 flex h-screen justify-center">
       <div className="text-center">
-        <div className="flex flex-col items-center justify-center mb-4">
+        <div className="mb-4 flex flex-col items-center justify-center">
           <div className="flex">
-            <span className="text-blue-700 text-5xl font-bold">Linked</span>
-            <div className="bg-blue-700 text-white text-5xl font-bold rounded-sm ml-1 px-1">
+            <span className="text-5xl font-bold text-blue-700">Linked</span>
+            <div className="ml-1 rounded-sm bg-blue-700 px-1 text-5xl font-bold text-white">
               in
             </div>
           </div>
-          <div className="relative w-44 h-0.5 bg-gray-300 mt-10 rounded-full">
+          <div className="relative mt-10 h-0.5 w-44 rounded-full bg-gray-300">
             <div
-              className="absolute top-0 left-0 h-1 bg-blue-700"
-              style={{ width: `${progress}%`, transition: "width 0.1s ease" }}
+              className="absolute left-0 top-0 h-1 bg-blue-700"
+              style={{
+                width: `${progress}%`,
+                transition: "width 0.1s ease",
+              }}
             ></div>
           </div>
         </div>

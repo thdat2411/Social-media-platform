@@ -3,10 +3,9 @@ import LandingMainContent from "./components/landing-main-content";
 
 export default function Home() {
   return (
-    <div className="flex flex-col max-h-screen items-center">
+    <div className="flex max-h-screen flex-col items-center">
       <LandingHeader />
       <LandingMainContent />
     </div>
   );
 }
-

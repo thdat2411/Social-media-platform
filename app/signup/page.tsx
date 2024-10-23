@@ -5,7 +5,7 @@ import SignUpMainContent from "./main-content";
 
 const SignUpPage = () => {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex h-screen flex-col">
       <Image
         alt="LinkedIn logo"
         className="ml-[450px] w-48"

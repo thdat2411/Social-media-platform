@@ -1,12 +1,13 @@
 "use client";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import LinkedLogo from "@/app/assets/LinkedIn-Logo.svg";
-import { PiArticle } from "react-icons/pi";
-import { BriefcaseBusiness, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BriefcaseBusiness, UserRound } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { PiArticle } from "react-icons/pi";
+
 const LandingHeader = () => {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
@@ -24,43 +25,43 @@ const LandingHeader = () => {
     };
   }, []);
   return (
-    <div className="w-full flex justify-around items-center bg-white">
+    <div className="flex w-full items-center justify-around bg-white">
       <div className="flex items-center">
         <Image src={LinkedLogo} alt="LinkedIn Logo" className="w-48" />
       </div>
-      <div className="flex space-x-14 max-[700px]:space-x-0 ">
+      <div className="flex space-x-14 max-[700px]:space-x-0">
         {!isMobile && (
           <>
             <Link
               href="#"
-              className="text-gray-500 hover:text-gray-800 flex flex-col items-center justify-center"
+              className="flex flex-col items-center justify-center text-gray-500 hover:text-gray-800"
             >
               <PiArticle className="size-7" />
               <span className="text-xs">Article</span>
             </Link>
             <Link
               href="#"
-              className="text-gray-500 hover:text-gray-800 flex flex-col items-center justify-center"
+              className="flex flex-col items-center justify-center text-gray-500 hover:text-gray-800"
             >
               <UserRound className="size-7" />
               <span className="text-xs">Article</span>
             </Link>
             <Link
               href="#"
-              className="text-gray-500 hover:text-gray-800 flex flex-col items-center justify-center"
+              className="flex flex-col items-center justify-center text-gray-500 hover:text-gray-800"
             >
               <BriefcaseBusiness className="size-7" />
               <span className="text-xs">Article</span>
             </Link>
           </>
         )}
-        <div className="border-l px-3 overflow-auto">
+        <div className="overflow-auto border-l px-3">
           <Button
             onClick={() => {
               router.push("/signup");
             }}
             variant="ghost"
-            className="hover:bg-slate-200 rounded-full px-4 py-1 h-12 items-center justify-center"
+            className="h-12 items-center justify-center rounded-full px-4 py-1 hover:bg-slate-200"
           >
             <p className="text-base font-normal">Join now</p>
           </Button>
@@ -70,7 +71,7 @@ const LandingHeader = () => {
             router.push("/signin");
           }}
           variant="outline"
-          className="text-blue-600 hover:text-blue-800 border-2 items-center justify-center border-blue-600 rounded-full px-6 h-12 max-[700px]:overflow-auto"
+          className="h-12 items-center justify-center rounded-full border-2 border-blue-600 px-6 text-blue-600 hover:text-blue-800 max-[700px]:overflow-auto"
         >
           <p className="text-base font-normal">Log in</p>
         </Button>

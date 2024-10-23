@@ -1,10 +1,10 @@
 "use client";
+import JobContainer from "@/app/components/job-container";
 import useSearchingCategoriesList from "@/app/hooks/useSearchingCategoriesList";
 import { jobs } from "@/app/utils/jobs";
 import { Button } from "@/components/ui/button";
-import JobContainer from "@/app/components/job-container";
-import React from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 export type Lists = {
   label: string;
@@ -18,17 +18,17 @@ const SearchMainContent = () => {
   const lists = useSearchingCategoriesList();
   const router = useRouter();
   return (
-    <div className="w-1/2 mx-4">
+    <div className="mx-4 w-1/2">
       {lists.map((item) => (
         <>
           {item.label !== "All" && (
-            <div className="bg-white rounded-lg shadow-sm mb-4 border-[1.5px] border-[#DADEE2]">
+            <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white shadow-sm">
               <div
                 id={item.label.toLowerCase()}
-                className="flex flex-col  space-y-2"
+                className="flex flex-col space-y-2"
               >
-                <p className="font-semibold text-xl p-4 ">{item.label}</p>
-                <div className="flex flex-col w-full space-y-3">
+                <p className="p-4 text-xl font-semibold">{item.label}</p>
+                <div className="flex w-full flex-col space-y-3">
                   {jobList.map((item, index) => (
                     <JobContainer
                       key={index}
@@ -43,7 +43,7 @@ const SearchMainContent = () => {
                       router.push(item.pathname);
                     }}
                     variant="ghost"
-                    className="border h-14 rounded-tr-none rounded-tl-none rounded-r-none rounded-l-none  w-full pr-3"
+                    className="h-14 w-full rounded-l-none rounded-r-none rounded-tl-none rounded-tr-none border pr-3"
                   >
                     <p>See all {item.label}</p>
                   </Button>

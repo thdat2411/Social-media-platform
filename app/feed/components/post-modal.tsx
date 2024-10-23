@@ -1,21 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, Pencil, X } from "lucide-react";
-import { FaRegSmile } from "react-icons/fa";
-import { Hint } from "../../components/hint";
-import { MdCalendarMonth, MdOutlinePermMedia } from "react-icons/md";
-import { EmojiPopover } from "../../components/emoji-popover";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ReactPhotoEditor } from "react-photo-editor";
-import ConfirmModal from "../../components/confirm-modal";
-import { useDebounce } from "use-debounce";
-import Event from "./event-post-field";
-import EventPostField from "./event-post-field";
 import { defaultEvent } from "@/app/utils/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { user } from "@prisma/client";
+import { ChevronDown, Pencil, X } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { FaRegSmile } from "react-icons/fa";
+import { MdCalendarMonth, MdOutlinePermMedia } from "react-icons/md";
+import { ReactPhotoEditor } from "react-photo-editor";
+import { useDebounce } from "use-debounce";
+import ConfirmModal from "../../components/confirm-modal";
+import { EmojiPopover } from "../../components/emoji-popover";
+import { Hint } from "../../components/hint";
+import {
+  default as Event,
+  default as EventPostField,
+} from "./event-post-field";
 export type Event = {
   eventName: string;
   description: string;
@@ -173,7 +175,9 @@ const PostModal = ({
       const fileName = "draft-image.jpg";
       const response = await fetch(editedImage);
       const blob = await response.blob();
-      const draftImageFile = new File([blob], fileName, { type: blob.type });
+      const draftImageFile = new File([blob], fileName, {
+        type: blob.type,
+      });
       setImage?.(draftImageFile);
       setIsPhotoEditorOpen(true);
       console.log(isPhotoEditorOpen);
@@ -229,25 +233,25 @@ const PostModal = ({
         width={event?.eventName === "" || event === undefined ? "360" : "400"}
       />
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full top-1/3 mt-16 max-w-2xl">
+        <DialogContent className="top-1/3 mt-16 w-full max-w-2xl overflow-hidden bg-gray-50 p-0">
           <DialogTitle className="hidden">Post</DialogTitle>
-          <div className="bg-white border rounded-lg p-7 relative">
+          <div className="relative rounded-lg border bg-white p-7">
             <Button
               variant="ghost"
-              className="flex items-center px-4 py-10 rounded-3xl"
+              className="flex items-center rounded-3xl px-4 py-10"
             >
               <Avatar>
                 <AvatarImage
                   src={user?.image || undefined}
                   className="size-12"
                 />
-                <AvatarFallback className="bg-blue-300 text-white text-2xl">
+                <AvatarFallback className="bg-blue-300 text-2xl text-white">
                   {avatarFallBack}
                 </AvatarFallback>
               </Avatar>
               <div className="ml-2 flex flex-col">
-                <div className="font-semibold text-lg text-left">Thái Đạt</div>
-                <div className="text-xs text-gray-500 flex">
+                <div className="text-left text-lg font-semibold">Thái Đạt</div>
+                <div className="flex text-xs text-gray-500">
                   <span>Posted to anyone</span>
                   <ChevronDown size={16} />
                 </div>
@@ -255,7 +259,7 @@ const PostModal = ({
             </Button>
             <div className="relative max-h-[50vh] overflow-y-auto">
               <textarea
-                className={`w-full rounded-lg text-lg  p-2 mt-4 focus:outline-none focus:border-transparent ${
+                className={`mt-4 w-full rounded-lg p-2 text-lg focus:border-transparent focus:outline-none ${
                   editedImage !== null || event !== undefined ? "h-28" : "h-40"
                 }`}
                 placeholder="What do you want to say?"
@@ -263,20 +267,20 @@ const PostModal = ({
                 onChange={handleInputChange}
               />
               {(editedImage !== null || event !== undefined) && (
-                <div className="flex flex-col w-full mb-4">
-                  <div className="flex justify-end items-center space-x-5 mr-2">
+                <div className="mb-4 flex w-full flex-col">
+                  <div className="mr-2 flex items-center justify-end space-x-5">
                     {(editedImage !== null || event !== undefined) && (
                       <>
                         <Button
                           onClick={handleEditButton}
-                          className="rounded-full p-3 bg-[#404040] hover:bg-black"
+                          className="rounded-full bg-[#404040] p-3 hover:bg-black"
                         >
                           <Pencil size={18} strokeWidth={2.5} />
                         </Button>
 
                         <Button
                           onClick={handleDeleteButton}
-                          className="rounded-full p-3  bg-[#404040] hover:bg-black"
+                          className="rounded-full bg-[#404040] p-3 hover:bg-black"
                         >
                           <X size={18} strokeWidth={2.5} />
                         </Button>
@@ -287,7 +291,7 @@ const PostModal = ({
                     <Image
                       src={editedImage}
                       alt="image"
-                      className="rounded-lg mt-4 border px-4 "
+                      className="mt-4 rounded-lg border px-4"
                       width={672}
                       height={200}
                     />
@@ -299,11 +303,11 @@ const PostModal = ({
             {editedImage === null && event === undefined && (
               <>
                 <EmojiPopover onEmojiSelect={handleEmojiSelect}>
-                  <Button variant="ghost" className="rounded-full w-fit">
-                    <FaRegSmile className="size-6 cursor-pointer  text-gray-500 hover:text-gray-800" />
+                  <Button variant="ghost" className="w-fit rounded-full">
+                    <FaRegSmile className="size-6 cursor-pointer text-gray-500 hover:text-gray-800" />
                   </Button>
                 </EmojiPopover>
-                <div className="flex items-center justify-start mt-7 ml-4 space-x-9 text-gray-500">
+                <div className="ml-4 mt-7 flex items-center justify-start space-x-9 text-gray-500">
                   <Hint label="Add a media">
                     <Button
                       onClick={() => {
@@ -329,9 +333,9 @@ const PostModal = ({
                 </div>
               </>
             )}
-            <div className="w-full border mt-4"></div>
+            <div className="mt-4 w-full border"></div>
             <div
-              className={`flex mt-5 ${
+              className={`mt-5 flex ${
                 editedImage !== null || event !== undefined
                   ? "justify-between"
                   : "justify-end"
@@ -339,15 +343,15 @@ const PostModal = ({
             >
               {(editedImage !== null || event !== undefined) && (
                 <EmojiPopover onEmojiSelect={handleEmojiSelect}>
-                  <Button variant="ghost" className="rounded-full  w-fit">
-                    <FaRegSmile className="size-6 cursor-pointer  text-gray-500 hover:text-gray-800" />
+                  <Button variant="ghost" className="w-fit rounded-full">
+                    <FaRegSmile className="size-6 cursor-pointer text-gray-500 hover:text-gray-800" />
                   </Button>
                 </EmojiPopover>
               )}
               <Button
                 type="submit"
                 disabled={!postContent}
-                className="bg-blue-500 text-white px-4 py-2 mr-4 rounded-full"
+                className="mr-4 rounded-full bg-blue-500 px-4 py-2 text-white"
               >
                 Post
               </Button>

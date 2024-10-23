@@ -25,7 +25,7 @@ const SearchDropDown = ({
     <div className="p-4">
       {!isSeeAll ? (
         <>
-          <div className="flex justify-between items-center max-[700px]:overflow-auto overflow-hidden ">
+          <div className="flex items-center justify-between overflow-hidden max-[700px]:overflow-auto">
             <span className="font-semibold">Recent searches</span>
             <Button
               onClick={() => {
@@ -41,7 +41,7 @@ const SearchDropDown = ({
               onClick={() => setJobSearchValue(item)}
               key={index}
               variant="ghost"
-              className="flex w-full justify-start items-center mb-2"
+              className="mb-2 flex w-full items-center justify-start"
             >
               <Clock4 size={16} className="mr-2" />
               <span>{item}</span>
@@ -54,7 +54,7 @@ const SearchDropDown = ({
                 onClick={() => setJobSearchValue(item)}
                 key={index}
                 variant="ghost"
-                className="flex w-full justify-start items-center mb-2"
+                className="mb-2 flex w-full items-center justify-start"
               >
                 <Search size={16} className="mr-2" />
                 <span>{item}</span>
@@ -64,11 +64,11 @@ const SearchDropDown = ({
         </>
       ) : (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button
                 variant="ghost"
-                className="mr-2 p-2 items-center rounded-full"
+                className="mr-2 items-center rounded-full p-2"
                 onClick={() => setIsSeeAll(false)}
               >
                 <ChevronLeft size={16} className="mr-2" />
@@ -91,7 +91,7 @@ const SearchDropDown = ({
               onClick={() => setJobSearchValue(item)}
               key={index}
               variant="ghost"
-              className="flex w-full justify-start items-center mb-2"
+              className="mb-2 flex w-full items-center justify-start"
             >
               <Clock4 size={16} className="mr-2" />
               <span>{item}</span>

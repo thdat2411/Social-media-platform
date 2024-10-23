@@ -1,7 +1,7 @@
-import React from "react";
-import UserProfileMainContent from "./main-content";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import getCurrentUserPosts from "@/app/actions/getCurrentUserPosts";
+import React from "react";
+import UserProfileMainContent from "./main-content";
 const UserProfilePage = async () => {
   const user = await getCurrentUser();
   const posts = await getCurrentUserPosts();

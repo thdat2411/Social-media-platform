@@ -64,7 +64,7 @@ const CommentInput = ({
       </EmojiPopover>
       <label
         htmlFor="imageUpload"
-        className="cursor-pointer rounded-full p-3 hover:bg-gray-100 group"
+        className="group cursor-pointer rounded-full p-3 hover:bg-gray-100"
       >
         <FaImage className="size-5 cursor-pointer text-gray-500 group-hover:text-gray-800" />
       </label>
@@ -82,7 +82,7 @@ const CommentInput = ({
     <div className={textareaClass}>
       <textarea
         ref={textareaRef}
-        className="w-full outline-none resize-none px-4"
+        className="w-full resize-none px-4 outline-none"
         value={commentText}
         onChange={(e) => setCommentText(e.target.value)}
         onFocus={() => setIsFocused(true)}
@@ -90,32 +90,32 @@ const CommentInput = ({
         autoFocus
       />
       {imageUrl && (
-        <div className="flex items-center mt-2 relative px-4">
+        <div className="relative mt-2 flex items-center px-4">
           <Image
             src={imageUrl}
             alt="Selected"
-            className="object-cover mr-2 rounded-lg"
+            className="mr-2 rounded-lg object-cover"
             width={160}
             height={160}
           />
           <Button
             onClick={removeImage}
-            className="rounded-full w-fit p-3 absolute top-2 left-32 bg-black hover:bg-black"
+            className="absolute left-32 top-2 w-fit rounded-full bg-black p-3 hover:bg-black"
           >
             <X className="size-4" />
           </Button>
         </div>
       )}
-      <div className="flex justify-between my-2">
+      <div className="my-2 flex justify-between">
         <div className="flex items-center space-x-2">
           <EmojiPopover onEmojiSelect={handleEmojiSelect}>
-            <Button variant="ghost" className="rounded-full group">
+            <Button variant="ghost" className="group rounded-full">
               <FaRegSmile className="size-5 cursor-pointer text-gray-500 group-hover:text-gray-800" />
             </Button>
           </EmojiPopover>
           {!imageUrl && renderImageUpload()}
         </div>
-        <Button variant="ghost" type="submit" className="rounded-full p-3c">
+        <Button variant="ghost" type="submit" className="p-3c rounded-full">
           <SendHorizontal className="size-5" />
         </Button>
       </div>
@@ -126,7 +126,7 @@ const CommentInput = ({
     <>
       <label
         htmlFor="imageUpload"
-        className="cursor-pointer rounded-full p-3 hover:bg-gray-100 group"
+        className="group cursor-pointer rounded-full p-3 hover:bg-gray-100"
       >
         <FaImage className="size-5 cursor-pointer text-gray-500 group-hover:text-gray-800" />
       </label>
@@ -141,7 +141,7 @@ const CommentInput = ({
   );
 
   return (
-    <div className="mt-4 flex space-x-2 items-center">
+    <div className="mt-4 flex items-center space-x-2">
       <Avatar>
         <AvatarImage
           src="https://github.com/shadcn.png"

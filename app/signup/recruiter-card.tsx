@@ -37,13 +37,13 @@ const RecruiterCard = ({ userData }: RecruiterCardProps) => {
             console.error("Error signing in:", error);
           });
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: unknown) {
+    } catch (err) {
+      console.error(err);
       toast.error("Something went wrong");
     }
   };
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md border max-w-md mx-auto">
+    <div className="mx-auto max-w-md rounded-lg border bg-white p-8 shadow-md">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Recruiter</h1>
@@ -60,7 +60,7 @@ const RecruiterCard = ({ userData }: RecruiterCardProps) => {
       </p>
       <Button
         onClick={handleSubmit}
-        className="mt-6 w-full bg-blue-700 text-white py-2 rounded-md text-lg hover:bg-blue-700"
+        className="mt-6 w-full rounded-md bg-blue-700 py-2 text-lg text-white hover:bg-blue-700"
       >
         Get started
       </Button>

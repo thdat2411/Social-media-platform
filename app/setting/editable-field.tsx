@@ -49,22 +49,22 @@ const EditableField = ({
   };
   return (
     <>
-      <div className="flex w-full justify-between px-4 py-2 rounded-lg">
+      <div className="flex w-full justify-between rounded-lg px-4 py-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs w-[210px]">{label}</p>
+          <p className="w-[210px] text-xs">{label}</p>
           {isEditing ? (
-            <div className="flex items-center space-x-4 ">
+            <div className="flex items-center space-x-4">
               <div className="flex flex-col space-y-1">
                 <input
                   ref={inputRef}
                   type={label.includes("phone") ? "tel" : "text"}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className={`text-base border rounded-lg p-2 w-[300px] ${
+                  className={`w-[300px] rounded-lg border p-2 text-base ${
                     error ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {error && <p className="text-red-500 text-xs">{error}</p>}
+                {error && <p className="text-xs text-red-500">{error}</p>}
               </div>
               <div className="flex w-full items-center space-x-4">
                 <Button
@@ -73,13 +73,13 @@ const EditableField = ({
                     onEdit(null); // Close editing
                   }}
                   variant="outline"
-                  className="w-1/2 hover:bg-blue-600 hover:text-white h-8"
+                  className="h-8 w-1/2 hover:bg-blue-600 hover:text-white"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleSave}
-                  className="w-1/2 hover:bg-blue-600 hover:text-white h-8 "
+                  className="h-8 w-1/2 hover:bg-blue-600 hover:text-white"
                 >
                   Save
                 </Button>

@@ -1,12 +1,12 @@
-import React from "react";
-import Header from "./header";
-import LoginForm from "./form";
-import Footer from "./footer";
 import Link from "next/link";
+import React from "react";
+import Footer from "./footer";
+import LoginForm from "./form";
+import Header from "./header";
 
 const SignIn = () => {
   return (
-    <div className="flex flex-col items-center min-h-screen">
+    <div className="flex min-h-screen flex-col items-center">
       <Header />
       <LoginForm />
       <div className="mt-4">
@@ -14,7 +14,7 @@ const SignIn = () => {
           New to LinkedIn?
           <Link
             href="/signup"
-            className="text-blue-600 hover:underline ml-1 font-semibold"
+            className="ml-1 font-semibold text-blue-600 hover:underline"
           >
             Join now
           </Link>

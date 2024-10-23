@@ -17,14 +17,14 @@ interface JobPreferenceModalProps {
 const JobPreferenceModal = ({ open, setOpen }: JobPreferenceModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-white max-h-[800px] overflow-hidden  max-w-xl absolute -mt-16">
+      <DialogContent className="absolute -mt-16 max-h-[800px] max-w-xl overflow-hidden bg-white">
         <DialogHeader className="p-2">
           <DialogTitle className="text-xl">Job preferences</DialogTitle>
         </DialogHeader>
         <Separator />
         <div className="flex flex-col space-y-8">
           <div className="flex justify-between">
-            <div className="flex space-x-4 items-center">
+            <div className="flex items-center space-x-4">
               <Avatar>
                 <AvatarImage
                   src="https://github.com/shadcn.png"
@@ -41,23 +41,23 @@ const JobPreferenceModal = ({ open, setOpen }: JobPreferenceModalProps) => {
               <Pencil className="size-6" />
             </Button>
           </div>
-          <div className="flex flex-col space-y-3 text-sm ">
+          <div className="flex flex-col space-y-3 text-sm">
             <p className="font-medium">Job titles</p>
             <p className="text-xs">Software Engineer</p>
           </div>
-          <div className="flex flex-col space-y-3 text-sm ">
+          <div className="flex flex-col space-y-3 text-sm">
             <p className="font-medium">Location types</p>
             <p className="text-xs">On site ∙ Hybrid</p>
           </div>
-          <div className="flex flex-col space-y-3 text-sm ">
+          <div className="flex flex-col space-y-3 text-sm">
             <p className="font-medium">Location (on-site)</p>
             <p className="text-xs">Viet Nam</p>
           </div>
-          <div className="flex flex-col space-y-3 text-sm ">
+          <div className="flex flex-col space-y-3 text-sm">
             <p className="font-medium">Location (remote)</p>
             <p className="text-xs">Viet Nam</p>
           </div>
-          <div className="flex flex-col space-y-3 text-sm pb-4">
+          <div className="flex flex-col space-y-3 pb-4 text-sm">
             <p className="font-medium">Start date</p>
             <p className="text-xs">Immediately, I am actively applying</p>
           </div>

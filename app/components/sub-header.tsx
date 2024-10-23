@@ -1,18 +1,18 @@
 "use client";
+import { useCurrentPath } from "@/app/hooks/useCurrentPath";
 import { category, jobHeader } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
-import { useCurrentPath } from "@/app/hooks/useCurrentPath";
-import { useRouter } from "next/navigation";
-import SubHeaderDropdown from "../jobs/search/[searchId]/drop-down";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import useSearchingCategoriesList from "../hooks/useSearchingCategoriesList";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import useSearchingCategoriesList from "../hooks/useSearchingCategoriesList";
+import SubHeaderDropdown from "../jobs/search/[searchId]/drop-down";
 
 const SubHeader = () => {
   const [isCateogryOpen, setIsCategoryOpen] = useState(false);
@@ -24,10 +24,10 @@ const SubHeader = () => {
     pathName === "/search"
       ? "All"
       : pathName?.includes("jobs")
-      ? "Jobs"
-      : pathName?.includes("posts")
-      ? "Posts"
-      : "People";
+        ? "Jobs"
+        : pathName?.includes("posts")
+          ? "Posts"
+          : "People";
 
   const onCategoryClick = (category: string) => {
     if (category === "Jobs") {
@@ -85,16 +85,16 @@ const SubHeader = () => {
 
   if (isWhatCategory !== "All") {
     return (
-      <div className="w-screen py-3 shadow-lg z-20 sticky top-0 ">
-        <div className="flex w-[860px] max-[1260px]:justify-center max-[1260px]:w-full  space-x-2 justify-end">
+      <div className="sticky top-0 z-20 w-screen py-3 shadow-lg">
+        <div className="flex w-[860px] justify-end space-x-2 max-[1260px]:w-full max-[1260px]:justify-center">
           <DropdownMenu open={isCateogryOpen} onOpenChange={setIsCategoryOpen}>
             <DropdownMenuTrigger asChild>
-              <Button className="rounded-full w-fit flex py-2 px-3 items-center bg-blue-500 text-white hover:bg-blue-700 space-x-2">
+              <Button className="flex w-fit items-center space-x-2 rounded-full bg-blue-500 px-3 py-2 text-white hover:bg-blue-700">
                 <p>{isWhatCategory}</p>
                 <ChevronDown className="size-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white w-[150px]  flex flex-col cursor-pointer mt-3 shadow-sm rounded-sm border">
+            <DropdownMenuContent className="mt-3 flex w-[150px] cursor-pointer flex-col rounded-sm border bg-white shadow-sm">
               {categoryList.map((item) => (
                 <Link
                   href={item.pathname}
@@ -103,7 +103,7 @@ const SubHeader = () => {
                     pathName && item.pathname.includes(pathName)
                       ? "border-l-2 border-l-blue-500"
                       : ""
-                  } hover:bg-[#EDF3F8] py-2 px-4`}
+                  } px-4 py-2 hover:bg-[#EDF3F8]`}
                 >
                   {item.label}
                 </Link>
@@ -117,8 +117,8 @@ const SubHeader = () => {
     );
   } else {
     return (
-      <div className="w-screen py-3 shadow-lg z-20 sticky top-0 ">
-        <div className="flex space-x-6 w-[650px] justify-end">
+      <div className="sticky top-0 z-20 w-screen py-3 shadow-lg">
+        <div className="flex w-[650px] justify-end space-x-6">
           {category.map(
             (item) =>
               item !== "All" && (

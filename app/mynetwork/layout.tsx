@@ -11,7 +11,7 @@ const MyNetworkLayout = ({ children }: MyNetworkLayoutProps) => {
   return (
     <div className="h-full">
       {isSearchFocus && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 z-10" />
+        <div className="fixed inset-0 z-10 bg-black bg-opacity-30" />
       )}
 
       <Header

@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import SignUpForm from "./form";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselApi,
@@ -8,14 +7,15 @@ import {
   CarouselItem,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import { user } from "@prisma/client";
-import FullNameCard from "./fullname-card";
-import RoleCard from "./role-card";
-import JobSeekerCard from "./job-seeker-card";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import SignUpForm from "./form";
+import FullNameCard from "./fullname-card";
+import JobSeekerCard from "./job-seeker-card";
 import RecruiterCard from "./recruiter-card";
+import RoleCard from "./role-card";
 
 const SignUpMainContent = () => {
   const session = useSession();
@@ -54,10 +54,10 @@ const SignUpMainContent = () => {
     <>
       {!isRegister ? (
         <>
-          <h1 className="text-3xl mb-6">
+          <h1 className="mb-6 text-3xl">
             Make the most of your professional life
           </h1>
-          <div className="bg-white p-8 rounded-lg shadow-md border max-w-md mx-auto">
+          <div className="mx-auto max-w-md rounded-lg border bg-white p-8 shadow-md">
             <SignUpForm
               setIsRegister={setIsRegister}
               setData={setData}
@@ -67,8 +67,8 @@ const SignUpMainContent = () => {
         </>
       ) : (
         <>
-          <h1 className="text-3xl mb-6">Set up before ready to go </h1>
-          <div className="bg-white p-8 rounded-lg shadow-md border  mx-auto">
+          <h1 className="mb-6 text-3xl">Set up before ready to go </h1>
+          <div className="mx-auto rounded-lg border bg-white p-8 shadow-md">
             <Carousel className="w-[500px]" setApi={setApi}>
               <CarouselPrevious />
               <p className="absolute -top-3 left-12">
@@ -79,7 +79,7 @@ const SignUpMainContent = () => {
                   <CarouselItem key={index}>
                     <div className="p-1">
                       <Card className="border-none shadow-none">
-                        <CardContent className="flex flex-col justify-around aspect-square px-6 py-4 outline-none">
+                        <CardContent className="flex aspect-square flex-col justify-around px-6 py-4 outline-none">
                           {index === 0 ? (
                             <FullNameCard
                               data={data}

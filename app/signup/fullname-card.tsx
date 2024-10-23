@@ -55,7 +55,7 @@ const FullNameCard = ({ data, setData, handleNext }: FullNameCardProps) => {
           <input
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="border border-gray-300 rounded py-2 px-4 text-lg h-12"
+            className="h-12 rounded border border-gray-300 px-4 py-2 text-lg"
             type="text"
             required
           />
@@ -65,7 +65,7 @@ const FullNameCard = ({ data, setData, handleNext }: FullNameCardProps) => {
           <input
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="border border-gray-300 rounded py-2 px-4 text-lg h-12"
+            className="h-12 rounded border border-gray-300 px-4 py-2 text-lg"
             type="text"
             required
           />
@@ -73,7 +73,7 @@ const FullNameCard = ({ data, setData, handleNext }: FullNameCardProps) => {
         <Button
           onClick={handleSubmit}
           disabled={!firstName || !lastName}
-          className="bg-blue-500 hover:bg-blue-700 w-fit self-end"
+          className="w-fit self-end bg-blue-500 hover:bg-blue-700"
         >
           <p className="text-lg">Next</p>
         </Button>

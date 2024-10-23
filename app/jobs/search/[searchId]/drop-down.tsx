@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -7,7 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 
 interface SubHeaderDropdownProps {
@@ -91,7 +91,7 @@ const SubHeaderDropdown = ({
         className={`flex items-center space-x-2 rounded-full p-2 ${
           activeFilters.includes(title)
             ? "bg-blue-500 text-white hover:bg-blue-700"
-            : "hover:border-[#858585] hover:bg-slate-100 border-2"
+            : "border-2 hover:border-[#858585] hover:bg-slate-100"
         }`}
       >
         <p className="text-sm font-medium">{title}</p>
@@ -103,7 +103,7 @@ const SubHeaderDropdown = ({
             <div
               onClick={() => handleChange(item)}
               key={index}
-              className="flex w-fit justify-start items-center mb-2 px-2 py-3 space-x-4 cursor-pointer"
+              className="mb-2 flex w-fit cursor-pointer items-center justify-start space-x-4 px-2 py-3"
             >
               {isCheckbox && (
                 <Checkbox
@@ -128,7 +128,7 @@ const SubHeaderDropdown = ({
           ))}
         </div>
         <Separator />
-        <div className="flex justify-end items-center space-x-4 p-3">
+        <div className="flex items-center justify-end space-x-4 p-3">
           <Button
             onClick={() => setIsDropDownOpen(false)}
             className="rounded-lg"
@@ -142,7 +142,7 @@ const SubHeaderDropdown = ({
               e.stopPropagation();
               onSubmit();
             }}
-            className="rounded-full bg-blue-600 text-white hover:bg-blue-800 show-button"
+            className="show-button rounded-full bg-blue-600 text-white hover:bg-blue-800"
           >
             Show
           </Button>

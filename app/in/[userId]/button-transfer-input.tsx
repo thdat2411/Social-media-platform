@@ -33,7 +33,7 @@ const ButtonTransferInput = ({
             <Button
               onClick={() => setData(data.filter((item) => item !== dataItem))}
               key={index}
-              className="flex space-x-1 mr-3 mb-3  w-fit rounded-full  bg-blue-500 hover:bg-blue-700 text-white hover:text-white  "
+              className="mb-3 mr-3 flex w-fit space-x-1 rounded-full bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
             >
               <p className="text-sm font-medium">{dataItem}</p>
               <X className="size-5" />
@@ -41,12 +41,12 @@ const ButtonTransferInput = ({
           ))}
       </div>
       {isAdding ? (
-        <div className="flex items-center w-full justify-between">
+        <div className="flex w-full items-center justify-between">
           <input
             type="text"
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
-            className="w-full px-2 py-1 border-2 text-sm"
+            className="w-full border-2 px-2 py-1 text-sm"
             placeholder="Enter job title"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -58,7 +58,7 @@ const ButtonTransferInput = ({
       ) : (
         <Button
           onClick={() => setIsAdding(true)}
-          className="flex space-x-1   w-fit rounded-full border-2 border-blue-500 bg-white hover:border-blue-700 hover:bg-blue-100 text-blue-500"
+          className="flex w-fit space-x-1 rounded-full border-2 border-blue-500 bg-white text-blue-500 hover:border-blue-700 hover:bg-blue-100"
         >
           <p className="text-sm font-medium">Add title</p>
           <MdAdd className="size-5" />

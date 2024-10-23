@@ -2,9 +2,9 @@ import React from "react";
 
 const SignUpFooter = () => {
   return (
-    <footer className="absolute bottom-4 text-center text-gray-500 text-xs">
+    <footer className="absolute bottom-4 text-center text-xs text-gray-500">
       <div className="flex justify-center space-x-2">
-        <p className="font-bold ">LinkedIn © 2024</p>
+        <p className="font-bold">LinkedIn © 2024</p>
         <a className="hover:underline" href="#">
           User Agreement
         </a>

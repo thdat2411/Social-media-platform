@@ -39,14 +39,14 @@ const RoleCard = ({ data, setData, handleNext }: RoleCardProps) => {
   return (
     <>
       <div
-        className="flex flex-col flex-grow justify-around"
+        className="flex flex-grow flex-col justify-around"
         onKeyDown={handleKeyDown}
       >
         <p className="text-3xl font-medium">What is your purpose</p>
-        <div className="flex space-x-6 items-center">
+        <div className="flex items-center space-x-6">
           <input
             onClick={() => setRole("recruiter")}
-            className="border border-gray-300 rounded py-2 px-4 size-8"
+            className="size-8 rounded border border-gray-300 px-4 py-2"
             type="radio"
             checked={role === "recruiter"}
           />
@@ -57,10 +57,10 @@ const RoleCard = ({ data, setData, handleNext }: RoleCardProps) => {
             </p>
           </div>
         </div>
-        <div className="flex space-x-6 items-center">
+        <div className="flex items-center space-x-6">
           <input
             onClick={() => setRole("jobseeker")}
-            className="border border-gray-300 rounded py-2 px-4 size-8"
+            className="size-8 rounded border border-gray-300 px-4 py-2"
             type="radio"
             checked={role === "jobseeker"}
           />
@@ -74,7 +74,7 @@ const RoleCard = ({ data, setData, handleNext }: RoleCardProps) => {
         <Button
           onClick={handleSubmit}
           disabled={!role}
-          className="bg-blue-500 hover:bg-blue-700 w-fit self-end"
+          className="w-fit self-end bg-blue-500 hover:bg-blue-700"
         >
           <p className="text-lg">Next</p>
         </Button>

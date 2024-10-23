@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
 import type { Metadata } from "next";
-import "./globals.css";
 import { Inter } from "next/font/google";
+import React, { Suspense } from "react";
 import { Toaster } from "sonner";
 import AuthContext from "./context/AuthContext";
+import "./globals.css";
 import LoadingPage from "./loading";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,4 +30,3 @@ export default function RootLayout({
     </html>
   );
 }
-

@@ -16,7 +16,7 @@ const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
     <Link
       key={index}
       href="#"
-      className={`flex justify-between items-start p-4 border-b-[#DADEE2] border-b-2 mr-3 ${
+      className={`mr-3 flex items-start justify-between border-b-2 border-b-[#DADEE2] p-4 ${
         index === lists.length - 1 ? "border-none" : ""
       }`}
     >
@@ -47,7 +47,7 @@ const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
       </div>
       <Button
         variant="outline"
-        className="flex items-center text-blue-600 font-semibold rounded-full hover:text-blue-600 border-blue-600 hover:border-blue-800 hover:border-2"
+        className="flex items-center rounded-full border-blue-600 font-semibold text-blue-600 hover:border-2 hover:border-blue-800 hover:text-blue-600"
       >
         Save
       </Button>

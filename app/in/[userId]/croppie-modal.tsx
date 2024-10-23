@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,11 +7,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import axios from "axios";
 import Croppie from "croppie";
 import "croppie/croppie.css";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 interface CroppieModalProps {
   open: boolean;
@@ -103,8 +103,8 @@ const CroppieModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="p-0 bg-gray-50 overflow-hidden w-full max-w-5xl">
-        <div className="bg-white border rounded-lg">
+      <DialogContent className="w-full max-w-5xl overflow-hidden bg-gray-50 p-0">
+        <div className="rounded-lg border bg-white">
           <DialogHeader className="p-6">
             <DialogTitle className="text-xl font-medium">Editor</DialogTitle>
           </DialogHeader>
@@ -113,10 +113,10 @@ const CroppieModal = ({
             <div ref={croppieRef}></div>
           </div>
           <Separator className="p-0" />
-          <div className="flex justify-end items-center p-4">
+          <div className="flex items-center justify-end p-4">
             <Button
               disabled={isLoading}
-              className=" bg-blue-500 text-white rounded"
+              className="rounded bg-blue-500 text-white"
               onClick={handleCrop}
             >
               Save

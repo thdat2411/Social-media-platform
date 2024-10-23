@@ -1,7 +1,7 @@
 // pages/_app.tsx
-import { useEffect } from "react";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import "./globals.css";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {

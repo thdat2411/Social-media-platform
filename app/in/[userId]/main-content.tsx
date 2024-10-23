@@ -1,24 +1,24 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Pencil } from "lucide-react";
-import React, { useState } from "react";
-import CroppieModal from "./croppie-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import PictureModal from "./pic-modal";
+import { post, user } from "@prisma/client";
+import { Camera, Pencil } from "lucide-react";
+import React, { useState } from "react";
+import ListUser from "../../components/list-user";
+import EventModal from "../../feed/components/event-modal";
+import MediaModal from "../../feed/components/media-modal";
+import PostModal, { Event } from "../../feed/components/post-modal";
 import ContactInfoModal from "./contact-info-modal";
+import CroppieModal from "./croppie-modal";
 import EditJobPreferenceModal from "./edit-job-preference-modal";
 import JobPreferenceModal from "./job-preferences-modal";
-import PostModal, { Event } from "../../feed/components/post-modal";
-import MediaModal from "../../feed/components/media-modal";
-import EventModal from "../../feed/components/event-modal";
+import PictureModal from "./pic-modal";
 import UserActivity from "./user-activity";
-import ListUser from "../../components/list-user";
-import { post, user } from "@prisma/client";
 
 interface UserProfileMainContentProps {
   user: user;
@@ -114,12 +114,12 @@ const UserProfileMainContent = ({
         setFormData={setFormData}
         user={user}
       />
-      <div className="flex w-full space-x-20 ">
-        <div className="flex flex-col w-2/3">
-          <div className=" bg-white rounded-lg border shadow-md">
+      <div className="flex w-full space-x-20">
+        <div className="flex w-2/3 flex-col">
+          <div className="rounded-lg border bg-white shadow-md">
             <div className="relative">
-              <div className="h-36 bg-gray-200 rounded-t-lg">
-                <div className="flex justify-end p-2 ">
+              <div className="h-36 rounded-t-lg bg-gray-200">
+                <div className="flex justify-end p-2">
                   <DropdownMenu
                     open={isBgDropdownOpen}
                     onOpenChange={setIsBgDropdownOpen}
@@ -127,26 +127,26 @@ const UserProfileMainContent = ({
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="rounded-full bg-white p-3 cursor-pointer"
+                        className="cursor-pointer rounded-full bg-white p-3"
                       >
                         <Camera className="size-5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="absolute -right-4">
-                      <div className="flex flex-col p-1 space-y-2 w-full">
+                      <div className="flex w-full flex-col space-y-2 p-1">
                         <Button
                           onClick={() => {
                             setIsPicModalOpen(true);
                             setIsBgDropdownOpen(false);
                           }}
                           variant="ghost"
-                          className="w-full flex justify-start "
+                          className="flex w-full justify-start"
                         >
                           <p>Show Image</p>
                         </Button>
                         <Button
                           variant="ghost"
-                          className="w-full flex justify-start"
+                          className="flex w-full justify-start"
                           onClick={() => {
                             document
                               .getElementById("avatarImageUpload")
@@ -171,7 +171,7 @@ const UserProfileMainContent = ({
                   />
                 </div>
               </div>
-              <div className="absolute top-12 left-4">
+              <div className="absolute left-4 top-12">
                 <DropdownMenu
                   open={isAvatarDropdownOpen}
                   onOpenChange={setIsAvatarDropdownOpen}
@@ -180,28 +180,28 @@ const UserProfileMainContent = ({
                     <Avatar className="size-36">
                       <AvatarImage
                         src={user.image ?? ""}
-                        className=" rounded-full cursor-pointer"
+                        className="cursor-pointer rounded-full"
                       />
-                      <AvatarFallback className="bg-blue-300 text-white text-5xl">
+                      <AvatarFallback className="bg-blue-300 text-5xl text-white">
                         {avatarFallBack}
                       </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="absolute -left-16 top-2">
-                    <div className="flex flex-col p-1 space-y-2 w-full">
+                    <div className="flex w-full flex-col space-y-2 p-1">
                       <Button
                         onClick={() => {
                           setIsAvatarDropdownOpen(false);
                           setIsPicModalOpen(true);
                         }}
                         variant="ghost"
-                        className="w-full flex justify-start "
+                        className="flex w-full justify-start"
                       >
                         <p>Show Image</p>
                       </Button>
                       <Button
                         variant="ghost"
-                        className="w-full flex justify-start"
+                        className="flex w-full justify-start"
                         onClick={() => {
                           document.getElementById("avatarImageUpload")?.click();
                           setIsAvatarDropdownOpen(false);
@@ -231,23 +231,23 @@ const UserProfileMainContent = ({
               <p className="text-gray-600">
                 Student at HCMC University of Technology and Education
               </p>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-sm text-muted-foreground">
                 Thủ Đức, Ho Chi Minh City, Vietnam ·{" "}
                 <span
                   onClick={() => setIsContactInfoModalOpen(true)}
-                  className="text-blue-600 hover:underline cursor-pointer font-semibold"
+                  className="cursor-pointer font-semibold text-blue-600 hover:underline"
                 >
                   Contact info
                 </span>
               </p>
             </div>
-            <div className="rounded-lg flex justify-between px-6 py-4 bg-[#DDE7F1] ml-4 mb-4 w-1/2">
-              <div className="flex flex-col space-y-1 text-sm cursor-pointer ">
-                <p className="font-medium text-base">Open to work</p>
+            <div className="mb-4 ml-4 flex w-1/2 justify-between rounded-lg bg-[#DDE7F1] px-6 py-4">
+              <div className="flex cursor-pointer flex-col space-y-1 text-sm">
+                <p className="text-base font-medium">Open to work</p>
                 <p>User preference roles</p>
                 <p
                   onClick={() => setIsJobPreferenceModalOpen(true)}
-                  className="text-blue-500 font-medium hover:underline"
+                  className="font-medium text-blue-500 hover:underline"
                 >
                   Show details
                 </p>
@@ -255,7 +255,7 @@ const UserProfileMainContent = ({
               <Button
                 onClick={() => setIsEditReferenceModalOpen(true)}
                 variant="ghost"
-                className="rounded-full px-3 "
+                className="rounded-full px-3"
               >
                 <Pencil className="size-4" />
               </Button>

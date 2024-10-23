@@ -1,14 +1,14 @@
 "use client";
+import LandingImage from "@/app/assets/landing-image.jpg";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { ChevronDown } from "lucide-react";
-import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import LandingImage from "@/app/assets/landing-image.jpg";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 const LandingMainContent = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,9 +37,9 @@ const LandingMainContent = () => {
       .finally(() => setIsLoading(false));
   };
   return (
-    <main className="flex max-[700px]:flex-col justify-center space-x-10 max-[700px]:space-x-0 max-[700px]:space-y-10 mt-20 ">
-      <div className="flex flex-col w-[550px] max-[700px]:w-full max-[700px]:justify-center max-[700px]:self-center">
-        <h1 className="text-5xl text-slate-500 max-[700px]:text-center max-[700px]:break-words max-[700px]:text-3xl">
+    <main className="mt-20 flex justify-center space-x-10 max-[700px]:flex-col max-[700px]:space-x-0 max-[700px]:space-y-10">
+      <div className="flex w-[550px] flex-col max-[700px]:w-full max-[700px]:justify-center max-[700px]:self-center">
+        <h1 className="text-5xl text-slate-500 max-[700px]:break-words max-[700px]:text-center max-[700px]:text-3xl">
           Chào mừng đến với cộng đồng chuyên gia của bạn
         </h1>
         <div className="max-[700px]:self-center">
@@ -47,7 +47,7 @@ const LandingMainContent = () => {
             disabled={isLoading}
             onClick={socialAction}
             variant="outline"
-            className="mt-8 w-[400px] border-gray-600 bg-white flex space-x-2 border rounded-full px-4 py-4 h-11 justify-between"
+            className="mt-8 flex h-11 w-[400px] justify-between space-x-2 rounded-full border border-gray-600 bg-white px-4 py-4"
           >
             <div className="flex items-center space-x-2">
               <Avatar>
@@ -63,7 +63,7 @@ const LandingMainContent = () => {
                   <span className="text-gray-600">
                     thaidat.0901485160@gmail.com
                   </span>
-                  <ChevronDown className="size-3 mt-0.5" />
+                  <ChevronDown className="mt-0.5 size-3" />
                 </div>
               </div>
             </div>
@@ -72,41 +72,41 @@ const LandingMainContent = () => {
           <Button
             onClick={() => router.push("/signin")}
             variant="outline"
-            className="mt-6 border w-[400px] bg-white border-gray-600 rounded-full px-6 py-2"
+            className="mt-6 w-[400px] rounded-full border border-gray-600 bg-white px-6 py-2"
             disabled={isLoading}
           >
             Đăng nhập bằng email
           </Button>
 
-          <p className="mt-4 text-xs text-gray-600 items-start w-[400px] text-center">
+          <p className="mt-4 w-[400px] items-start text-center text-xs text-gray-600">
             Khi nhấp vào Tiếp tục để tham gia hoặc đăng nhập, bạn đồng ý với{" "}
             <a
               href="#"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="font-medium text-blue-600 hover:text-blue-800"
             >
               Thỏa thuận người dùng
             </a>
             ,{" "}
             <a
               href="#"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="font-medium text-blue-600 hover:text-blue-800"
             >
               Chính sách quyền riêng tư
             </a>{" "}
             và{" "}
             <a
               href="#"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="font-medium text-blue-600 hover:text-blue-800"
             >
               Chính sách cookie
             </a>{" "}
             của LinkedIn.
           </p>
-          <p className="mt-4 text-gray-600 items-start w-[400px] text-center">
+          <p className="mt-4 w-[400px] items-start text-center text-gray-600">
             Bạn mới sử dụng LinkedIn?{" "}
             <Link
               href="#"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="font-medium text-blue-600 hover:text-blue-800"
             >
               Tham gia ngay
             </Link>
@@ -117,7 +117,7 @@ const LandingMainContent = () => {
         <Image
           src={LandingImage}
           alt="Illustration"
-          className=" bg-transparent rounded-full"
+          className="rounded-full bg-transparent"
           width={650}
           height={520}
         />

@@ -7,15 +7,15 @@ import React from "react";
 const JobSidebar = () => {
   const router = useRouter();
   return (
-    <aside className="w-1/4 bg-white border border-[#DADEE2] rounded-lg shadow-sm h-fit max-[700px]:w-full">
-      <div className="p-4 space-y-2 flex flex-col">
-        <Button className="flex items-center space-x-3 hover:bg-slate-200 bg-white text-black justify-start">
+    <aside className="h-fit w-1/4 rounded-lg border border-[#DADEE2] bg-white shadow-sm max-[700px]:w-full">
+      <div className="flex flex-col space-y-2 p-4">
+        <Button className="flex items-center justify-start space-x-3 bg-white text-black hover:bg-slate-200">
           <Bookmark />
           <p className="">My jobs</p>
         </Button>
         <Button
           onClick={() => router.push("/job-posting")}
-          className="flex items-center space-x-3 hover:bg-slate-200 bg-white  justify-start text-blue-600"
+          className="flex items-center justify-start space-x-3 bg-white text-blue-600 hover:bg-slate-200"
         >
           <SquarePen />
           <p className="">Post a free job</p>

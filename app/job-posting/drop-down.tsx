@@ -41,31 +41,34 @@ const JobPostingDropdown = ({
     return (
       <DropdownMenu open={isWorkplaceOpen} onOpenChange={setIsWorkplaceOpen}>
         <DropdownMenuTrigger>
-          <div className="flex w-full border rounded-md justify-between p-2 border-black">
+          <div className="flex w-full justify-between rounded-md border border-black p-2">
             <p className="text-sm">{formData.workplaceType}</p>
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full flex flex-col  space-y-2 py-2">
+        <DropdownMenuContent className="flex w-full flex-col space-y-2 py-2">
           {workplaceType.map((type) => (
             <Button
               key={type}
               variant="ghost"
               onClick={() => {
-                setFormData({ ...formData, workplaceType: type });
+                setFormData({
+                  ...formData,
+                  workplaceType: type,
+                });
                 setIsWorkplaceOpen(false);
               }}
               className="w-[390px]"
             >
-              <div className="flex flex-col text-start flex-grow">
+              <div className="flex flex-grow flex-col text-start">
                 <div className="py-4">
                   <p className="pt-2">{type}</p>
-                  <p className="text-muted-foreground pb-2 text-xs">
+                  <p className="pb-2 text-xs text-muted-foreground">
                     {type === "On-site"
                       ? "Employees come to work in-person"
                       : type === "Hybrid"
-                      ? "Employees work on-site or off-site"
-                      : "Employees work off-site"}
+                        ? "Employees work on-site or off-site"
+                        : "Employees work off-site"}
                   </p>
                 </div>
               </div>
@@ -78,12 +81,12 @@ const JobPostingDropdown = ({
     return (
       <DropdownMenu open={isJobTypeOpen} onOpenChange={setIsJobTypeOpen}>
         <DropdownMenuTrigger>
-          <div className="flex w-full border rounded-md justify-between p-2 border-black">
+          <div className="flex w-full justify-between rounded-md border border-black p-2">
             <p className="text-sm">{formData.jobType}</p>
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full flex flex-col py-2 justify-start">
+        <DropdownMenuContent className="flex w-full flex-col justify-start py-2">
           {jobType.map((type) => (
             <Button
               key={type}
@@ -104,12 +107,12 @@ const JobPostingDropdown = ({
     return (
       <DropdownMenu open={isJobLevelOpen} onOpenChange={setIsJobLevelOpen}>
         <DropdownMenuTrigger>
-          <div className="flex w-full border rounded-md justify-between p-2 border-black">
+          <div className="flex w-full justify-between rounded-md border border-black p-2">
             <p className="text-sm">{formData.level}</p>
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full flex flex-col py-2 justify-start">
+        <DropdownMenuContent className="flex w-full flex-col justify-start py-2">
           {level.map((type) => (
             <Button
               key={type}

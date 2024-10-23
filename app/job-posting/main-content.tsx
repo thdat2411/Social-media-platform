@@ -1,12 +1,12 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
-import React, { useEffect, useRef, useState } from "react";
-import JobPostingDropdown from "./drop-down";
-import dynamic from "next/dynamic";
-import { jobPostingDescription } from "../utils/utils";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Plus, X } from "lucide-react";
+import dynamic from "next/dynamic";
+import React, { useEffect, useRef, useState } from "react";
+import { jobPostingDescription } from "../utils/utils";
+import JobPostingDropdown from "./drop-down";
 import PreviewModal from "./preview-modal";
 
 const JobPostingDescription = dynamic(() => import("./description-textarea"), {
@@ -75,15 +75,15 @@ const JobPostingMainContent = () => {
         setOpen={setIsReviewModalOpen}
         formData={formData}
       />
-      <h1 className="text-2xl font-semibold p-6 bg-[#F9FAFB]">
+      <h1 className="bg-[#F9FAFB] p-6 text-2xl font-semibold">
         Post a job description
       </h1>
       <Separator />
-      <div className="flex flex-col p-6 space-y-4">
-        <p className="text-muted-foreground text-sm">* Indicates required</p>
-        <p className="font-semibold text-xl">Job details*</p>
+      <div className="flex flex-col space-y-4 p-6">
+        <p className="text-sm text-muted-foreground">* Indicates required</p>
+        <p className="text-xl font-semibold">Job details*</p>
         <div className="flex w-full space-x-10 pb-10">
-          <div className="flex flex-col w-1/2 space-y-2">
+          <div className="flex w-1/2 flex-col space-y-2">
             <label
               htmlFor="job-title"
               className="text-sm text-muted-foreground"
@@ -94,14 +94,17 @@ const JobPostingMainContent = () => {
               type="text"
               value={formData.jobTitle}
               onChange={(e) =>
-                setFormData({ ...formData, jobTitle: e.target.value })
+                setFormData({
+                  ...formData,
+                  jobTitle: e.target.value,
+                })
               }
               id="job-title"
-              className="border rounded-md p-2 text-sm border-black"
+              className="rounded-md border border-black p-2 text-sm"
               required
             />
           </div>
-          <div className="flex flex-col w-1/2 space-y-2">
+          <div className="flex w-1/2 flex-col space-y-2">
             <label
               htmlFor="job-title"
               className="text-sm text-muted-foreground"
@@ -111,17 +114,20 @@ const JobPostingMainContent = () => {
             <input
               value={formData.company}
               onChange={(e) =>
-                setFormData({ ...formData, company: e.target.value })
+                setFormData({
+                  ...formData,
+                  company: e.target.value,
+                })
               }
               type="text"
               id="job-title"
-              className="border rounded-md p-2 text-sm border-black"
+              className="rounded-md border border-black p-2 text-sm"
               required
             />
           </div>
         </div>
         <div className="flex w-full space-x-10 pb-7">
-          <div className="flex flex-col w-1/2 space-y-2">
+          <div className="flex w-1/2 flex-col space-y-2">
             <label
               htmlFor="job-title"
               className="text-sm text-muted-foreground"
@@ -143,7 +149,7 @@ const JobPostingMainContent = () => {
               whatDropdown="workplace"
             />
           </div>
-          <div className="flex flex-col w-1/2 space-y-2">
+          <div className="flex w-1/2 flex-col space-y-2">
             <label
               htmlFor="job-title"
               className="text-sm text-muted-foreground"
@@ -153,17 +159,20 @@ const JobPostingMainContent = () => {
             <input
               value={formData.jobLocation}
               onChange={(e) =>
-                setFormData({ ...formData, jobLocation: e.target.value })
+                setFormData({
+                  ...formData,
+                  jobLocation: e.target.value,
+                })
               }
               type="text"
               id="job-title"
-              className="border rounded-md p-2 text-sm border-black"
+              className="rounded-md border border-black p-2 text-sm"
               required
             />
           </div>
         </div>
         <div className="flex w-full space-x-10 pb-7">
-          <div className="flex flex-col w-1/2 space-y-2">
+          <div className="flex w-1/2 flex-col space-y-2">
             <label
               htmlFor="job-title"
               className="text-sm text-muted-foreground"
@@ -185,7 +194,7 @@ const JobPostingMainContent = () => {
               whatDropdown="jobType"
             />
           </div>
-          <div className="flex flex-col w-1/2 space-y-2">
+          <div className="flex w-1/2 flex-col space-y-2">
             <label
               htmlFor="job-title"
               className="text-sm text-muted-foreground"
@@ -209,14 +218,14 @@ const JobPostingMainContent = () => {
           </div>
         </div>
         <div>
-          <p className="font-semibold text-xl mb-4">Description*</p>
+          <p className="mb-4 text-xl font-semibold">Description*</p>
           <JobPostingDescription
             setFormData={setFormData}
             formData={formData}
           />
         </div>
-        <p className="font-semibold text-xl">Skill*</p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-xl font-semibold">Skill*</p>
+        <p className="text-sm text-muted-foreground">
           {" "}
           Add skill keywords (max 10) to make your job more visible to the right
           candidates.
@@ -233,19 +242,19 @@ const JobPostingMainContent = () => {
                 }
                 key={index}
                 variant="ghost"
-                className="bg-blue-500 p-3 space-x-2 text-white rounded-full hover:bg-blue-700 hover:text-white flex justify-between w-fit text-base mr-2 mb-3"
+                className="mb-3 mr-2 flex w-fit justify-between space-x-2 rounded-full bg-blue-500 p-3 text-base text-white hover:bg-blue-700 hover:text-white"
               >
                 <p>{skill}</p>
                 <X className="size-5" />
               </Button>
             ))}
-          <div className="rounded-full border h-fit flex items-center w-fit">
+          <div className="flex h-fit w-fit items-center rounded-full border">
             <input
               type="text"
               ref={inputRef}
               value={skill}
               onChange={(e) => setSkill(e.target.value)}
-              className="rounded-l-full  pl-2 py-2 text-sm border-black"
+              className="rounded-l-full border-black py-2 pl-2 text-sm"
               style={{ width: inputWidth }}
               placeholder="Add skill"
               disabled={formData.skills.length >= 10}
@@ -259,7 +268,7 @@ const JobPostingMainContent = () => {
                 setSkill("");
               }}
               variant="ghost"
-              className="hover:bg-transparent p-0 pr-2 rounded-full "
+              className="rounded-full p-0 pr-2 hover:bg-transparent"
               disabled={formData.skills.length >= 10}
             >
               <Plus className="size-4" />
@@ -268,7 +277,7 @@ const JobPostingMainContent = () => {
         </div>
       </div>
       <Separator />
-      <div className="flex justify-between items-center p-6 flex-wrap">
+      <div className="flex flex-wrap items-center justify-between p-6">
         <Button
           onClick={() => {
             setIsReviewModalOpen(true);
@@ -282,7 +291,7 @@ const JobPostingMainContent = () => {
         <Button
           type="submit"
           onClick={() => console.log(formData)}
-          className="bg-blue-500 text-white hover:bg-blue-700 rounded-full hover:text-white"
+          className="rounded-full bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
         >
           Next
         </Button>
