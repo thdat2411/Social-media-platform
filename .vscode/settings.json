@@ -1,14 +1,3 @@
 {
-  "sqltools.connections": [
-    {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5433,
-      "driver": "PostgreSQL",
-      "name": "postgres-platform",
-      "database": "platform",
-      "username": "root",
-      "password": "drowssap"
-    }
-  ]
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
