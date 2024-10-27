@@ -1,27 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { job_posting } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Clock, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { JobsPostList } from "../utils/utils";
 import JobsContainer from "./container";
-
-export type Jobs = {
-  title: string;
-  hiringName: string;
-  location: string;
-  isViewed: boolean;
-  applicantNumber: number;
-};
 
 export type History = {
   title: string;
   location: string;
 };
 
-const JobsMainContent = () => {
+export type JobsPost = job_posting & { applicantCount: number };
+
+interface JobsMainContentProps {
+  jobPosts: JobsPost[];
+}
+
+const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
   const router = useRouter();
-  const jobs = JobsPostList.slice(0, 3);
+  const jobs = jobPosts.slice(0, 3);
   const scrollRef = useRef(null);
   const [isLeftDisabled, setIsLeftDisabled] = useState(true);
   const [isRightDisabled, setIsRightDisabled] = useState(false);

@@ -4,6 +4,7 @@ import {
   differenceInMinutes,
   parseISO,
 } from "date-fns";
+import skills from "../utils/linkedin_skills.txt";
 
 export const defaultEvent = {
   eventName: "",
@@ -31,6 +32,11 @@ type Category = {
   content: string[];
 };
 
+export const skillList = skills
+  .split("\n")
+  .map((skill) => skill.trim())
+  .filter((skill) => skill);
+
 export const category = ["All", "Jobs", "Posts", "People"];
 const datePost: Category = {
   title: "Date posted",
@@ -47,6 +53,7 @@ const remote: Category = {
 export const jobHeader: Category[] = [datePost, experience, remote];
 
 export type JobsPost = {
+  employer_id: string | null;
   id: string;
   title: string;
   company: string;
@@ -154,225 +161,4 @@ export const base64ToFile = (base64String: string, fileName: string): File => {
 export const jobPostingDescription: string =
   '<p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Tips: Provide a summary of the role, what success in the position looks like, and how this role fits into the organization.</span></p><p><br></p><p><strong style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Responsibilities</strong></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">[Be specific when describing each of the responsibilities. Use gender-neutral, inclusive language.]</span></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Example: Determine and develop user requirements for systems in production, to ensure maximum usability</span></p><p><br></p><p><strong style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Qualifications</strong></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">[Some qualifications you may want to include are Skills, Education, Experience, or Certifications.]</span></p><p><span style="color: rgba(0, 0, 0, 0.9); background-color: rgb(255, 255, 255);">Example: Excellent verbal and written communication skills</span></p><p><br></p>';
 
-export const JobsPostList: JobsPost[] = [
-  {
-    id: "1",
-    title: "Software Engineer",
-    company: "Google",
-    location: "Mountain View, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "2",
-    title: "Software Engineer",
-    company: "Facebook",
-    location: "Menlo Park, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "3",
-    title: "Software Engineer",
-    company: "Amazon",
-    location: "Seattle, WA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "4",
-    title: "Software Engineer",
-    company: "Microsoft",
-    location: "Redmond, WA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Director",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "5",
-    title: "Software Engineer",
-    company: "Apple",
-    location: "Cupertino, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "6",
-    title: "Software Engineer",
-    company: "Netflix",
-    location: "Los Gatos, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "7",
-    title: "Software Engineer",
-    company: "Tesla",
-    location: "Palo Alto, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "8",
-    title: "Software Engineer",
-    company: "Tesla",
-    location: "Palo Alto, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "9",
-    title: "Software Engineer",
-    company: "Tesla",
-    location: "Palo Alto, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-  {
-    id: "10",
-    title: "Software Engineer",
-    company: "Tesla",
-    location: "Palo Alto, CA",
-    date: "2024-10-01T12:00:00",
-    description: jobPostingDescription,
-    experience: "Entry level",
-    workplaceType: "Remote",
-    jobType: "Full-time",
-    level: "Entry level",
-    skill: [
-      "Write Communication",
-      "Usability",
-      "User Requirements",
-      "User Experience",
-      "User Interface Design",
-      "User Research",
-      "User Stories",
-    ],
-    applicants: 10,
-  },
-];
+

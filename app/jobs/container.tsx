@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { JobsPost } from "../utils/utils";
+import { JobsPost } from "./main-content";
 
 interface JobsContainerProps {
   key: number;
@@ -35,13 +35,13 @@ const JobsContainer = ({ key, item }: JobsContainerProps) => {
           >
             {item.title}
           </Link>
-          <p className="text-sm text-gray-600">{item.company}</p>
+          <p className="text-sm text-gray-600">{item.company_name}</p>
           <p className="text-sm text-[#9B9B9B]">{item.location}</p>
           <div className="flex flex-wrap items-center justify-start space-x-1">
             <p className="text-sm text-[#9B9B9B]">Promoted</p>
             <span className="text-lg text-[#9B9B9B]">∙</span>
             <p className="text-sm text-[#69AD97]">
-              {item.applicants} applicants
+              {item.applicantCount} applicants
             </p>
           </div>
         </div>

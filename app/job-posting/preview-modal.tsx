@@ -8,24 +8,28 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { job_posting, user } from "@prisma/client";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
 import { MdBusinessCenter } from "react-icons/md";
 import Renderer from "../components/renderer";
-import { FormDataType } from "./main-content";
 
 interface PreviewModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  formData: FormDataType;
+  formData: job_posting;
+  user: user;
 }
 
-const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
+const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
   const [showAll, setShowAll] = useState(false);
-  const skillsToShow = showAll ? formData.skills : formData.skills.slice(0, 2);
-  const additionalCount = formData.skills.length - 2;
+  const skillsToShow = showAll
+    ? formData.required_skills
+    : formData.required_skills.slice(0, 2);
+  const additionalCount = formData.required_skills.length - 2;
+  const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
 
   const handleToggle = () => {
     setShowAll(!showAll);
@@ -56,30 +60,31 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
                 width={45}
                 height={45}
               />
-              <p className="mt-2 text-2xl font-semibold">{formData.jobTitle}</p>
+              <p className="mt-2 text-2xl font-semibold">{formData.title}</p>
               <p className="mb-10 text-sm">
                 {" "}
-                · {formData.jobLocation} ({formData.workplaceType})
+                · {formData.location} ({formData.workplace_type})
               </p>
               <div className="mb-2 flex items-center space-x-3 text-sm">
                 <MdBusinessCenter className="size-6 text-[#666666]" />
                 <p>
-                  {formData.jobType} · {formData.level}{" "}
+                  {formData.job_type} · {formData.level}{" "}
                 </p>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <FaListCheck className="mr-1 size-5 text-[#666666]" />
                 <p>
                   Skills:{" "}
-                  {formData.skills.length === 0 && (
+                  {formData.required_skills.length === 0 ? (
                     <span className="text-muted-foreground">(None)</span>
+                  ) : (
+                    skillsToShow.map((skill, index) => (
+                      <span key={index}>
+                        {skill}
+                        {index < skillsToShow.length - 1 && ", "}
+                      </span>
+                    ))
                   )}
-                  {skillsToShow.map((skill, index) => (
-                    <span key={index}>
-                      {skill}
-                      {index < skillsToShow.length - 1 && ", "}
-                    </span>
-                  ))}
                   {additionalCount > 0 && !showAll && (
                     <button
                       onClick={handleToggle}
@@ -91,13 +96,15 @@ const PreviewModal = ({ open, setOpen, formData }: PreviewModalProps) => {
                 </p>
               </div>
               <p className="my-3 text-sm text-muted-foreground">Posted by</p>
-              <div className="flex items-center space-x-2">
-                <Avatar>
+              <div className="mb-2 flex items-center space-x-2">
+                <Avatar className="size-14">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    className="size-12 rounded-full"
+                    src={user.image ?? ""}
+                    className="rounded-full"
                   />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback className="bg-blue-300 text-2xl text-white">
+                    {avatarFallBack}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="mb-3 flex flex-col">
                   <p className="font-medium">Thai Dat</p>

@@ -1,6 +1,5 @@
 "use client";
 import CompanyImage from "@/app/assets/company.png";
-import { JobsPostList } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { job_posting } from "@prisma/client";
 import {
   ChevronLeft,
   ChevronRight,
@@ -19,8 +19,13 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-const PostedJobsMainContent = () => {
-  const postedJobs = JobsPostList;
+
+interface PostedJobsMainContentProps {
+  jobPosts:job_posting[];
+}
+
+const PostedJobsMainContent = ({jobPosts}:PostedJobsMainContentProps) => {
+  const postedJobs = jobPosts;
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
@@ -96,7 +101,7 @@ const PostedJobsMainContent = () => {
                         {job.title}
                       </p>
                       <p className="text-sm font-light text-muted-foreground">
-                        {job.location} ({job.workplaceType})
+                        {job.location} ({job.workplace_type})
                       </p>
                     </div>
                     <DropdownMenu>

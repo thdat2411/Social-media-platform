@@ -1,41 +1,32 @@
-"use client";
+import { capitalizeFirstLetter, skillList } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { job_posting, user } from "@prisma/client";
-import axios from "axios";
+import { Separator } from "@radix-ui/react-separator";
 import { debounce } from "lodash";
 import { Loader, Plus, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import {
-  capitalizeFirstLetter,
-  jobPostingDescription,
-  skillList,
-} from "../utils/utils";
-import JobPostingDropdown from "./drop-down";
-import InputSugesstion from "./input-suggestion";
-import PreviewModal from "./preview-modal";
-const JobPostingDescription = dynamic(() => import("./description-textarea"), {
-  ssr: false,
-});
-export type FormDataType = {
-  jobTitle: string;
-  company: string;
-  workplaceType: string;
-  jobLocation: string;
-  jobType: string;
-  description: string;
-  level: string;
-  skills: string[];
-};
+import JobPostingDropdown from "../../drop-down";
+import InputSugesstion from "../../input-suggestion";
+import PreviewModal from "../../preview-modal";
 
-interface JobPostingMainContentProps {
-  user: user | null;
+const JobPostingDescription = dynamic(
+  () => import("../../description-textarea"),
+  {
+    ssr: false,
+  }
+);
+
+interface JobPostingDropdownProps {
+  job_posting: job_posting;
+  user: user;
 }
 
-const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
+const EditJobPostingMainContent = ({
+  job_posting,
+  user,
+}: JobPostingDropdownProps) => {
   const router = useRouter();
   const [isWorkplaceOpen, setIsWorkplaceOpen] = useState(false);
   const [isJobTypeOpen, setIsJobTypeOpen] = useState(false);
@@ -53,6 +44,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
   const [isCompanyError, setIsCompanyError] = useState(false);
   const [isLocationError, setIsLocationError] = useState(false);
   const [isDescriptionError, setIsDescriptionError] = useState(false);
+  const [formData, setFormData] = useState<job_posting>(job_posting);
 
   const workplaceType = ["On-site", "Remote", "Hybrid"];
   const jobType = [
@@ -70,21 +62,18 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     "Executive",
     "Senior",
   ];
-  const [formData, setFormData] = useState<job_posting>({
-    id: "",
-    location: "",
-    company_name: "",
-    created_at: null,
-    updated_at: null,
-    employer_id: user?.id ?? null,
-    title: "",
-    description: jobPostingDescription,
-    workplace_type: "On-site",
-    job_type: "Full-time",
-    level: "Entry level",
-    required_skills: [],
-  });
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  useEffect(() => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (context) {
+      context.font = "16px sans-serif";
+      const textWidth = context.measureText(skill).width;
+      setInputWidth(`${Math.max(80, textWidth + 20)}px`);
+    }
+  }, [skill]);
   const debouncedFilterSuggestions = debounce((value) => {
     if (!value) {
       setSkill("");
@@ -95,74 +84,18 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
       .slice(0, 200);
     setSkillSuggestion(filteredTitles);
   }, 300);
-
   const handleSkillChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSkill(value);
     debouncedFilterSuggestions(value);
   };
-
-  const handleSubmit = () => {
-    if (
-      formData.title === "" ||
-      formData.company_name === "" ||
-      formData.location === "" ||
-      formData.description === ""
-    ) {
-      if (formData.title === "") {
-        setIsJobError(true);
-      }
-      if (formData.company_name === "") {
-        setIsCompanyError(true);
-      }
-      if (formData.location === "") {
-        setIsLocationError(true);
-      }
-      if (formData.description === "") {
-        setIsDescriptionError(true);
-      }
-      toast.error("Please fill in all required fields");
-    } else {
-      setIsLoading(true);
-      axios
-        .post("/api/job-posting", formData)
-        .then(() => {
-          toast.success("Posting job successfully");
-          router.push("/signin");
-        })
-        .catch((error) => {
-          toast.error(
-            error.response?.data?.error ||
-              "Posting job failed, please try again"
-          );
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  };
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    if (context) {
-      context.font = "16px sans-serif";
-      const textWidth = context.measureText(skill).width;
-      setInputWidth(`${Math.max(80, textWidth + 20)}px`);
-    }
-  }, [skill]);
-
   return (
     <>
       <PreviewModal
         open={isReviewModalOpen}
         setOpen={setIsReviewModalOpen}
         formData={formData}
-        user={user!}
+        user={user}
       />
       <div className="mx-10 overflow-x-hidden rounded-lg border bg-white shadow-md max-[500px]:w-11/12 min-[500px]:max-w-4xl">
         {isLoading && (
@@ -392,7 +325,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
           </Button>
           <Button
             type="submit"
-            onClick={handleSubmit}
+            onClick={() => {}}
             className="rounded-full bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
           >
             Post
@@ -403,4 +336,4 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
   );
 };
 
-export default JobPostingMainContent;
+export default EditJobPostingMainContent;

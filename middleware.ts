@@ -11,6 +11,8 @@ export default withAuth({
         "/api/register/check-email",
         "/api/register/user",
         "/api/register/job-preference",
+        "/forgot-password",
+        "/api/email"
       ];
 
       return ignoredPaths.includes(req.nextUrl.pathname) || !!token;

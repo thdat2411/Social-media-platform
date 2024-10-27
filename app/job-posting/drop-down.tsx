@@ -1,12 +1,13 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { job_posting } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
-import React from "react";
-import { FormDataType } from "./main-content";
+import React, { useEffect, useState } from "react";
 
 interface JobPostingDropdownProps {
   isWorkplaceOpen: boolean;
@@ -15,8 +16,8 @@ interface JobPostingDropdownProps {
   setIsJobTypeOpen: (value: boolean) => void;
   isJobLevelOpen: boolean;
   setIsJobLevelOpen: (value: boolean) => void;
-  formData: FormDataType;
-  setFormData: (value: FormDataType) => void;
+  formData: job_posting;
+  setFormData: (value: job_posting) => void;
   workplaceType: string[];
   jobType: string[];
   level: string[];
@@ -37,12 +38,40 @@ const JobPostingDropdown = ({
   level,
   whatDropdown,
 }: JobPostingDropdownProps) => {
+  const [dimensions, setDimensions] = useState<{
+    width: number | undefined;
+    height: number | undefined;
+  }>({
+    width: undefined,
+    height: undefined,
+  });
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (typeof window !== "undefined") {
+        setDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+        console.log(dimensions);
+      }
+    };
+
+    updateDimensions();
+
+    window.addEventListener("resize", updateDimensions);
+
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
   if (whatDropdown === "workplace") {
     return (
       <DropdownMenu open={isWorkplaceOpen} onOpenChange={setIsWorkplaceOpen}>
-        <DropdownMenuTrigger>
-          <div className="flex w-full justify-between rounded-md border border-black p-2">
-            <p className="text-sm">{formData.workplaceType}</p>
+        <DropdownMenuTrigger className="w-full">
+          <div className="flex w-full flex-1 justify-between rounded-md border border-black p-2">
+            <p className="w-full text-left max-[450px]:text-xs min-[450px]:text-sm">
+              {formData.workplace_type}
+            </p>
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
@@ -54,16 +83,16 @@ const JobPostingDropdown = ({
               onClick={() => {
                 setFormData({
                   ...formData,
-                  workplaceType: type,
+                  workplace_type: type,
                 });
                 setIsWorkplaceOpen(false);
               }}
-              className="w-[390px]"
+              className="justify-start max-[550px]:max-w-full min-[550px]:w-[350px]"
             >
-              <div className="flex flex-grow flex-col text-start">
+              <div className="flex flex-col text-start">
                 <div className="py-4">
                   <p className="pt-2">{type}</p>
-                  <p className="pb-2 text-xs text-muted-foreground">
+                  <p className="break-words pb-2 text-xs text-muted-foreground">
                     {type === "On-site"
                       ? "Employees come to work in-person"
                       : type === "Hybrid"
@@ -82,7 +111,9 @@ const JobPostingDropdown = ({
       <DropdownMenu open={isJobTypeOpen} onOpenChange={setIsJobTypeOpen}>
         <DropdownMenuTrigger>
           <div className="flex w-full justify-between rounded-md border border-black p-2">
-            <p className="text-sm">{formData.jobType}</p>
+            <p className="max-[450px]:text-xs min-[450px]:text-sm">
+              {formData.job_type}
+            </p>
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
@@ -92,10 +123,10 @@ const JobPostingDropdown = ({
               key={type}
               variant="ghost"
               onClick={() => {
-                setFormData({ ...formData, jobType: type });
+                setFormData({ ...formData, job_type: type });
                 setIsJobTypeOpen(false);
               }}
-              className="w-[390px] justify-start"
+              className="justify-start max-[550px]:max-w-[250px] min-[550px]:w-[350px]"
             >
               {type}
             </Button>
@@ -108,7 +139,9 @@ const JobPostingDropdown = ({
       <DropdownMenu open={isJobLevelOpen} onOpenChange={setIsJobLevelOpen}>
         <DropdownMenuTrigger>
           <div className="flex w-full justify-between rounded-md border border-black p-2">
-            <p className="text-sm">{formData.level}</p>
+            <p className="max-[450px]:text-xs min-[450px]:text-sm">
+              {formData.level}
+            </p>
             <ChevronDown className="size-4" />
           </div>
         </DropdownMenuTrigger>
@@ -121,7 +154,7 @@ const JobPostingDropdown = ({
                 setFormData({ ...formData, level: type });
                 setIsJobLevelOpen(false);
               }}
-              className="w-[390px] justify-start"
+              className="justify-start max-[550px]:max-w-[250px] min-[550px]:w-[350px]"
             >
               {type}
             </Button>

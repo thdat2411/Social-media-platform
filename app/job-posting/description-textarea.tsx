@@ -1,16 +1,19 @@
 import Quill, { QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FormDataType } from "./main-content";
+
+import { job_posting } from "@prisma/client";
 
 interface JobPostingDescriptionProps {
-  setFormData: (data: FormDataType) => void;
-  formData: FormDataType;
+  setFormData: (data: job_posting) => void;
+  formData: job_posting;
+  isError: boolean;
 }
 
 const JobPostingDescription = ({
   setFormData,
   formData,
+  isError,
 }: JobPostingDescriptionProps) => {
   const [quillText, setQuillText] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,7 +32,6 @@ const JobPostingDescription = ({
     if (text !== formData.description) {
       setFormData({ ...formData, description: text });
     }
-    console.log("text", text);
 
     const plainText = text
       ?.replace(/<[^>]*>/g, "")
@@ -78,10 +80,18 @@ const JobPostingDescription = ({
 
   return (
     <>
-      <div className="border border-black">
-        <div ref={containerRef} style={{ height: "400px" }} />
+      <div
+        className={` ${isError ? "border border-red-500" : "border border-black"} `}
+      >
+        <div
+          ref={containerRef}
+          style={{
+            height: "400px",
+          }}
+          className="max-[500px]:w-full min-[500px]:w-[500px] min-[600px]:w-[500px] min-[700px]:w-[600px] min-[800px]:w-[700px] min-[900px]:w-[800px]"
+        />
       </div>
-      <p className="mt-2 text-end text-sm text-muted-foreground">
+      <p className="mt-2 text-end text-muted-foreground max-[480px]:text-xs min-[450px]:text-sm">
         {wordCount}/10,000
       </p>
     </>

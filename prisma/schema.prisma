@@ -27,7 +27,7 @@ model user {
   connections_connections_user_id_1Tousers connection[]      @relation("connections_user_id_1Tousers")
   connections_connections_user_id_2Tousers connection[]      @relation("connections_user_id_2Tousers")
   job_applications                         job_application[]
-  job_listings                             job_listing[]
+  job_listings                             job_posting[]
   messages_messages_receiver_idTousers     message[]         @relation("messages_receiver_idTousers")
   messages_messages_sender_idTousers       message[]         @relation("messages_sender_idTousers")
   posts                                    post[]
@@ -82,23 +82,23 @@ model job_application {
   status         String?      @db.VarChar(50)
   created_at     DateTime?    @default(now()) @db.Timestamp(6)
   updated_at     DateTime?    @default(now()) @db.Timestamp(6)
-  job_listings   job_listing? @relation(fields: [job_listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  job_listings   job_posting? @relation(fields: [job_listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users          user?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([job_listing_id, user_id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model job_listing {
+model job_posting {
   id               String            @id @default(cuid())
   employer_id      String?
   title            String            @db.VarChar(255)
   description      String
+  company_name     String            @db.VarChar(255)
   location         String?           @db.VarChar(255)
   workplace_type   String?           @db.VarChar(50)
   job_type         String?           @db.VarChar(50)
   level            String?           @db.VarChar(50)
-  salary_range     String?           @db.VarChar(100)
   required_skills  String[]
   created_at       DateTime?         @default(now()) @db.Timestamp(6)
   updated_at       DateTime?         @default(now()) @db.Timestamp(6)

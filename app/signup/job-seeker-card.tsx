@@ -14,7 +14,7 @@ interface JobSeekerCardProps {
 }
 
 const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
-  const jobTitles = OccupationData.occupations;
+  const jobTitles = OccupationData.titles;
   const router = useRouter();
   const [jobInputValue, setJobInputValue] = useState("");
   const [locationInputValue, setLocationInputValue] = useState("");
@@ -167,7 +167,10 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
           onBlur={() => handleBlur(true)}
         />
         {isJobFocused && jobSuggestions.length > 0 && (
-          <ul className="absolute top-[80px] z-10 mt-2 max-h-32 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white">
+          <ul
+            className="absolute top-[80px] z-10 mt-2 max-h-32 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             {jobSuggestions.map((title) => (
               <li
                 key={title}
@@ -193,7 +196,10 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
           onBlur={() => handleBlur(false)}
         />
         {isLocationFocused && locationSuggestions.length > 0 && (
-          <ul className="absolute top-[75px] z-10 mt-2 max-h-32 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white">
+          <ul
+            className="absolute top-[75px] z-10 mt-2 max-h-32 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             {locationSuggestions.map((location, index) => (
               <li
                 key={index}

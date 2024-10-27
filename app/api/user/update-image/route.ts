@@ -6,7 +6,7 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const { userId, image } = body;
     if (!image || !userId) {
-      return new Response("Missing info", { status: 400 });
+      return Response.json({ error: "Missing info" }, { status: 400 });
     }
     const user = await prisma.user.update({
       where: {
@@ -18,6 +18,6 @@ export async function PUT(req: NextRequest) {
     });
     return new Response(JSON.stringify(user), { status: 200 });
   } catch {
-    return new Response("Error", { status: 400 });
+    return Response.json({ error: "Error" }, { status: 400 });
   }
 }

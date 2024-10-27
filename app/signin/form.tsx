@@ -36,11 +36,11 @@ const LoginForm = () => {
     }
   }, [session?.status, router]);
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
     setError("");
 
-    signIn("credentials", {
+    await signIn("credentials", {
       ...data,
       redirect: false,
     })
@@ -73,24 +73,6 @@ const LoginForm = () => {
       })
       .finally(() => setIsLoading(false));
   };
-
-  // const socialAction = () => {
-  //   setIsLoading(true);
-
-  //   signIn("google", {
-  //     redirect: false,
-  //   })
-  //     .then((callback) => {
-  //       if (callback?.error) {
-  //         toast.error(callback.error);
-  //       }
-  //       if (callback?.ok && !callback.error) {
-  //         toast.success("Logged in!");
-  //         router.push("/feed");
-  //       }
-  //     })
-  //     .finally(() => setIsLoading(false));
-  // };
 
   return (
     <div className="mt-36 w-full max-w-sm rounded-lg border bg-white p-8 shadow-md">
@@ -190,7 +172,7 @@ const LoginForm = () => {
         </div>
         <Link
           className="mb-4 mt-2 block text-sm font-bold text-blue-600 hover:underline"
-          href="#"
+          href="/forgot-password"
         >
           Forgot password?
         </Link>

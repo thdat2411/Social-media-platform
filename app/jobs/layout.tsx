@@ -1,14 +1,16 @@
 import React from "react";
+import getCurrentUser from "../actions/getCurrentUser";
 import Header from "../components/header";
 
 interface JobsLayoutProps {
   children: React.ReactNode;
 }
 
-const JobsLayout = ({ children }: JobsLayoutProps) => {
+const JobsLayout = async ({ children }: JobsLayoutProps) => {
+  const user = await getCurrentUser();
   return (
     <div className="h-full">
-      <Header />
+      <Header user={user!} />
       {children}
     </div>
   );
