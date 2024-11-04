@@ -1,12 +1,17 @@
+"use client";
+import ConfirmModal from "@/app/components/confirm-modal";
+import { JobsPost } from "@/app/jobs/main-content";
 import { capitalizeFirstLetter, skillList } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
 import { job_posting, user } from "@prisma/client";
 import { Separator } from "@radix-ui/react-separator";
+import axios from "axios";
 import { debounce } from "lodash";
 import { Loader, Plus, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import JobPostingDropdown from "../../drop-down";
 import InputSugesstion from "../../input-suggestion";
 import PreviewModal from "../../preview-modal";
@@ -19,7 +24,7 @@ const JobPostingDescription = dynamic(
 );
 
 interface JobPostingDropdownProps {
-  job_posting: job_posting;
+  job_posting: JobsPost;
   user: user;
 }
 
@@ -44,6 +49,9 @@ const EditJobPostingMainContent = ({
   const [isCompanyError, setIsCompanyError] = useState(false);
   const [isLocationError, setIsLocationError] = useState(false);
   const [isDescriptionError, setIsDescriptionError] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
+    useState(false);
   const [formData, setFormData] = useState<job_posting>(job_posting);
 
   const workplaceType = ["On-site", "Remote", "Hybrid"];
@@ -89,8 +97,71 @@ const EditJobPostingMainContent = ({
     setSkill(value);
     debouncedFilterSuggestions(value);
   };
+
+  const handleUpdate = () => {
+    setIsConfirmModalOpen(false);
+    if (
+      formData.title === "" ||
+      formData.company_name === "" ||
+      formData.location === "" ||
+      formData.description === ""
+    ) {
+      if (formData.title === "") {
+        setIsJobError(true);
+      }
+      if (formData.company_name === "") {
+        setIsCompanyError(true);
+      }
+      if (formData.location === "") {
+        setIsLocationError(true);
+      }
+      if (formData.description === "") {
+        setIsDescriptionError(true);
+      }
+      toast.error("Please fill in all required fields");
+    } else {
+      setIsLoading(true);
+      axios
+        .put(`/api/job-posting/${job_posting.id}`, formData)
+        .then(() => {
+          toast.success("Update post successfully");
+          router.refresh();
+        })
+        .catch((error) => {
+          toast.error(
+            error.response?.data?.error ||
+              "Posting job failed, please try again"
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  };
   return (
     <>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        setOpen={setIsConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleUpdate}
+        title="Update posting"
+        content="Are you sure you want to update this job posting?"
+        cancelLabel="Cancel"
+        confirmLabel="Confirm"
+        width="400"
+      />
+      <ConfirmModal
+        open={isDeleteConfirmModalOpen}
+        setOpen={setIsDeleteConfirmModalOpen}
+        onClose={() => setIsDeleteConfirmModalOpen(false)}
+        onConfirm={() => {}}
+        title="Delete posting"
+        content="Are you sure you want to delete this job posting?"
+        cancelLabel="Cancel"
+        confirmLabel="Confirm"
+        width="400"
+      />
       <PreviewModal
         open={isReviewModalOpen}
         setOpen={setIsReviewModalOpen}
@@ -135,7 +206,7 @@ const EditJobPostingMainContent = ({
               <input
                 type="text"
                 className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${isCompanyError ? "outline outline-2 outline-red-500" : "border border-black"}`}
-                value={formData.company_name}
+                value={formData?.company_name}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -242,13 +313,13 @@ const EditJobPostingMainContent = ({
             right candidates.
           </p>
           <div className="flex flex-wrap">
-            {formData.required_skills !== null &&
-              formData.required_skills.map((skill, index) => (
+            {formData?.required_skills !== null &&
+              formData?.required_skills?.map((skill, index) => (
                 <Button
                   onClick={() =>
                     setFormData({
                       ...formData,
-                      required_skills: formData.required_skills.filter(
+                      required_skills: formData?.required_skills.filter(
                         (_, i) => i !== index
                       ),
                     })
@@ -270,7 +341,7 @@ const EditJobPostingMainContent = ({
                 className="rounded-l-full border-black py-2 pl-2 text-sm"
                 style={{ width: inputWidth }}
                 placeholder="Add skill"
-                disabled={formData.required_skills.length >= 10}
+                disabled={formData?.required_skills?.length >= 10}
                 onClick={() => setIsSkillFocused(true)}
                 onBlur={() => setTimeout(() => setIsSkillFocused(false), 100)}
               />
@@ -297,14 +368,14 @@ const EditJobPostingMainContent = ({
                 onClick={() => {
                   setFormData({
                     ...formData,
-                    required_skills: [...formData.required_skills, skill],
+                    required_skills: [...formData?.required_skills, skill],
                   });
                   setSkill("");
                   setSkillSuggestion([]);
                 }}
                 variant="ghost"
                 className="rounded-full p-0 pr-2 hover:bg-transparent"
-                disabled={formData.required_skills.length >= 10}
+                disabled={formData?.required_skills?.length >= 10}
               >
                 <Plus className="size-4" />
               </Button>
@@ -319,17 +390,26 @@ const EditJobPostingMainContent = ({
               console.log(formData.description);
             }}
             variant="ghost"
-            className="text-blue-500 hover:bg-blue-100 hover:text-blue-700"
+            className="text-base text-blue-500 hover:bg-blue-100 hover:text-blue-700"
           >
             Preview
           </Button>
-          <Button
-            type="submit"
-            onClick={() => {}}
-            className="rounded-full bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
-          >
-            Post
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Button
+              type="submit"
+              onClick={() => setIsConfirmModalOpen(true)}
+              className="rounded-full bg-red-500 text-lg text-white hover:bg-red-700 hover:text-white"
+            >
+              Delete
+            </Button>
+            <Button
+              type="submit"
+              onClick={() => setIsConfirmModalOpen(true)}
+              className="rounded-full bg-blue-500 text-lg text-white hover:bg-blue-700 hover:text-white"
+            >
+              Update
+            </Button>
+          </div>
         </div>
       </div>
     </>

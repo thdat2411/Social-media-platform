@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-export const getPosts = async () => {
+export const getJobPosts = async () => {
     try {
         const posts = await prisma.job_posting.findMany({
             include: {

@@ -79,8 +79,8 @@ const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
             Based on your profile and search history
           </p>
           <div className="flex w-full flex-col space-y-3 p-4">
-            {jobs.map((item, index) => (
-              <JobsContainer key={index} item={item} lists={jobs} />
+            {jobs.map((item) => (
+              <JobsContainer key={item.id} item={item} lists={jobs} />
             ))}
           </div>
           <Button

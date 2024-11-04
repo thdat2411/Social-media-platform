@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import useRoutes from "../hooks/useRoutes";
 import ConfirmModal from "./confirm-modal";
+import useSSE from "./NotificationComponent";
 import SearchDropDown from "./search-dropdown";
 import UserDropdown from "./user-dropdown";
 
@@ -35,6 +36,7 @@ const Header = ({ user }: HeaderProps) => {
   const [isJobsPage, setIsJobsPage] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isNewNotification, setIsNewNotification] = useState(false);
 
   const handleMouseEnter = useCallback(
     (index: number) => {
@@ -94,18 +96,33 @@ const Header = ({ user }: HeaderProps) => {
   }, [pathname]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 900);
+    let mediaQueryList;
+    if (isJobSearchFocus) {
+      mediaQueryList = window.matchMedia("(max-width: 900px)");
+    } else {
+      mediaQueryList = window.matchMedia("(max-width: 1200px)");
+    }
+
+    interface MediaQueryChangeEvent {
+      matches: boolean;
+    }
+
+    const handleMediaQueryChange = (event: MediaQueryChangeEvent) => {
+      setIsMobile(event.matches);
     };
 
-    handleResize();
+    // Set the initial state based on the current media query
+    setIsMobile(mediaQueryList.matches);
+    console.log(isMobile);
 
-    window.addEventListener("resize", handleResize);
+    // Add event listener
+    mediaQueryList.addEventListener("change", handleMediaQueryChange);
+
     return () => {
-      window.removeEventListener("resize", handleResize);
+      // Cleanup the event listener
+      mediaQueryList.removeEventListener("change", handleMediaQueryChange);
     };
   }, []);
-
   return (
     <>
       {(isJobSearchFocus || isLocationSearchFocus) && (
@@ -243,10 +260,15 @@ const Header = ({ user }: HeaderProps) => {
                   }`}
                 >
                   <route.icon
-                    className={`mt-2 size-6 ${
+                    className={`relative mt-2 size-6 ${
                       route.active ? "text-[#0A66C2]" : ""
                     }`}
                   />
+                  {isNewNotification && route.label === "Notifications" && (
+                    <div>
+                      <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-red-500" />
+                    </div>
+                  )}
                   <p
                     className={`text-xs ${
                       route.active ? "text-[#0A66C2]" : ""

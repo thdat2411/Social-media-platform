@@ -42,9 +42,9 @@ const useRoutes = () => {
       },
       {
         label: "Notifications",
-        href: "/notification",
+        href: "/notifications?filter=all",
         icon: FaBell,
-        active: pathname === "/notification",
+        active: pathname === "/notifications",
       },
       {
         label: "Post a job",

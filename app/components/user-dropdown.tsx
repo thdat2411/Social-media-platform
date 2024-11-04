@@ -35,7 +35,7 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
           </div>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="absolute -right-20 w-[300px]">
+      <DropdownMenuContent className="absolute w-[300px] max-[1300px]:-right-10 min-[1300px]:-right-20">
         <div className="flex flex-col">
           <div
             onClick={() => router.push(`/in/${user.id}`)}
@@ -70,7 +70,9 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
           </Button>
           <Separator />
           <Button
-            onClick={() => signOut()}
+            onClick={() => {
+              signOut();
+            }}
             className="mt-2 flex items-center justify-between"
             variant="ghost"
           >

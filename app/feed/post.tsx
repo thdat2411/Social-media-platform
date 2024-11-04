@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineLike } from "react-icons/ai";
+import { useShowToastWithCloseButton } from "../components/toastWithCloseButton";
 import { formatDate, Posts } from "../utils/utils";
 import CommentInput from "./comment-input";
 
@@ -22,6 +23,7 @@ const FeedPost = () => {
   const [commentText, setCommentText] = useState("");
   const [showFullText, setShowFullText] = useState(false);
   const textareaRef = useRef(null);
+  const customToast = useShowToastWithCloseButton();
   // const handleCommentSubmit = () => {
   //   // if (commentText.trim()) {
   //   //   setComments([...comments, commentText]);
@@ -130,7 +132,7 @@ const FeedPost = () => {
       <Separator className="mt-2" />
       <div className="mt-2 flex flex-wrap items-center justify-around">
         <Button
-          onClick={() => {}}
+          onClick={() => customToast("Liked!")}
           variant="ghost"
           className="mr-4 flex items-center transition-all duration-100 hover:scale-110"
         >

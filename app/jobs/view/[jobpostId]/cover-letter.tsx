@@ -1,20 +1,14 @@
+import { job_application } from "@prisma/client";
 import Quill, { QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { job_posting } from "@prisma/client";
-
-interface JobPostingDescriptionProps {
-  setFormData: (data: job_posting) => void;
-  formData: job_posting;
-  isError: boolean;
+interface CoverLetterProps {
+  formData: job_application;
+  setFormData: (data: job_application) => void;
 }
 
-const JobPostingDescription = ({
-  setFormData,
-  formData,
-  isError,
-}: JobPostingDescriptionProps) => {
+const CoverLetter = ({ formData, setFormData }: CoverLetterProps) => {
   const [quillText, setQuillText] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
@@ -26,12 +20,11 @@ const JobPostingDescription = ({
     if (quillRef.current) {
       text = quillRef.current.root.innerHTML;
     } else {
-      text = formData?.description;
+      text = formData.cover_letter || "";
     }
-    console.log(text);
     setQuillText(text);
-    if (text !== formData?.description) {
-      setFormData({ ...formData, description: text });
+    if (text !== formData.cover_letter) {
+      setFormData({ ...formData, cover_letter: text });
     }
 
     const plainText = text
@@ -58,7 +51,6 @@ const JobPostingDescription = ({
             [{ header: [1, 2, 3, 4, 5, 6, false] }],
             ["bold", "italic", "underline", "strike"],
             [{ list: "ordered" }, { list: "bullet" }],
-            [{ align: [] }],
             ["link"],
             [{ size: ["small", false, "large", "huge"] }],
           ],
@@ -66,7 +58,7 @@ const JobPostingDescription = ({
       };
       const quill = new Quill(containerRef.current, options);
       quillRef.current = quill;
-      quillRef.current.root.innerHTML = formData?.description;
+      quillRef.current.root.innerHTML = formData.cover_letter || "";
       handleTextChange();
     }
     return () => {
@@ -86,22 +78,20 @@ const JobPostingDescription = ({
 
   return (
     <>
-      <div
-        className={` ${isError ? "border border-red-500" : "border border-black"} `}
-      >
+      <div className="border border-black">
         <div
           ref={containerRef}
           style={{
-            height: "400px",
+            height: "300px",
           }}
-          className="max-[500px]:w-full min-[500px]:w-[500px] min-[600px]:w-[550px] min-[700px]:w-[650px] min-[800px]:w-[700px] min-[900px]:w-[800px]"
+          className="max-[500px]:w-full min-[500px]:w-[550px] min-[700px]:w-[550px] min-[800px]:w-[650px] min-[900px]:w-[720px]"
         />
       </div>
       <p className="mt-2 text-end text-muted-foreground max-[480px]:text-xs min-[450px]:text-sm">
-        {wordCount}/10,000
+        {wordCount}/2,000
       </p>
     </>
   );
 };
 
-export default JobPostingDescription;
+export default CoverLetter;

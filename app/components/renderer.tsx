@@ -12,7 +12,7 @@ const Renderer = ({ value }: RendererProps) => {
     const currentRef = renderRef.current;
     if (currentRef) {
       currentRef.innerHTML = value;
-      const isEmpty = !value.replace(/<(.|\n)*?>/g, "").trim().length;
+      const isEmpty = !value?.replace(/<(.|\n)*?>/g, "").trim().length;
       setIsEmpty(isEmpty);
     }
     return () => {

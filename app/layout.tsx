@@ -1,3 +1,4 @@
+import Notification from "@/app/components/notification";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React, { Suspense } from "react";
@@ -5,6 +6,7 @@ import { Toaster } from "sonner";
 import AuthContext from "./context/AuthContext";
 import "./globals.css";
 import LoadingPage from "./loading";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,7 +24,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <Suspense fallback={<LoadingPage />}>
           <AuthContext>
-            <Toaster />
+            <Notification />
+            <Toaster richColors visibleToasts={5} />
             {children}
           </AuthContext>
         </Suspense>

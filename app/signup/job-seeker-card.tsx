@@ -27,6 +27,7 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
   const [prevLocationSuggestions, setPrevLocationSuggestions] = useState<
     string[]
   >([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchLocations = async (keyword: string) => {
     try {
@@ -101,19 +102,17 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
   };
 
   const handleDisableSubmit = (): boolean => {
-    const isJobValid = prevJobSuggestions.includes(jobInputValue.toLowerCase());
+    const isJobValid = prevJobSuggestions.includes(jobInputValue.toUpperCase());
     const isLocationValid =
       prevLocationSuggestions.includes(locationInputValue);
     return !(
-      jobInputValue &&
-      locationInputValue &&
-      isJobValid &&
-      isLocationValid
+      (jobInputValue && locationInputValue && isJobValid && isLocationValid) ||
+      isLoading
     );
   };
   const handleSumbit = async () => {
     try {
-      console.log(userData);
+      setIsLoading(true);
       const userReponse = await axios.post("/api/register/user", userData);
       const jobSeekerData = {
         userId: userReponse.data.id,
@@ -138,6 +137,7 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
               if (callback?.ok && !callback.error) {
                 router.push("/feed");
                 toast.success("Logged in!");
+                setIsLoading(false);
               }
             })
             .catch((error) => {

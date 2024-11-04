@@ -70,7 +70,7 @@ const JobPostingDropdown = ({
         <DropdownMenuTrigger className="w-full">
           <div className="flex w-full flex-1 justify-between rounded-md border border-black p-2">
             <p className="w-full text-left max-[450px]:text-xs min-[450px]:text-sm">
-              {formData.workplace_type}
+              {formData?.workplace_type}
             </p>
             <ChevronDown className="size-4" />
           </div>
@@ -112,7 +112,7 @@ const JobPostingDropdown = ({
         <DropdownMenuTrigger>
           <div className="flex w-full justify-between rounded-md border border-black p-2">
             <p className="max-[450px]:text-xs min-[450px]:text-sm">
-              {formData.job_type}
+              {formData?.job_type}
             </p>
             <ChevronDown className="size-4" />
           </div>
@@ -140,7 +140,7 @@ const JobPostingDropdown = ({
         <DropdownMenuTrigger>
           <div className="flex w-full justify-between rounded-md border border-black p-2">
             <p className="max-[450px]:text-xs min-[450px]:text-sm">
-              {formData.level}
+              {formData?.level}
             </p>
             <ChevronDown className="size-4" />
           </div>

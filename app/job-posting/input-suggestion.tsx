@@ -40,8 +40,8 @@ const InputSugesstion = ({
     }
   };
   useEffect(() => {
-    fetchLocations(formData.location ?? "");
-  }, [formData.location]);
+    fetchLocations(formData?.location ?? "");
+  }, [formData?.location]);
 
   const debouncedFilterSuggestions = debounce((value) => {
     if (!value) {
@@ -96,10 +96,10 @@ const InputSugesstion = ({
         type="text"
         value={
           label === "Job title"
-            ? (formData.title ?? "")
+            ? (formData?.title ?? "")
             : label === "Location"
-              ? (formData.location ?? "")
-              : (formData.company_name ?? "")
+              ? (formData?.location ?? "")
+              : (formData?.company_name ?? "")
         }
         onChange={handleChange}
         onClick={() => setIsFocused(true)}

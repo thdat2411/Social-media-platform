@@ -27,9 +27,9 @@ const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
   const [showAll, setShowAll] = useState(false);
   const skillsToShow = showAll
     ? formData.required_skills
-    : formData.required_skills.slice(0, 2);
-  const additionalCount = formData.required_skills.length - 2;
-  const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
+    : formData?.required_skills?.slice(0, 2);
+  const additionalCount = formData?.required_skills?.length - 2;
+  const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
 
   const handleToggle = () => {
     setShowAll(!showAll);
@@ -60,25 +60,25 @@ const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
                 width={45}
                 height={45}
               />
-              <p className="mt-2 text-2xl font-semibold">{formData.title}</p>
+              <p className="mt-2 text-2xl font-semibold">{formData?.title}</p>
               <p className="mb-10 text-sm">
                 {" "}
-                · {formData.location} ({formData.workplace_type})
+                · {formData?.location} ({formData?.workplace_type})
               </p>
               <div className="mb-2 flex items-center space-x-3 text-sm">
                 <MdBusinessCenter className="size-6 text-[#666666]" />
                 <p>
-                  {formData.job_type} · {formData.level}{" "}
+                  {formData?.job_type} · {formData?.level}{" "}
                 </p>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <FaListCheck className="mr-1 size-5 text-[#666666]" />
                 <p>
                   Skills:{" "}
-                  {formData.required_skills.length === 0 ? (
+                  {formData?.required_skills?.length === 0 ? (
                     <span className="text-muted-foreground">(None)</span>
                   ) : (
-                    skillsToShow.map((skill, index) => (
+                    skillsToShow?.map((skill, index) => (
                       <span key={index}>
                         {skill}
                         {index < skillsToShow.length - 1 && ", "}
@@ -99,7 +99,7 @@ const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
               <div className="mb-2 flex items-center space-x-2">
                 <Avatar className="size-14">
                   <AvatarImage
-                    src={user.image ?? ""}
+                    src={user?.image ?? ""}
                     className="rounded-full"
                   />
                   <AvatarFallback className="bg-blue-300 text-2xl text-white">
@@ -113,7 +113,7 @@ const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
                   </p>
                 </div>
               </div>
-              <Renderer value={formData.description} />
+              <Renderer value={formData?.description} />
             </div>
           </div>
         </div>

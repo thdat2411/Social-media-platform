@@ -5,6 +5,17 @@ import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+}
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -45,6 +56,20 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async session({ session }) {
+      const user = await prisma.user.findUnique({
+        where: { email: session!.user!.email! },
+        select: { id: true, name: true, email: true, image: true },
+      });
+      if (user) {
+        if (session.user) {
+          session.user = user;
+        }
+      }
+      return session;
+    },
+  },
   debug: process.env.NODE_ENV !== "production",
   session: {
     strategy: "jwt",

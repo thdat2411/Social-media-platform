@@ -128,7 +128,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
         .post("/api/job-posting", formData)
         .then(() => {
           toast.success("Posting job successfully");
-          router.push("/signin");
+          router.push("/jobs");
         })
         .catch((error) => {
           toast.error(
@@ -386,16 +386,16 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
               console.log(formData.description);
             }}
             variant="ghost"
-            className="text-blue-500 hover:bg-blue-100 hover:text-blue-700"
+            className="text-base text-blue-500 hover:bg-blue-100 hover:text-blue-700"
           >
             Preview
           </Button>
           <Button
             type="submit"
             onClick={handleSubmit}
-            className="rounded-full bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+            className="rounded-full bg-blue-500 text-lg text-white hover:bg-blue-700 hover:text-white"
           >
-            Post
+            Post a job
           </Button>
         </div>
       </div>

@@ -35,3 +35,40 @@ export async function POST(request: NextRequest) {
         return new NextResponse("An unknown error occurred", { status: 500 });
     }
 }
+export async function PUT(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const { id, title, company_name, description, workplace_type, job_type, level, required_skills, location, employer_id } = body;
+        if (!id || !title || !company_name || !description || !workplace_type || !job_type || !level || !location || !employer_id) {
+            return new NextResponse("Missing info", { status: 400 });
+        }
+        const job_posting = await prisma.job_posting.update({
+            where: {
+                id
+            },
+            data: {
+                title,
+                company_name,
+                description,
+                workplace_type,
+                job_type,
+                level,
+                required_skills,
+                location,
+                employer_id
+            }
+        });
+
+        if (!job_posting) {
+            return new NextResponse("Job posting not updated", { status: 500 });
+        }
+        return NextResponse.json({ job_posting }, { status: 200 });
+
+    } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+            return new NextResponse(err.message, { status: 500 });
+        }
+        return new NextResponse("An unknown error occurred", { status: 500 });
+    }
+}

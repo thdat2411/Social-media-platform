@@ -1,10 +1,10 @@
-import { getPosts } from "@/app/actions/getPosts";
+import { getJobPosts } from "@/app/actions/getJobPosts";
 import React from "react";
 import PostedSidebar from "../posted-sidebar";
 import PostedJobsMainContent from "./main-content";
 
 const PostedJobsPage = async () => {
-  const jobPosts = await getPosts();
+  const jobPosts = await getJobPosts();
   return (
     <div className="relative">
       <div className="mx-auto mt-4 flex w-full max-w-6xl">
