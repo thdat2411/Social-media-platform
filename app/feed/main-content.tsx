@@ -1,12 +1,20 @@
 "use client";
 import { user } from "@prisma/client";
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import EventModal from "./components/event-modal";
-import MediaModal from "./components/media-modal";
-import PostModal, { Event } from "./components/post-modal";
+import { Event } from "./components/post-modal";
 import FeedPost from "./post";
 import PostInput from "./post-input";
 
+const PostModal = dynamic(() => import("./components/post-modal"), {
+  ssr: false,
+});
+const MediaModal = dynamic(() => import("./components/media-modal"), {
+  ssr: false,
+});
+const EventModal = dynamic(() => import("./components/event-modal"), {
+  ssr: false,
+});
 interface FeedMainContentProps {
   user: user;
 }
@@ -23,6 +31,7 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
   const [image, setImage] = useState<File | null>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
+    console.log(sessionStorage.getItem("user"));
   }, []);
   return (
     <>

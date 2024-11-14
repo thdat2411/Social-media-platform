@@ -10,7 +10,7 @@ import { debounce } from "lodash";
 import { Loader, Plus, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import JobPostingDropdown from "../../drop-down";
 import InputSugesstion from "../../input-suggestion";
@@ -45,31 +45,33 @@ const EditJobPostingMainContent = ({
   const [isSkillFocused, setIsSkillFocused] = useState(false);
   const [skillSuggestion, setSkillSuggestion] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isJobError, setIsJobError] = useState(false);
-  const [isCompanyError, setIsCompanyError] = useState(false);
-  const [isLocationError, setIsLocationError] = useState(false);
-  const [isDescriptionError, setIsDescriptionError] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    title: false,
+    company_name: false,
+    location: false,
+    description: false,
+  });
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
     useState(false);
   const [formData, setFormData] = useState<job_posting>(job_posting);
 
-  const workplaceType = ["On-site", "Remote", "Hybrid"];
-  const jobType = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Temporary",
-    "Internship",
-  ];
-  const jobLevel = [
-    "Entry level",
-    "Associate",
-    "Mid-Senior level",
-    "Director",
-    "Executive",
-    "Senior",
-  ];
+  const workplaceType = useMemo(() => ["On-site", "Remote", "Hybrid"], []);
+  const jobType = useMemo(
+    () => ["Full-time", "Part-time", "Contract", "Temporary", "Internship"],
+    []
+  );
+  const jobLevel = useMemo(
+    () => [
+      "Entry level",
+      "Associate",
+      "Mid-Senior level",
+      "Director",
+      "Executive",
+      "Senior",
+    ],
+    []
+  );
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -98,46 +100,39 @@ const EditJobPostingMainContent = ({
     debouncedFilterSuggestions(value);
   };
 
-  const handleUpdate = () => {
+  const handleFormValidation = () => {
+    const errors = {
+      title: formData.title === "",
+      company_name: formData.company_name === "",
+      location: formData.location === "",
+      description: formData.description === "",
+    };
+    setValidationErrors(errors);
+    return Object.values(errors).every((error) => !error);
+  };
+
+  const handleUpdate = async () => {
     setIsConfirmModalOpen(false);
-    if (
-      formData.title === "" ||
-      formData.company_name === "" ||
-      formData.location === "" ||
-      formData.description === ""
-    ) {
-      if (formData.title === "") {
-        setIsJobError(true);
-      }
-      if (formData.company_name === "") {
-        setIsCompanyError(true);
-      }
-      if (formData.location === "") {
-        setIsLocationError(true);
-      }
-      if (formData.description === "") {
-        setIsDescriptionError(true);
-      }
+    if (!handleFormValidation()) {
       toast.error("Please fill in all required fields");
-    } else {
-      setIsLoading(true);
-      axios
-        .put(`/api/job-posting/${job_posting.id}`, formData)
-        .then(() => {
-          toast.success("Update post successfully");
-          router.refresh();
-        })
-        .catch((error) => {
-          toast.error(
-            error.response?.data?.error ||
-              "Posting job failed, please try again"
-          );
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await axios.put(`/api/job-posting/${job_posting.id}`, formData);
+      toast.success("Updated job posting successfully");
+      router.refresh();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data?.error || "Failed to update posting");
+      } else {
+        toast.error("Failed to update posting");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <>
       <ConfirmModal
@@ -168,7 +163,7 @@ const EditJobPostingMainContent = ({
         formData={formData}
         user={user}
       />
-      <div className="mx-10 overflow-x-hidden rounded-lg border bg-white shadow-md max-[500px]:w-11/12 min-[500px]:max-w-4xl">
+      <div className="flex w-[70%] flex-col overflow-x-hidden rounded-lg border bg-white shadow-md">
         {isLoading && (
           <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
             <div className="flex flex-col items-center">
@@ -194,18 +189,18 @@ const EditJobPostingMainContent = ({
               isFocused={isJobFocused}
               setIsFocused={setIsJobFocused}
               label="Job title"
-              isError={isJobError}
+              isError={validationErrors.title}
             />
             <div className="flex w-1/2 flex-col space-y-2">
               <label
                 htmlFor="job-title"
-                className={`${isCompanyError ? "text-red-500" : "text-muted-foreground"} max-[450px]:text-xs min-[450px]:text-sm`}
+                className={`${validationErrors.company_name ? "text-red-500" : "text-muted-foreground"} max-[450px]:text-xs min-[450px]:text-sm`}
               >
                 Company*
               </label>
               <input
                 type="text"
-                className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${isCompanyError ? "outline outline-2 outline-red-500" : "border border-black"}`}
+                className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${validationErrors.company_name ? "outline outline-2 outline-red-500" : "border border-black"}`}
                 value={formData?.company_name}
                 onChange={(e) =>
                   setFormData({
@@ -245,7 +240,7 @@ const EditJobPostingMainContent = ({
               isFocused={isLocationFocused}
               setIsFocused={setIsLocationFocused}
               label="Location"
-              isError={isLocationError}
+              isError={validationErrors.location}
             />
           </div>
           <div className="flex w-full space-x-10 pb-7">
@@ -301,7 +296,9 @@ const EditJobPostingMainContent = ({
             <JobPostingDescription
               setFormData={setFormData}
               formData={formData}
-              isError={isDescriptionError}
+              isError={validationErrors.description}
+              triggerTypingAnimation={false}
+              setTriggerTypingAnimation={() => {}}
             />
           </div>
           <p className="font-semibold max-[450px]:text-lg min-[450px]:text-xl">

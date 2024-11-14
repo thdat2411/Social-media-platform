@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Clock4, Search } from "lucide-react";
+import { search_history } from "@prisma/client";
+import axios from "axios";
+import { ChevronLeft, Clock4 } from "lucide-react";
 import React from "react";
 
 interface SearchDropDownProps {
-  recentItem: string[];
-  trysearchItem: string[];
+  recentItem: search_history[];
+  setRecentItem: (item: search_history[]) => void;
   setIsSeeAll: (isSeeAll: boolean) => void;
   setIsConfirmModalOpen: (isConfirmModalOpen: boolean) => void;
   isSeeAll: boolean;
@@ -14,7 +16,7 @@ interface SearchDropDownProps {
 
 const SearchDropDown = ({
   recentItem,
-  trysearchItem,
+  setRecentItem,
   setIsSeeAll,
   setIsConfirmModalOpen,
   isSeeAll,
@@ -27,40 +29,32 @@ const SearchDropDown = ({
         <>
           <div className="flex items-center justify-between overflow-hidden max-[700px]:overflow-auto">
             <span className="font-semibold">Recent searches</span>
-            <Button
-              onClick={() => {
-                setIsSeeAll(true);
-              }}
-              variant="ghost"
-            >
-              See all
-            </Button>
-          </div>
-          {recentItem.map((item, index) => (
-            <Button
-              onClick={() => setJobSearchValue(item)}
-              key={index}
-              variant="ghost"
-              className="mb-2 flex w-full items-center justify-start"
-            >
-              <Clock4 size={16} className="mr-2" />
-              <span>{item}</span>
-            </Button>
-          ))}
-          <div className="mt-4 space-y-2">
-            <span className="font-semibold">Try searching for</span>
-            {trysearchItem.map((item, index) => (
+            {recentItem.length > 0 && (
               <Button
-                onClick={() => setJobSearchValue(item)}
+                onClick={() => {
+                  setIsSeeAll(true);
+                }}
+                variant="ghost"
+              >
+                See all
+              </Button>
+            )}
+          </div>
+          {recentItem.length > 0 ? (
+            recentItem.map((item, index) => (
+              <Button
+                onClick={() => setJobSearchValue(item.term)}
                 key={index}
                 variant="ghost"
                 className="mb-2 flex w-full items-center justify-start"
               >
-                <Search size={16} className="mr-2" />
-                <span>{item}</span>
+                <Clock4 size={16} className="mr-2" />
+                <span>{item.term}</span>
               </Button>
-            ))}
-          </div>
+            ))
+          ) : (
+            <div className="p-3 text-muted-foreground">No searching yet</div>
+          )}
         </>
       ) : (
         <>
@@ -88,13 +82,13 @@ const SearchDropDown = ({
           </div>
           {recentItem.map((item, index) => (
             <Button
-              onClick={() => setJobSearchValue(item)}
+              onClick={() => setJobSearchValue(item.term)}
               key={index}
               variant="ghost"
               className="mb-2 flex w-full items-center justify-start"
             >
               <Clock4 size={16} className="mr-2" />
-              <span>{item}</span>
+              <span>{item.term}</span>
             </Button>
           ))}
         </>

@@ -3,7 +3,7 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import { getUserById } from "@/app/actions/getUserById";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { notifyUser } from "@/app/api/sse/route";
+import { notifyUser } from "@/app/api/pusher/route";
 
 export async function GET(req: NextRequest) {
     const url = new URL(req.url);
@@ -54,9 +54,9 @@ export async function POST(req: NextRequest) {
         if (jobListing) {
             const notification = await prisma.notification.create({
                 data: {
-                    user_id: jobListing.user!.id, // Recruiter's user ID
-                    type: "job_application",
-                    content: `You has new appicant for your  "${jobListing.title}" job-finding psot.`,
+                    user_id: jobListing.user!.id,
+                    type: "job_apply",
+                    content: `You has new applicant for your  "${jobListing.title}" post. Check it out now!`,
                 }
             });
             if (!notification) {

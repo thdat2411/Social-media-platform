@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { user } from "@prisma/client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface FullNameCardProps {
   data: user | null;
@@ -19,21 +19,18 @@ const FullNameCard = ({ data, setData, handleNext }: FullNameCardProps) => {
   const [isEnableToSubmit, setIsEnableToSubmit] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      if (isEnableToSubmit) {
-        handleSubmit();
-      }
+    if (e.key === "Enter" && isEnableToSubmit) {
+      handleSubmit();
     }
   };
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     const updatedData = {
       ...data!,
       full_name: `${firstName} ${lastName}`,
     };
-
     setData(updatedData);
     handleNext();
-  };
+  }, [firstName, lastName, data, setData, handleNext]);
 
   useEffect(() => {
     if (firstName !== "" && lastName !== "") {

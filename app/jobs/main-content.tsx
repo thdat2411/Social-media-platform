@@ -71,7 +71,7 @@ const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="mx-4 w-1/2 max-[700px]:mx-0 max-[700px]:w-full">
+    <div className="mx-4 w-1/2 max-[900px]:w-[80%]">
       <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white shadow-sm">
         <div className="flex flex-col space-y-2">
           <p className="px-4 pt-4 text-xl font-semibold">Job picks for you</p>
@@ -132,7 +132,7 @@ const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
                   className="flex-shrink-0 space-x-2 rounded-lg border border-[#DADEE2] p-6"
                 >
                   <Clock className="size-6" />
-                  <p className="text-sm font-medium">
+                  <p className="max-[ text-sm font-medium">
                     {item.title} ∙ {item.location}
                   </p>
                 </Button>

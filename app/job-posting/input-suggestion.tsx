@@ -1,7 +1,11 @@
-import OccupationData from "@/app/utils/occupations.json";
+import locations from "@/app/utils/locations.json";
+import occupations from "@/app/utils/occupations.json";
 import { job_posting } from "@prisma/client";
+import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
-import React, { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { AiFillQuestionCircle } from "react-icons/ai";
 import { capitalizeFirstLetter } from "../utils/utils";
 
 interface InputSuggestionProps {
@@ -13,7 +17,7 @@ interface InputSuggestionProps {
   isError: boolean;
 }
 
-const InputSugesstion = ({
+const InputSuggestion = ({
   formData,
   setFormData,
   isFocused,
@@ -21,108 +25,177 @@ const InputSugesstion = ({
   label,
   isError,
 }: InputSuggestionProps) => {
-  const [locations, setLocations] = useState<string[]>([]);
   const [suggestionList, setSuggestionList] = useState<string[]>([]);
-  const fetchLocations = async (keyword: string) => {
-    try {
-      const formattedKeyword = keyword.split(" ").join("+");
-      const response = await fetch(
-        `http://api.geonames.org/searchJSON?q=${formattedKeyword}&country=VN&maxRows=100&username=thaidat`
-      );
-      const data = await response.json();
-      console.log(data);
-      const locationList = data.geonames.map(
-        (location: { toponymName: string }) => location.toponymName
-      );
-      setLocations(locationList);
-    } catch (error) {
-      console.error("Error fetching locations:", error);
-    }
-  };
-  useEffect(() => {
-    fetchLocations(formData?.location ?? "");
-  }, [formData?.location]);
+  const [inputValue, setInputValue] = useState<string>(
+    label === "Job title" ? formData.title || "" : formData.location || ""
+  );
+  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const [titleQues, setTitleQues] = useState(false);
 
-  const debouncedFilterSuggestions = debounce((value) => {
-    if (!value) {
-      setSuggestionList([]);
-      return;
-    }
-    if (label === "Job title") {
-      const jobTitles = OccupationData.titles;
-      const filteredTitles = jobTitles
-        .filter((title) => title.toLowerCase().includes(value.toLowerCase()))
-        .slice(0, 200);
-      setSuggestionList(filteredTitles);
-    } else {
-      setSuggestionList(locations);
-    }
-  }, 300);
+  const debouncedUpdateFormData = useCallback(
+    (value: string) => {
+      debounce(() => {
+        if (label === "Job title") {
+          setFormData({ ...formData, title: capitalizeFirstLetter(value) });
+        } else if (label === "Location") {
+          setFormData({ ...formData, location: capitalizeFirstLetter(value) });
+        }
+      }, 300)();
+    },
+    [label, formData, setFormData]
+  );
+
+  // useEffect(() => {
+  //   const data = {
+  //     title: "Software Engineer",
+  //     company_name: "Google",
+  //     location: "Mountain View, CA",
+  //     workplaceType: "On-site",
+  //     jobType: "Full-time",
+  //     level: "Entry-level",
+  //   };
+  //   const fetchData = async () => {
+  //     const response = await axios.post("/api/suggestion", data);
+  //     const { description } = response.data;
+  //     console.log(description);
+  //   };
+  //   fetchData();
+  // });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    setInputValue(capitalizeFirstLetter(value));
+    debouncedUpdateFormData(value);
+
     if (label === "Job title") {
-      setFormData({ ...formData, title: capitalizeFirstLetter(value) });
+      // Simple suggestion for job titles
+      const filteredSuggestions = occupations.title.filter((suggestion) =>
+        suggestion.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestionList(filteredSuggestions);
     } else if (label === "Location") {
-      setFormData({ ...formData, location: capitalizeFirstLetter(value) });
-    } else {
-      setFormData({ ...formData, company_name: capitalizeFirstLetter(value) });
+      updateLocationSuggestions(value);
     }
-    debouncedFilterSuggestions(value);
   };
 
-  const handleSuggestionClick = (titleValue: string) => {
-    if (label === "Job title") {
-      setFormData({ ...formData, title: capitalizeFirstLetter(titleValue) });
-    } else if (label === "Location") {
-      setFormData({ ...formData, location: capitalizeFirstLetter(titleValue) });
+  const updateLocationSuggestions = (value: string) => {
+    if (selectedProvince) {
+      // Filter locations within the selected province
+      const provinceData = locations.Vietnam.find(
+        (province) => province.province === selectedProvince
+      );
+      const filteredLocations = provinceData
+        ? provinceData.locations.filter((location) =>
+            location.toLowerCase().includes(value.toLowerCase())
+          )
+        : [];
+      setSuggestionList(filteredLocations);
     } else {
-      setFormData({
-        ...formData,
-        company_name: capitalizeFirstLetter(titleValue),
-      });
+      // Show list of provinces if none selected
+      const filteredProvinces = locations.Vietnam.map(
+        (province) => province.province
+      ).filter((province) =>
+        province.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestionList(filteredProvinces);
     }
+  };
+
+  useEffect(() => {
+    // If input doesn't include the selected province, reset selection
+    if (selectedProvince && !inputValue.startsWith(selectedProvince)) {
+      setSelectedProvince(null);
+      setSuggestionList(locations.Vietnam.map((province) => province.province));
+    }
+  }, [inputValue, selectedProvince]);
+
+  const handleSuggestionClick = (value: string) => {
+    setInputValue(value);
+    debouncedUpdateFormData(value);
     setSuggestionList([]);
     setIsFocused(false);
   };
+
+  const shouldShowDropdown =
+    isFocused &&
+    inputValue.trim() !== "" &&
+    (suggestionList.length > 0 || selectedProvince === null);
+
   return (
-    <div className="relative flex w-1/2 flex-col space-y-2">
-      <label
-        className={`max-[450px]:text-xs min-[450px]:text-sm ${isError ? "text-red-500" : "text-muted-foreground"}`}
-      >
-        {label}*
-      </label>
+    <div className="relative flex w-1/2 flex-col">
+      <div className="flex items-center space-x-2">
+        <p
+          className={`max-[450px]:text-xs min-[450px]:text-sm ${
+            isError ? "text-red-500" : "text-muted-foreground"
+          }`}
+        >
+          {label}*
+        </p>
+        <div className="relative">
+          <div
+            onClick={() => setTitleQues(!titleQues)}
+            className="cursor-pointer rounded-full p-2 hover:bg-slate-200"
+          >
+            <AiFillQuestionCircle className="size-5" />
+          </div>
+          <AnimatePresence>
+            {titleQues && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.4 }}
+                className={`absolute left-10 z-10 flex ${label === "Job title" ? "-top-9 w-[350px]" : "-top-12 w-[290px]"} overflow-x-auto break-words rounded-lg border-2 bg-white p-4 text-sm shadow-lg`}
+              >
+                {label === "Job title" ? (
+                  <p>
+                    Make your job more discoverable to job seekers by selecting
+                    a title from the dropdown. You can also choose your own
+                    title instead.
+                  </p>
+                ) : (
+                  <p>
+                    Picking a specific city or metro area can help make your
+                    on-site job more discoverable by job seekers in those areas,
+                    while still remaining visible to everyone in your country or
+                    region.
+                  </p>
+                )}
+                <div
+                  onClick={() => setTitleQues(false)}
+                  className="h-fit cursor-pointer rounded-full p-2 hover:bg-slate-200"
+                >
+                  <X className="size-4" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
       <input
+        id={label === "Job title" ? "job-title" : "location"}
         type="text"
-        value={
-          label === "Job title"
-            ? (formData?.title ?? "")
-            : label === "Location"
-              ? (formData?.location ?? "")
-              : (formData?.company_name ?? "")
-        }
+        value={inputValue}
         onChange={handleChange}
-        onClick={() => setIsFocused(true)}
-        onBlur={() => {
-          setTimeout(() => {
-            setIsFocused(false);
-          }, 100);
-        }}
-        className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${isError ? "outline outline-2 outline-red-500" : "border border-black"}`}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setTimeout(() => setIsFocused(false), 250)}
+        className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${
+          isError ? "outline outline-2 outline-red-500" : "border border-black"
+        }`}
         required
       />
-      {isFocused && suggestionList.length > 0 && (
+      {shouldShowDropdown && suggestionList.length > 0 && (
         <ul
           className="absolute top-[65px] z-10 mt-2 max-h-32 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {suggestionList.map((title) => (
+          {suggestionList.map((suggestion, index) => (
             <li
-              key={title}
+              key={index}
               className="cursor-pointer p-3 text-sm hover:bg-gray-200"
-              onClick={() => handleSuggestionClick(title)}
+              onClick={() => handleSuggestionClick(suggestion)}
             >
-              {capitalizeFirstLetter(title)}
+              {capitalizeFirstLetter(suggestion)}
             </li>
           ))}
         </ul>
@@ -131,4 +204,4 @@ const InputSugesstion = ({
   );
 };
 
-export default InputSugesstion;
+export default InputSuggestion;

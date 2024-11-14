@@ -8,10 +8,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { JobPostsWithUsers } from "./job-content";
 
 interface SubHeaderDropdownProps {
   title: string;
+  jobs?: JobPostsWithUsers[];
+  setJobs?: React.Dispatch<React.SetStateAction<JobPostsWithUsers[] | null>>;
   content: string[];
   isCheckbox: boolean;
   activeFilters: string[];
@@ -20,6 +23,8 @@ interface SubHeaderDropdownProps {
 
 const SubHeaderDropdown = ({
   title,
+  jobs,
+  setJobs,
   content,
   isCheckbox,
   activeFilters,
@@ -27,37 +32,109 @@ const SubHeaderDropdown = ({
 }: SubHeaderDropdownProps) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [levelSelectedItems, setLevelSelectedItems] = useState<string[]>([]);
+  const [prevLevelSelectedItems, setPrevLevelSelectedItems] = useState<
+    string[]
+  >([]);
   const [remoteSelectedItems, setRemoteSelectedItems] = useState<string[]>([]);
+  const [prevRemoteSelectedItems, setPrevRemoteSelectedItems] = useState<
+    string[]
+  >([]);
   const [datePostSelectedItems, setDatePostSelectedItems] =
     useState<string>("Any time");
+  const [prevDatePostSelectedItems, setPrevDatePostSelectedItems] =
+    useState<string>("Any time");
+
+  const [jobsTemp, setJobsTemp] = useState<JobPostsWithUsers[] | null>(
+    jobs ?? null
+  );
+
+  const originalJobs = useMemo(() => jobs, []);
 
   const handleChange = (item: string) => {
     if (title === "Experience level") {
       setLevelSelectedItems((prev) => {
-        if (prev.includes(item)) {
-          return prev.filter((i) => i !== item);
-        }
-        return [...prev, item];
+        const updatedItems = prev.includes(item)
+          ? prev.filter((i) => i !== item)
+          : [...prev, item];
+        setJobsTemp(
+          originalJobs!.filter((job) => {
+            if (updatedItems.length === 0) {
+              return true;
+            } else {
+              return job.level !== null && updatedItems.includes(job.level);
+            }
+          })
+        );
+        console.log("UpdatedItem", updatedItems);
+        console.log("OrignialJobs", originalJobs);
+
+        return updatedItems;
       });
+      console.log("JobsTemp", jobsTemp);
     } else if (title === "Remote") {
       setRemoteSelectedItems((prev) => {
-        if (prev.includes(item)) {
-          return prev.filter((i) => i !== item);
-        }
-        return [...prev, item];
+        const updatedItems = prev.includes(item)
+          ? prev.filter((i) => i !== item)
+          : [...prev, item];
+        setJobsTemp(
+          originalJobs!.filter((job) => {
+            if (updatedItems.length === 0) {
+              return true;
+            } else {
+              return (
+                job.workplace_type !== null &&
+                updatedItems.includes(job.workplace_type)
+              );
+            }
+          })
+        );
+        return updatedItems;
       });
     } else {
-      setDatePostSelectedItems(item);
+      const updatedItems = item;
+      const now = new Date();
+      const past24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const pastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const pastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      setJobsTemp(
+        originalJobs!.filter((job) => {
+          const jobDate = job?.created_at
+            ? new Date(job.created_at)
+            : new Date();
+          return updatedItems === "Past 24 hours"
+            ? jobDate > past24Hours
+            : updatedItems === "Past week"
+              ? jobDate > pastWeek
+              : updatedItems === "Past month"
+                ? jobDate > pastMonth
+                : true;
+        })
+      );
+      setDatePostSelectedItems(updatedItems);
+    }
+  };
+
+  const handleCancel = () => {
+    if (
+      prevDatePostSelectedItems !== datePostSelectedItems ||
+      prevLevelSelectedItems !== levelSelectedItems ||
+      prevRemoteSelectedItems !== remoteSelectedItems
+    ) {
+      setLevelSelectedItems(prevLevelSelectedItems);
+      setRemoteSelectedItems(prevRemoteSelectedItems);
+      setDatePostSelectedItems(prevDatePostSelectedItems);
     }
   };
 
   const onSubmit = () => {
-    console.log(levelSelectedItems, remoteSelectedItems, datePostSelectedItems);
     if (
       levelSelectedItems.length > 0 ||
       remoteSelectedItems.length > 0 ||
       datePostSelectedItems !== "Any time"
     ) {
+      setPrevLevelSelectedItems(levelSelectedItems);
+      setPrevRemoteSelectedItems(remoteSelectedItems);
+      setPrevDatePostSelectedItems(datePostSelectedItems);
       setActiveFilters((prev) => {
         return [...prev, title];
       });
@@ -66,6 +143,7 @@ const SubHeaderDropdown = ({
         return prev.filter((item) => item !== title);
       });
     }
+    setJobs!(jobsTemp);
     setIsDropDownOpen(false);
   };
 
@@ -129,13 +207,18 @@ const SubHeaderDropdown = ({
         </div>
         <Separator />
         <div className="flex items-center justify-end space-x-4 p-3">
-          <Button
-            onClick={() => setIsDropDownOpen(false)}
-            className="rounded-lg"
-            variant="ghost"
-          >
-            Cancel
-          </Button>
+          {activeFilters.includes(title) && (
+            <Button
+              onClick={() => {
+                handleCancel();
+                setIsDropDownOpen(false);
+              }}
+              className="rounded-lg"
+              variant="ghost"
+            >
+              Cancel
+            </Button>
+          )}
 
           <Button
             onClick={(e) => {

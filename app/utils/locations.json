@@ -1,0 +1,699 @@
+{
+  "Vietnam": [
+    {
+      "province": "Ha Noi",
+      "locations": [
+        "Ba Dinh",
+        "Hoan Kiem",
+        "Tay Ho",
+        "Long Bien",
+        "Cau Giay",
+        "Dong Da",
+        "Hai Ba Trung",
+        "Thanh Xuan",
+        "Hoang Mai",
+        "Nam Tu Liem",
+        "Bac Tu Liem",
+        "Son Tay",
+        "Me Linh",
+        "Dong Anh",
+        "Gia Lam",
+        "Soc Son",
+        "Thanh Tri",
+        "Thach That",
+        "Quoc Oai",
+        "Chuong My"
+      ]
+    },
+    {
+      "province": "Ho Chi Minh City",
+      "locations": [
+        "District 1",
+        "District 2",
+        "District 3",
+        "District 4",
+        "District 5",
+        "District 6",
+        "District 7",
+        "District 8",
+        "District 9",
+        "District 10",
+        "District 11",
+        "District 12",
+        "Binh Tan",
+        "Tan Phu",
+        "Phu Nhuan",
+        "Go Vap",
+        "Binh Thanh",
+        "Tan Binh",
+        "Cu Chi",
+        "Hoc Mon",
+        "Binh Chanh",
+        "Nha Be",
+        "Can Gio"
+      ]
+    },
+    {
+      "province": "Da Nang",
+      "locations": [
+        "Hai Chau",
+        "Thanh Khe",
+        "Lien Chieu",
+        "Ngu Hanh Son",
+        "Cam Le",
+        "Hoa Vang",
+        "Son Tra"
+      ]
+    },
+    {
+      "province": "Hai Phong",
+      "locations": [
+        "Hong Bang",
+        "Le Chan",
+        "Ngo Quyen",
+        "Hai An",
+        "Kien An",
+        "Duong Kinh",
+        "Do Son",
+        "Thuy Nguyen",
+        "An Lao",
+        "Tien Lang",
+        "Vinh Bao",
+        "Cat Hai"
+      ]
+    },
+    {
+      "province": "Can Tho",
+      "locations": [
+        "Ninh Kieu",
+        "Binh Thuy",
+        "Cai Rang",
+        "O Mon",
+        "Thot Not",
+        "Phong Dien",
+        "Co Do",
+        "Vinh Thanh",
+        "Thoi Lai"
+      ]
+    },
+    {
+      "province": "An Giang",
+      "locations": [
+        "Long Xuyen",
+        "Chau Doc",
+        "Tan Chau",
+        "An Phu",
+        "Chau Phu",
+        "Phu Tan",
+        "Thoai Son",
+        "Chau Thanh",
+        "Tri Ton",
+        "Tinh Bien",
+        "Chau Phu B"
+      ]
+    },
+    {
+      "province": "Ba Ria - Vung Tau",
+      "locations": [
+        "Vung Tau",
+        "Ba Ria",
+        "Long Dien",
+        "Xuyen Moc",
+        "Con Dao",
+        "Chau Duc",
+        "Tan Thanh",
+        "Dat Do"
+      ]
+    },
+    {
+      "province": "Bac Giang",
+      "locations": [
+        "Bac Giang",
+        "Yen Dung",
+        "Lang Giang",
+        "Luc Ngan",
+        "Son Dong",
+        "Tan Yen",
+        "Hiep Hoa",
+        "Viet Yen"
+      ]
+    },
+    {
+      "province": "Bac Kan",
+      "locations": [
+        "Bac Kan",
+        "Ba Be",
+        "Cho Don",
+        "Na Ri",
+        "Ngan Son",
+        "Bach Thong"
+      ]
+    },
+    {
+      "province": "Bac Lieu",
+      "locations": [
+        "Bac Lieu",
+        "Hong Dan",
+        "Hoa Binh",
+        "Phuoc Long",
+        "Dong Hai",
+        "Vinh Loi"
+      ]
+    },
+    {
+      "province": "Bac Ninh",
+      "locations": [
+        "Bac Ninh",
+        "Que Vo",
+        "Tien Du",
+        "Thuan Thanh",
+        "Yen Phong",
+        "Luong Tai",
+        "Gia Binh"
+      ]
+    },
+    {
+      "province": "Ben Tre",
+      "locations": [
+        "Ben Tre",
+        "Ba Tri",
+        "Binh Dai",
+        "Giong Trom",
+        "Mo Cay Bac",
+        "Mo Cay Nam",
+        "Thanh Phu"
+      ]
+    },
+    {
+      "province": "Binh Dinh",
+      "locations": [
+        "Quy Nhon",
+        "An Nhon",
+        "Phu Cat",
+        "Phu My",
+        "Tuy Phuoc",
+        "Hoai An",
+        "Vinh Thanh",
+        "Tay Son"
+      ]
+    },
+    {
+      "province": "Binh Duong",
+      "locations": [
+        "Thu Dau Mot",
+        "Di An",
+        "Tan Uyen",
+        "Ben Cat",
+        "Phu Giao",
+        "Dau Tieng"
+      ]
+    },
+    {
+      "province": "Binh Phuoc",
+      "locations": [
+        "Dong Xoai",
+        "Phuoc Long",
+        "Binh Long",
+        "Chon Thanh",
+        "Dong Phu",
+        "Loc Ninh",
+        "Bu Dop"
+      ]
+    },
+    {
+      "province": "Binh Thuan",
+      "locations": [
+        "Phan Thiet",
+        "La Gi",
+        "Tuy Phong",
+        "Bac Binh",
+        "Ham Thuan Bac",
+        "Ham Thuan Nam",
+        "Phu Quy"
+      ]
+    },
+    {
+      "province": "Ca Mau",
+      "locations": [
+        "Ca Mau",
+        "Dam Doi",
+        "Nam Can",
+        "Ngoc Hien",
+        "Phu Tan",
+        "Thoi Binh",
+        "Tran Van Thoi",
+        "U Minh"
+      ]
+    },
+    {
+      "province": "Cao Bang",
+      "locations": [
+        "Cao Bang",
+        "Bao Lac",
+        "Bao Lam",
+        "Ha Quang",
+        "Nguyen Binh",
+        "Quang Hoa",
+        "Thach An"
+      ]
+    },
+    {
+      "province": "Dak Lak",
+      "locations": [
+        "Buon Ma Thuot",
+        "Buon Don",
+        "Cu Kuin",
+        "Ea Kar",
+        "Krong Ana",
+        "Krong Bong",
+        "Krong Pac",
+        "Krong Buk"
+      ]
+    },
+    {
+      "province": "Dak Nong",
+      "locations": [
+        "Gia Nghia",
+        "Cu Jut",
+        "Dak Mil",
+        "Dak R'Lap",
+        "Krong No",
+        "Tuy Duc"
+      ]
+    },
+    {
+      "province": "Dien Bien",
+      "locations": [
+        "Dien Bien Phu",
+        "Muong Ang",
+        "Muong Cha",
+        "Tuan Giao",
+        "Dien Bien Dong"
+      ]
+    },
+    {
+      "province": "Dong Nai",
+      "locations": [
+        "Bien Hoa",
+        "Long Khanh",
+        "Cam My",
+        "Dinh Quan",
+        "Long Thanh",
+        "Nhon Trach",
+        "Trang Bom"
+      ]
+    },
+    {
+      "province": "Dong Thap",
+      "locations": [
+        "Cao Lanh",
+        "Hong Ngu",
+        "Sa Dec",
+        "Lai Vung",
+        "Lap Vo",
+        "Tan Hong",
+        "Thap Muoi"
+      ]
+    },
+    {
+      "province": "Gia Lai",
+      "locations": [
+        "Pleiku",
+        "An Khe",
+        "Ayun Pa",
+        "Chu Pah",
+        "Dak Doa",
+        "Ia Grai",
+        "Kbang",
+        "Krong Pa"
+      ]
+    },
+    {
+      "province": "Ha Giang",
+      "locations": [
+        "Ha Giang",
+        "Dong Van",
+        "Meo Vac",
+        "Yen Minh",
+        "Quan Ba",
+        "Bac Me",
+        "Xin Man",
+        "Hoang Su Phi"
+      ]
+    },
+    {
+      "province": "Ha Nam",
+      "locations": [
+        "Phu Ly",
+        "Binh Luc",
+        "Duy Tien",
+        "Kim Bang",
+        "Ly Nhan",
+        "Thanh Liem"
+      ]
+    },
+    {
+      "province": "Ha Tinh",
+      "locations": [
+        "Ha Tinh",
+        "Hong Linh",
+        "Ky Anh",
+        "Cam Xuyen",
+        "Duc Tho",
+        "Huong Son",
+        "Loc Ha"
+      ]
+    },
+    {
+      "province": "Hai Duong",
+      "locations": [
+        "Hai Duong",
+        "Chi Linh",
+        "Cam Giang",
+        "Kim Thanh",
+        "Nam Sach",
+        "Thanh Ha",
+        "Tu Ky",
+        "Gia Loc"
+      ]
+    },
+    {
+      "province": "Hau Giang",
+      "locations": [
+        "Vi Thanh",
+        "Nga Bay",
+        "Phung Hiep",
+        "Vi Thuy",
+        "Chau Thanh",
+        "Long My"
+      ]
+    },
+    {
+      "province": "Hoa Binh",
+      "locations": [
+        "Hoa Binh",
+        "Cao Phong",
+        "Kim Boi",
+        "Lac Son",
+        "Luong Son",
+        "Mai Chau",
+        "Tan Lac"
+      ]
+    },
+    {
+      "province": "Hung Yen",
+      "locations": [
+        "Hung Yen",
+        "My Hao",
+        "Kim Dong",
+        "Phu Cu",
+        "Tien Lu",
+        "Van Giang",
+        "Yen My"
+      ]
+    },
+    {
+      "province": "Khanh Hoa",
+      "locations": [
+        "Nha Trang",
+        "Cam Ranh",
+        "Dien Khanh",
+        "Khanh Son",
+        "Ninh Hoa",
+        "Van Ninh"
+      ]
+    },
+    {
+      "province": "Kien Giang",
+      "locations": [
+        "Rach Gia",
+        "Ha Tien",
+        "An Bien",
+        "An Minh",
+        "Go Quao",
+        "Kien Hai",
+        "Phu Quoc"
+      ]
+    },
+    {
+      "province": "Kon Tum",
+      "locations": [
+        "Kon Tum",
+        "Dak Ha",
+        "Dak To",
+        "Kon Plong",
+        "Ngoc Hoi",
+        "Sa Thay",
+        "Tu Mo Rong"
+      ]
+    },
+    {
+      "province": "Lai Chau",
+      "locations": [
+        "Lai Chau",
+        "Muong Te",
+        "Phong Tho",
+        "Sin Ho",
+        "Tan Uyen",
+        "Than Uyen"
+      ]
+    },
+    {
+      "province": "Lam Dong",
+      "locations": [
+        "Da Lat",
+        "Bao Loc",
+        "Cat Tien",
+        "Da Huoai",
+        "Don Duong",
+        "Duc Trong",
+        "Lam Ha"
+      ]
+    },
+    {
+      "province": "Lang Son",
+      "locations": [
+        "Lang Son",
+        "Bac Son",
+        "Binh Gia",
+        "Cao Loc",
+        "Chi Lang",
+        "Dinh Lap",
+        "Trang Dinh"
+      ]
+    },
+    {
+      "province": "Lao Cai",
+      "locations": [
+        "Lao Cai",
+        "Bat Xat",
+        "Bao Thang",
+        "Bao Yen",
+        "Muong Khuong",
+        "Sa Pa",
+        "Van Ban"
+      ]
+    },
+    {
+      "province": "Long An",
+      "locations": [
+        "Tan An",
+        "Ben Luc",
+        "Can Duoc",
+        "Can Giuoc",
+        "Duc Hoa",
+        "Duc Hue",
+        "Thu Thua"
+      ]
+    },
+    {
+      "province": "Nam Dinh",
+      "locations": [
+        "Nam Dinh",
+        "Giao Thuy",
+        "Hai Hau",
+        "My Loc",
+        "Nam Truc",
+        "Nghia Hung",
+        "Vu Ban",
+        "Xuan Truong"
+      ]
+    },
+    {
+      "province": "Nghe An",
+      "locations": [
+        "Vinh",
+        "Thai Hoa",
+        "Cua Lo",
+        "Anh Son",
+        "Con Cuong",
+        "Dien Chau",
+        "Nam Dan"
+      ]
+    },
+    {
+      "province": "Ninh Binh",
+      "locations": [
+        "Ninh Binh",
+        "Tam Diep",
+        "Gia Vien",
+        "Hoa Lu",
+        "Kim Son",
+        "Nho Quan",
+        "Yen Khanh"
+      ]
+    },
+    {
+      "province": "Ninh Thuan",
+      "locations": [
+        "Phan Rang - Thap Cham",
+        "Ninh Hai",
+        "Ninh Phuoc",
+        "Thuan Bac",
+        "Thuan Nam"
+      ]
+    },
+    {
+      "province": "Phu Tho",
+      "locations": [
+        "Viet Tri",
+        "Phu Ninh",
+        "Tam Nong",
+        "Thanh Son",
+        "Thanh Thuy",
+        "Cam Khe"
+      ]
+    },
+    {
+      "province": "Phu Yen",
+      "locations": [
+        "Tuy Hoa",
+        "Dong Xuan",
+        "Phu Hoa",
+        "Son Hoa",
+        "Song Hinh",
+        "Tay Hoa"
+      ]
+    },
+    {
+      "province": "Quang Binh",
+      "locations": [
+        "Dong Hoi",
+        "Ba Don",
+        "Bo Trach",
+        "Le Thuy",
+        "Minh Hoa",
+        "Quang Ninh"
+      ]
+    },
+    {
+      "province": "Quang Nam",
+      "locations": [
+        "Tam Ky",
+        "Hoi An",
+        "Dien Ban",
+        "Duy Xuyen",
+        "Nam Giang",
+        "Nong Son"
+      ]
+    },
+    {
+      "province": "Quang Ngai",
+      "locations": [
+        "Quang Ngai",
+        "Duc Pho",
+        "Ba To",
+        "Binh Son",
+        "Mo Duc",
+        "Nghia Hanh"
+      ]
+    },
+    {
+      "province": "Quang Ninh",
+      "locations": [
+        "Ha Long",
+        "Cam Pha",
+        "Mong Cai",
+        "Uong Bi",
+        "Binh Lieu",
+        "Van Don"
+      ]
+    },
+    {
+      "province": "Quang Tri",
+      "locations": [
+        "Dong Ha",
+        "Quang Tri",
+        "Cam Lo",
+        "Gio Linh",
+        "Hai Lang",
+        "Huong Hoa"
+      ]
+    },
+    {
+      "province": "Soc Trang",
+      "locations": ["Soc Trang", "Nga Nam", "Vinh Chau", "Ke Sach", "Long Phu"]
+    },
+    {
+      "province": "Son La",
+      "locations": ["Son La", "Mai Son", "Muong La", "Phu Yen", "Song Ma"]
+    },
+    {
+      "province": "Tay Ninh",
+      "locations": [
+        "Tay Ninh",
+        "Trang Bang",
+        "Go Dau",
+        "Ben Cau",
+        "Hoa Thanh",
+        "Duong Minh Chau"
+      ]
+    },
+    {
+      "province": "Thai Binh",
+      "locations": [
+        "Thai Binh",
+        "Dong Hung",
+        "Hung Ha",
+        "Kien Xuong",
+        "Tien Hai"
+      ]
+    },
+    {
+      "province": "Thai Nguyen",
+      "locations": ["Thai Nguyen", "Song Cong", "Pho Yen", "Dai Tu", "Dong Hy"]
+    },
+    {
+      "province": "Thanh Hoa",
+      "locations": ["Thanh Hoa", "Bim Son", "Sam Son", "Dong Son"]
+    },
+    {
+      "province": "Thua Thien - Hue",
+      "locations": ["Hue", "Phong Dien", "Phu Loc", "Quang Dien"]
+    },
+    {
+      "province": "Tien Giang",
+      "locations": ["My Tho", "Cai Be", "Chau Thanh"]
+    },
+    {
+      "province": "Tra Vinh",
+      "locations": ["Tra Vinh", "Duyen Hai"]
+    },
+    {
+      "province": "Tuyen Quang",
+      "locations": ["Tuyen Quang", "Son Duong"]
+    },
+    {
+      "province": "Vinh Long",
+      "locations": ["Vinh Long", "Binh Minh"]
+    },
+    {
+      "province": "Vinh Phuc",
+      "locations": ["Vinh Yen", "Phuc Yen"]
+    },
+    {
+      "province": "Yen Bai",
+      "locations": ["Yen Bai", "Mu Cang Chai"]
+    }
+  ]
+}

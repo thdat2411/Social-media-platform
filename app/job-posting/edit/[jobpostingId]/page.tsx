@@ -5,6 +5,7 @@ import axios from "axios";
 import { Loader } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { HiOutlineLightBulb } from "react-icons/hi";
 import EditJobPostingMainContent from "./main-content";
 
 const JobPostingEditPage = () => {
@@ -33,8 +34,22 @@ const JobPostingEditPage = () => {
     );
   }
   return (
-    <div className="my-7 flex w-full flex-col items-center justify-center">
-      <EditJobPostingMainContent job_posting={jobPosting!} user={user!} />;
+    <div className="my-7 flex w-full justify-center">
+      <div className="min-[1500px]: flex justify-between max-[1670px]:w-[75%] max-[1250px]:w-[85%] min-[1670px]:w-[60%]">
+        <EditJobPostingMainContent job_posting={jobPosting!} user={user!} />;
+        <div className="flex w-[25%] flex-col space-y-2 overflow-x-hidden">
+          <div className="space-y-1 overflow-x-hidden rounded-lg border bg-white p-6">
+            <HiOutlineLightBulb className="mb-6 size-6" color="green" />
+            <p className="text-sm font-semibold text-gray-500">
+              Target your job to the right people
+            </p>
+            <p className="text-justify text-sm text-muted-foreground">
+              Include a job description and add required skills to target job
+              seekers who match your criteria.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -9,13 +9,14 @@ import {
 } from "@/components/ui/carousel";
 import { user } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SignUpForm from "./form";
-import FullNameCard from "./fullname-card";
-import JobSeekerCard from "./job-seeker-card";
-import RecruiterCard from "./recruiter-card";
-import RoleCard from "./role-card";
+const FullNameCard = dynamic(() => import("./fullname-card"));
+const RoleCard = dynamic(() => import("./role-card"));
+const JobSeekerCard = dynamic(() => import("./job-seeker-card"));
+const RecruiterCard = dynamic(() => import("./recruiter-card"));
 
 const SignUpMainContent = () => {
   const session = useSession();
@@ -25,7 +26,7 @@ const SignUpMainContent = () => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-  const array = Array.from({ length: 3 });
+  const array = useMemo(() => Array.from({ length: 3 }), []);
 
   useEffect(() => {
     if (!api) {

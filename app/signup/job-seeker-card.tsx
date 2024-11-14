@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { user } from "@prisma/client";
 import axios from "axios";
 import { debounce } from "lodash";
+import { Loader } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import OccupationData from "../utils/occupations.json";
 import { capitalizeFirstLetter } from "../utils/utils";
@@ -14,7 +15,7 @@ interface JobSeekerCardProps {
 }
 
 const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
-  const jobTitles = OccupationData.titles;
+  const jobTitles = OccupationData.title;
   const router = useRouter();
   const [jobInputValue, setJobInputValue] = useState("");
   const [locationInputValue, setLocationInputValue] = useState("");
@@ -28,15 +29,15 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
     string[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const fetchLocations = async (keyword: string) => {
+  /*----------------------------------------------------------------------- */
+  const fetchLocations = useCallback(async (keyword: string) => {
+    if (!keyword) return;
     try {
       const formattedKeyword = keyword.split(" ").join("+");
       const response = await fetch(
         `http://api.geonames.org/searchJSON?q=${formattedKeyword}&country=VN&maxRows=20&username=thaidat`
       );
       const data = await response.json();
-      console.log(data);
       const locationList = data.geonames.map(
         (location: { toponymName: string }) => location.toponymName
       );
@@ -44,12 +45,21 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
     } catch (error) {
       console.error("Error fetching locations:", error);
     }
-  };
-
+  }, []);
+  /*----------------------------------------------------------------------- */
+  const debouncedFetchLocations = useCallback(
+    debounce((keyword: string) => fetchLocations(keyword), 300),
+    [fetchLocations]
+  );
+  /*----------------------------------------------------------------------- */
   useEffect(() => {
-    fetchLocations(locationInputValue);
-  }, [locationInputValue]);
-
+    if (locationInputValue) {
+      debouncedFetchLocations(locationInputValue);
+    } else {
+      setLocations([]);
+    }
+  }, [locationInputValue, debouncedFetchLocations]);
+  /*----------------------------------------------------------------------- */
   const debouncedFilterSuggestions = debounce((value) => {
     if (!value) {
       setJobSuggestions([]);
@@ -66,26 +76,27 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
       setLocationSuggestions(locations);
     }
   }, 300);
-
+  /*----------------------------------------------------------------------- */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setJobInputValue(value);
     debouncedFilterSuggestions(value);
   };
-
+  /*----------------------------------------------------------------------- */
   const handleJobSuggestionClick = (title: string) => {
     setJobInputValue(capitalizeFirstLetter(title));
     setPrevJobSuggestions(jobSuggestions);
     setJobSuggestions([]);
     setIsJobFocused(false);
   };
+  /*----------------------------------------------------------------------- */
   const handleLocationSuggestionClick = (location: string) => {
     setLocationInputValue(location);
     setPrevLocationSuggestions(locationSuggestions);
     setLocationSuggestions([]);
     setIsLocationFocused(false);
   };
-
+  /*----------------------------------------------------------------------- */
   const handleBlur = (isJob: boolean) => {
     setTimeout(() => {
       if (isJob) {
@@ -95,14 +106,15 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
       }
     }, 250);
   };
+  /*----------------------------------------------------------------------- */
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setLocationInputValue(value);
     debouncedFilterSuggestions(value);
   };
-
+  /*----------------------------------------------------------------------- */
   const handleDisableSubmit = (): boolean => {
-    const isJobValid = prevJobSuggestions.includes(jobInputValue.toUpperCase());
+    const isJobValid = prevJobSuggestions.includes(jobInputValue);
     const isLocationValid =
       prevLocationSuggestions.includes(locationInputValue);
     return !(
@@ -110,6 +122,7 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
       isLoading
     );
   };
+  /*----------------------------------------------------------------------- */
   const handleSumbit = async () => {
     try {
       setIsLoading(true);
@@ -148,7 +161,7 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
       console.error("Error submitting job preference:", error);
     }
   };
-
+  /*----------------------------------------------------------------------- */
   return (
     <>
       <p className="text-3xl font-medium">
@@ -217,7 +230,13 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
         className="w-fit self-end bg-blue-500 hover:bg-blue-700"
         disabled={handleDisableSubmit()}
       >
-        <span className="text-lg">Get started</span>
+        {isLoading ? (
+          <span className="animate-spin">
+            <Loader />
+          </span>
+        ) : (
+          <span className="text-lg">Get started</span>
+        )}
       </Button>
     </>
   );

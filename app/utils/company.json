@@ -1,0 +1,238 @@
+{
+  "companies": [
+    {
+      "name": "Vingroup",
+      "logo": "https://path-to-logo/vingroup-logo.png",
+      "industry": "Conglomerate",
+      "website": "https://www.vingroup.net/"
+    },
+    {
+      "name": "VinFast",
+      "logo": "https://path-to-logo/vinfast-logo.png",
+      "industry": "Automotive",
+      "website": "https://vinfastauto.com/"
+    },
+    {
+      "name": "FPT Corporation",
+      "logo": "https://path-to-logo/fpt-logo.png",
+      "industry": "Technology",
+      "website": "https://fpt.com.vn/"
+    },
+    {
+      "name": "Tiki",
+      "logo": "https://path-to-logo/tiki-logo.png",
+      "industry": "E-commerce",
+      "website": "https://tiki.vn/"
+    },
+    {
+      "name": "Masan Group",
+      "logo": "https://path-to-logo/masan-logo.png",
+      "industry": "Consumer Goods",
+      "website": "https://www.masan.com.vn/"
+    },
+    {
+      "name": "Zalo",
+      "logo": "https://path-to-logo/zalo-logo.png",
+      "industry": "Technology, Communication",
+      "website": "https://zalo.me/"
+    },
+    {
+      "name": "Mobifone",
+      "logo": "https://path-to-logo/mobifone-logo.png",
+      "industry": "Telecommunications",
+      "website": "https://www.mobifone.vn/"
+    },
+    {
+      "name": "Viettel",
+      "logo": "https://path-to-logo/viettel-logo.png",
+      "industry": "Telecommunications",
+      "website": "https://www.viettel.vn/"
+    },
+    {
+      "name": "Grab Vietnam",
+      "logo": "https://path-to-logo/grab-logo.png",
+      "industry": "Transportation, Delivery",
+      "website": "https://www.grab.com/vn/"
+    },
+    {
+      "name": "Sendo",
+      "logo": "https://path-to-logo/sendo-logo.png",
+      "industry": "E-commerce",
+      "website": "https://www.sendo.vn/"
+    },
+    {
+      "name": "Café Trung Nguyên",
+      "logo": "https://path-to-logo/trung-nguyen-logo.png",
+      "industry": "Food & Beverage",
+      "website": "https://www.trungnguyen.com.vn/"
+    },
+    {
+      "name": "Novaland",
+      "logo": "https://path-to-logo/novaland-logo.png",
+      "industry": "Real Estate",
+      "website": "https://www.novaland.com.vn/"
+    },
+    {
+      "name": "Vinhomes",
+      "logo": "https://path-to-logo/vinhomes-logo.png",
+      "industry": "Real Estate",
+      "website": "https://vinhomes.vn/"
+    },
+    {
+      "name": "BIDV",
+      "logo": "https://path-to-logo/bidv-logo.png",
+      "industry": "Banking",
+      "website": "https://www.bidv.com.vn/"
+    },
+    {
+      "name": "Techcombank",
+      "logo": "https://path-to-logo/techcombank-logo.png",
+      "industry": "Banking",
+      "website": "https://www.techcombank.com.vn/"
+    },
+    {
+      "name": "AIA Vietnam",
+      "logo": "https://path-to-logo/aia-logo.png",
+      "industry": "Insurance",
+      "website": "https://www.aia.com.vn/"
+    },
+    {
+      "name": "SABECO",
+      "logo": "https://path-to-logo/sabeco-logo.png",
+      "industry": "Food & Beverage",
+      "website": "https://www.sabeco.com.vn/"
+    },
+    {
+      "name": "PetroVietnam",
+      "logo": "https://path-to-logo/petrovietnam-logo.png",
+      "industry": "Energy",
+      "website": "https://www.pvn.vn/"
+    },
+    {
+      "name": "Hoa Sen Group",
+      "logo": "https://path-to-logo/hoa-sen-logo.png",
+      "industry": "Construction, Steel",
+      "website": "https://www.hoasengroup.vn/"
+    },
+    {
+      "name": "FLC Group",
+      "logo": "https://path-to-logo/flc-logo.png",
+      "industry": "Real Estate",
+      "website": "https://flcgroup.vn/"
+    },
+    {
+      "name": "Vinasoy",
+      "logo": "https://path-to-logo/vinasoy-logo.png",
+      "industry": "Food & Beverage",
+      "website": "https://www.vinasoy.com.vn/"
+    },
+    {
+      "name": "Vinpearl",
+      "logo": "https://path-to-logo/vinpearl-logo.png",
+      "industry": "Hospitality, Real Estate",
+      "website": "https://www.vinpearl.com/"
+    },
+    {
+      "name": "Vietcombank",
+      "logo": "https://path-to-logo/vietcombank-logo.png",
+      "industry": "Banking",
+      "website": "https://www.vietcombank.com.vn/"
+    },
+    {
+      "name": "Saigon Newport",
+      "logo": "https://path-to-logo/saigon-newport-logo.png",
+      "industry": "Logistics",
+      "website": "https://www.snp.com.vn/"
+    },
+    {
+      "name": "Vinasun",
+      "logo": "https://path-to-logo/vinasun-logo.png",
+      "industry": "Transportation",
+      "website": "https://www.vinasun.com.vn/"
+    },
+    {
+      "name": "MobiTV",
+      "logo": "https://path-to-logo/mobitv-logo.png",
+      "industry": "Telecommunications, Media",
+      "website": "https://www.mobitv.vn/"
+    },
+    {
+      "name": "TMA Solutions",
+      "logo": "https://path-to-logo/tma-solutions-logo.png",
+      "industry": "IT Services",
+      "website": "https://www.tmasolutions.com/"
+    },
+    {
+      "name": "VietinBank",
+      "logo": "https://path-to-logo/vietinbank-logo.png",
+      "industry": "Banking",
+      "website": "https://www.vietinbank.vn/"
+    },
+    {
+      "name": "Anheuser-Busch InBev",
+      "logo": "https://path-to-logo/ab-inbev-logo.png",
+      "industry": "Beverages",
+      "website": "https://www.ab-inbev.com/"
+    },
+    {
+      "name": "VinaCapital",
+      "logo": "https://path-to-logo/vinacapital-logo.png",
+      "industry": "Investment",
+      "website": "https://www.vinacapital.com/"
+    },
+    {
+      "name": "KIDO Group",
+      "logo": "https://path-to-logo/kido-logo.png",
+      "industry": "Food & Beverage",
+      "website": "https://www.kido.com.vn/"
+    },
+    {
+      "name": "Tan Hiep Phat",
+      "logo": "https://path-to-logo/tan-hiep-phat-logo.png",
+      "industry": "Food & Beverage",
+      "website": "https://www.thp.com.vn/"
+    },
+    {
+      "name": "Vietjet Air",
+      "logo": "https://path-to-logo/vietjet-logo.png",
+      "industry": "Airline",
+      "website": "https://www.vietjetair.com/"
+    },
+    {
+      "name": "Vinh Tan 1 Power Plant",
+      "logo": "https://path-to-logo/vinh-tan-logo.png",
+      "industry": "Energy",
+      "website": "https://www.vinh-tan.com.vn/"
+    },
+    {
+      "name": "Coteccons",
+      "logo": "https://path-to-logo/coteccons-logo.png",
+      "industry": "Construction",
+      "website": "https://www.coteccons.vn/"
+    },
+    {
+      "name": "TMA Solutions",
+      "logo": "https://path-to-logo/tma-logo.png",
+      "industry": "IT Services",
+      "website": "https://www.tmasolutions.com/"
+    },
+    {
+      "name": "PVI Holdings",
+      "logo": "https://path-to-logo/pvi-logo.png",
+      "industry": "Insurance",
+      "website": "https://www.pvi.com.vn/"
+    },
+    {
+      "name": "PV Gas",
+      "logo": "https://path-to-logo/pv-gas-logo.png",
+      "industry": "Energy",
+      "website": "https://www.pvgas.com.vn/"
+    },
+    {
+      "name": "Shinhan Bank",
+      "logo": "https://path-to-logo/shinhan-bank-logo.png",
+      "industry": "Banking",
+      "website": "https://www.shinhan.com.vn/"
+    }
+  ]
+}

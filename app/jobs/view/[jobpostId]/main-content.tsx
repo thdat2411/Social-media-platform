@@ -1,5 +1,6 @@
 "use client";
 import companyImage from "@/app/assets/company.png";
+import FooterLink from "@/app/components/footerLink";
 import Renderer from "@/app/components/renderer";
 import ApplicantModal from "@/app/jobs/view/[jobpostId]/applicant-modal";
 import { formatDate } from "@/app/utils/utils";
@@ -159,16 +160,21 @@ const JobViewMainContent = ({
               </div>
             </div>
           </div>
-          <div className="mt-4 h-fit rounded-lg border bg-white p-6 shadow-md max-[800px]:mx-auto max-[800px]:w-9/12 min-[800px]:flex min-[800px]:w-1/5 min-[800px]:justify-center">
-            <div className="flex flex-wrap items-center justify-center max-[1500px]:space-y-4 max-[800px]:space-x-4 max-[800px]:space-y-0 min-[1500px]:space-x-4">
-              <p>Looking for talent?</p>
-              <Button
-                onClick={() => router.push("/job-posting")}
-                variant="outline"
-                className="rounded-full border border-blue-500 px-7 py-3 text-blue-500 hover:border-2 hover:border-blue-700 hover:text-blue-500"
-              >
-                Post a job
-              </Button>
+          <div className="flex w-1/5 flex-col items-center space-y-5">
+            <div className="mt-4 h-fit rounded-lg border bg-white p-6 shadow-md max-[800px]:mx-auto max-[800px]:w-9/12 min-[800px]:w-full min-[800px]:flex-col min-[800px]:justify-center">
+              <div className="flex flex-wrap items-center justify-center max-[1500px]:space-y-4 max-[800px]:space-x-4 max-[800px]:space-y-0 min-[1500px]:space-x-4">
+                <p>Looking for talent?</p>
+                <Button
+                  onClick={() => router.push("/job-posting")}
+                  variant="outline"
+                  className="rounded-full border border-blue-500 px-7 py-3 text-blue-500 hover:border-2 hover:border-blue-700 hover:text-blue-500"
+                >
+                  Post a job
+                </Button>
+              </div>
+            </div>
+            <div className="flex h-[150px] w-[300px] flex-col">
+              <FooterLink />
             </div>
           </div>
         </div>

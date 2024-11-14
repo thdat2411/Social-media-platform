@@ -45,7 +45,7 @@ const CategoryListSidebar = () => {
     }
   };
   return (
-    <aside className="sticky top-20 h-fit w-1/4 rounded-lg border border-[#DADEE2] bg-white shadow-sm">
+    <aside className="sticky top-20 h-fit w-1/5 rounded-lg border border-[#DADEE2] bg-white shadow-sm">
       <div className="flex flex-col px-3 py-4">
         <p className="pb-3 text-lg font-semibold">On this page</p>
 
@@ -55,7 +55,7 @@ const CategoryListSidebar = () => {
               <button
                 key={index}
                 onClick={() => handleScrollTo(item.label)}
-                className={`mb-4 px-4 text-left text-sm transition-all ${
+                className={`mb-4 px-4 py-1 text-left text-sm transition-all ${
                   activeSection === item.label.toLowerCase()
                     ? "border-l-2 border-blue-500"
                     : "text-gray-600 hover:text-gray-800"

@@ -5,19 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { user } from "@prisma/client";
 import { ChevronDown, Pencil, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FaRegSmile } from "react-icons/fa";
 import { MdCalendarMonth, MdOutlinePermMedia } from "react-icons/md";
 import { ReactPhotoEditor } from "react-photo-editor";
 import { useDebounce } from "use-debounce";
-import ConfirmModal from "../../components/confirm-modal";
 import { EmojiPopover } from "../../components/emoji-popover";
 import { Hint } from "../../components/hint";
 import {
   default as Event,
   default as EventPostField,
 } from "./event-post-field";
+
+const ConfirmModal = dynamic(() => import("../../components/confirm-modal"));
 export type Event = {
   eventName: string;
   description: string;
@@ -110,7 +112,7 @@ const PostModal = ({
         reader.abort();
       };
     }
-  }, [image]);
+  }, [image, open]);
 
   const handleSaveDraft = () => {
     if (postContent.trim() !== "") {

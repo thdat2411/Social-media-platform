@@ -13,18 +13,18 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 interface UserDropdownProps {
-  user: user;
+  user: user | null;
 }
 
 const UserDropdown = ({ user }: UserDropdownProps) => {
-  const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
+  const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
   const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <div className="flex flex-col items-center">
           <Avatar className="size-10">
-            <AvatarImage src={user.image ?? ""} className="rounded-full" />
+            <AvatarImage src={user?.image ?? ""} className="rounded-full" />
             <AvatarFallback className="bg-blue-300 text-lg text-white">
               {avatarFallBack}
             </AvatarFallback>
@@ -38,24 +38,24 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
       <DropdownMenuContent className="absolute w-[300px] max-[1300px]:-right-10 min-[1300px]:-right-20">
         <div className="flex flex-col">
           <div
-            onClick={() => router.push(`/in/${user.id}`)}
+            onClick={() => router.push(`/in/${user?.id}`)}
             className="flex cursor-pointer space-x-3 p-4"
           >
             <Avatar className="size-14">
-              <AvatarImage src={user.image ?? ""} className="rounded-full" />
+              <AvatarImage src={user?.image ?? ""} className="rounded-full" />
               <AvatarFallback className="bg-blue-300 text-lg text-white">
                 {avatarFallBack}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p className="font-semibold">{user.name}</p>
+              <p className="font-semibold">{user?.name}</p>
               <p className="break-words text-sm">
-                {user.bio ?? "No bio available"}
+                {user?.bio ?? "No bio available"}
               </p>
             </div>
           </div>
           <Button
-            onClick={() => router.push(`/in/${user.id}`)}
+            onClick={() => router.push(`/in/${user?.id}`)}
             className="mb-2 w-full rounded-full border-2 border-blue-500 bg-transparent text-blue-500 hover:border-blue-700 hover:bg-blue-100"
           >
             <p className="text-base">View profile</p>

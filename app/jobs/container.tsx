@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { JobsPost } from "./main-content";
+import CompanyLogo from "@/app/assets/company.png";
 
 interface JobsContainerProps {
   item: JobsPost;
@@ -22,7 +23,7 @@ const JobsContainer = ({ item }: JobsContainerProps) => {
         onClick={() => router.push(`/jobs/view/${item.id}`)}
       >
         <Image
-          src="https://github.com/shadcn.png"
+          src={CompanyLogo}
           className="size-16"
           width={64}
           height={64}

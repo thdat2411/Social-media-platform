@@ -1,5 +1,4 @@
 "use client";
-import SSEComponent from "@/app/components/NotificationComponent";
 import { user } from "@prisma/client";
 import axios from "axios";
 import { Loader } from "lucide-react";
@@ -30,7 +29,7 @@ const JobViewPage = () => {
 
   if (employer === null || jobPost === null) {
     return (
-      <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-200 bg-opacity-50">
+      <div className="flex h-screen items-center justify-center bg-gray-200 bg-opacity-50">
         <div className="flex flex-col items-center">
           <Loader className="size-10 animate-spin" />
         </div>
@@ -39,7 +38,6 @@ const JobViewPage = () => {
   }
   return (
     <>
-  
       <JobViewMainContent
         jobPost={jobPost!}
         employer={employer!}

@@ -4,12 +4,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { job_posting, user } from "@prisma/client";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import { DialogClose } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
@@ -24,6 +26,7 @@ interface PreviewModalProps {
 }
 
 const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
+  console.log(formData);
   const [showAll, setShowAll] = useState(false);
   const skillsToShow = showAll
     ? formData.required_skills
@@ -42,6 +45,7 @@ const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
             <DialogTitle className="text-xl font-medium">
               Preview job post
             </DialogTitle>
+            <DialogDescription hidden>Fixed the warning</DialogDescription>
           </DialogHeader>
           <Separator className="p-0" />
 

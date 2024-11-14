@@ -1,5 +1,5 @@
 "use client";
-import LandingImage from "@/app/assets/landing-image.jpg";
+import LandingImage from "@/app/assets/landing-image.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
@@ -17,6 +17,7 @@ const LandingMainContent = () => {
   useEffect(() => {
     if (session?.status === "authenticated") {
       router.push("/feed");
+      router.refresh();
     }
   }, [session?.status, router]);
 
@@ -37,7 +38,7 @@ const LandingMainContent = () => {
       .finally(() => setIsLoading(false));
   };
   return (
-    <main className="mt-20 flex justify-center space-x-10 max-[700px]:flex-col max-[700px]:space-x-0 max-[700px]:space-y-10">
+    <main className="flex w-full justify-center space-x-10 bg-white pt-20 max-[700px]:flex-col max-[700px]:space-x-0 max-[700px]:space-y-10">
       <div className="flex w-[550px] flex-col max-[700px]:w-full max-[700px]:justify-center max-[700px]:self-center">
         <h1 className="text-5xl text-slate-500 max-[700px]:break-words max-[700px]:text-center max-[700px]:text-3xl">
           Chào mừng đến với cộng đồng chuyên gia của bạn
@@ -117,9 +118,9 @@ const LandingMainContent = () => {
         <Image
           src={LandingImage}
           alt="Illustration"
-          className="rounded-full bg-transparent"
-          width={650}
-          height={520}
+          className="rounded-full bg-transparent object-cover"
+          width={750}
+          height={600}
         />
       </div>
     </main>

@@ -10,12 +10,12 @@ export const useShowToastWithCloseButton = () => {
   const showToastWithCloseButton = (message: string) => {
     toast.custom((t) => (
       <>
-        <div className="flex w-[350px] flex-col items-center justify-between space-y-2 rounded-lg bg-white p-4 shadow-lg">
+        <div
+          onClick={() => router.push("/notifications")}
+          className="flex w-[350px] flex-col items-center justify-between space-y-2 rounded-lg bg-white p-4 shadow-lg"
+        >
           <div className="flex w-[350px] items-center justify-between px-4 pb-2 pt-4">
-            <button
-              onClick={() => router.push("/notifications")}
-              className="flex flex-grow items-center space-x-2 text-left text-gray-800"
-            >
+            <button className="flex flex-grow items-center space-x-2 text-left text-gray-800">
               <Bell className="size-5" />
               <p className="break-words text-lg font-medium">New message</p>
             </button>

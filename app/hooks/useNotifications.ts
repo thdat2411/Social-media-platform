@@ -1,27 +1,34 @@
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useShowToastWithCloseButton } from '../components/toastWithCloseButton';
+import Pusher from 'pusher-js';
 
 const useNotifications = () => {
     const { data: session } = useSession();
 
-    const showToast = useShowToastWithCloseButton();
+    const showToast: (message: string) => void = useShowToastWithCloseButton();
 
     useEffect(() => {
-        console.log('Session data:', session);
+        if (!session?.user?.id) return;
 
-        if (!session?.user) return;
+        const userId = session.user.id as string;
 
-        const eventSource = new EventSource(`/api/sse?userId=${session.user.id}`);
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
+            cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
+            forceTLS: true,
+        });
 
-        eventSource.onmessage = (event) => {
-            const notification = JSON.parse(event.data);
-            showToast(notification.message);
-        };
+        const channel = pusher.subscribe(`user-${userId}`);
+        channel.bind('new-notification', (data: string) => {
+            showToast(data);
+        });
 
         return () => {
-            eventSource.close();
+            console.log('Cleaning up...');
+            channel.unbind_all();
+            channel.unsubscribe();
+            pusher.disconnect();
         };
-    }, [session, session?.user]);
+    }, [session?.user.id, showToast]);
 };
 export default useNotifications;

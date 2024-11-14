@@ -1,11 +1,13 @@
-import LandingHeader from "./components/landing-header";
-import LandingMainContent from "./components/landing-main-content";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  return (
-    <div className="flex max-h-screen flex-col items-center">
-      <LandingHeader />
-      <LandingMainContent />
-    </div>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/feed");
+  }, [router]);
+
+  return null;
 }

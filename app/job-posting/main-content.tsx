@@ -7,7 +7,9 @@ import { debounce } from "lodash";
 import { Loader, Plus, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { PiSparkleFill } from "react-icons/pi";
 import { toast } from "sonner";
 import {
   capitalizeFirstLetter,
@@ -53,23 +55,25 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
   const [isCompanyError, setIsCompanyError] = useState(false);
   const [isLocationError, setIsLocationError] = useState(false);
   const [isDescriptionError, setIsDescriptionError] = useState(false);
+  const [triggerTypingAnimation, setTriggerTypingAnimation] = useState(false);
+  const [isAILoading, setIsAILoading] = useState(false);
 
-  const workplaceType = ["On-site", "Remote", "Hybrid"];
-  const jobType = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Temporary",
-    "Internship",
-  ];
-  const jobLevel = [
-    "Entry level",
-    "Associate",
-    "Mid-Senior level",
-    "Director",
-    "Executive",
-    "Senior",
-  ];
+  const workplaceType = useMemo(() => ["On-site", "Remote", "Hybrid"], []);
+  const jobType = useMemo(
+    () => ["Full-time", "Part-time", "Contract", "Temporary", "Internship"],
+    []
+  );
+  const jobLevel = useMemo(
+    () => [
+      "Entry level",
+      "Associate",
+      "Mid-Senior level",
+      "Director",
+      "Executive",
+      "Senior",
+    ],
+    []
+  );
   const [formData, setFormData] = useState<job_posting>({
     id: "",
     location: "",
@@ -85,6 +89,46 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     required_skills: [],
   });
 
+  useEffect(() => {
+    // Log formData only after it has been updated
+    console.log(formData);
+  }, [formData]); // Runs whenever formData changes
+
+  const generateDescription = async () => {
+    if (!formData.title || !formData.company_name || !formData.location) {
+      return;
+    }
+    try {
+      setIsAILoading(true);
+      await axios
+        .post("/api/suggestion", {
+          title: formData.title,
+          company_name: formData.company_name,
+          location: formData.location,
+          workplaceType: formData.workplace_type,
+          jobType: formData.job_type,
+          level: formData.level,
+        })
+        .then((response) => {
+          const { description } = response.data;
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            description: description,
+          }));
+          setIsAILoading(false);
+          setTriggerTypingAnimation(true);
+        })
+        .catch((error) => {
+          toast.error(
+            error.response?.data?.error ||
+              "Posting job failed, please try again"
+          );
+        });
+    } catch {
+      toast.error("Failed to generate job description");
+    }
+  };
+
   const debouncedFilterSuggestions = debounce((value) => {
     if (!value) {
       setSkill("");
@@ -92,7 +136,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     }
     const filteredTitles = skillList
       .filter((title) => title.toLowerCase().includes(value.toLowerCase()))
-      .slice(0, 200);
+      .slice(0, 20);
     setSkillSuggestion(filteredTitles);
   }, 300);
 
@@ -142,6 +186,15 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     }
   };
 
+  const isRewriteDisabled = useMemo(() => {
+    return (
+      !formData.title ||
+      !formData.company_name ||
+      !formData.location ||
+      isAILoading
+    );
+  }, [formData.title, formData.company_name, formData.location, isAILoading]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -156,6 +209,20 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     }
   }, [skill]);
 
+  const handleDisable = () => {
+    if (
+      formData.title === "" ||
+      formData.company_name === "" ||
+      formData.location === "" ||
+      formData.description === "" ||
+      isAILoading ||
+      isLoading
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <PreviewModal
@@ -164,7 +231,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
         formData={formData}
         user={user!}
       />
-      <div className="mx-10 overflow-x-hidden rounded-lg border bg-white shadow-md max-[500px]:w-11/12 min-[500px]:max-w-4xl">
+      <div className="flex w-[70%] flex-col overflow-x-hidden rounded-lg border bg-white shadow-md">
         {isLoading && (
           <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
             <div className="flex flex-col items-center">
@@ -183,7 +250,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
           <p className="font-semibold max-[450px]:text-lg min-[450px]:text-xl">
             Job details*
           </p>
-          <div className="flex max-w-full flex-shrink-0 space-x-10 pb-7">
+          <div className="flex max-w-full flex-shrink-0 items-center space-x-10 pb-3">
             <InputSugesstion
               formData={formData}
               setFormData={setFormData}
@@ -192,14 +259,14 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
               label="Job title"
               isError={isJobError}
             />
-            <div className="flex w-1/2 flex-col space-y-2">
-              <label
-                htmlFor="job-title"
+            <div className="mt-1 flex w-1/2 flex-col space-y-[9px]">
+              <p
                 className={`${isCompanyError ? "text-red-500" : "text-muted-foreground"} max-[450px]:text-xs min-[450px]:text-sm`}
               >
                 Company*
-              </label>
+              </p>
               <input
+                id="company"
                 type="text"
                 className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${isCompanyError ? "outline outline-2 outline-red-500" : "border border-black"}`}
                 value={formData.company_name}
@@ -213,13 +280,10 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
             </div>
           </div>
           <div className="flex w-full space-x-10 pb-7">
-            <div className="flex w-1/2 flex-col space-y-2">
-              <label
-                htmlFor="job-title"
-                className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm"
-              >
+            <div className="flex w-1/2 flex-col justify-end">
+              <p className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm">
                 Workplace type*
-              </label>
+              </p>
               <JobPostingDropdown
                 isWorkplaceOpen={isWorkplaceOpen}
                 setIsWorkplaceOpen={setIsWorkplaceOpen}
@@ -246,12 +310,9 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
           </div>
           <div className="flex w-full space-x-10 pb-7">
             <div className="flex w-1/2 flex-col space-y-2">
-              <label
-                htmlFor="job-title"
-                className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm"
-              >
+              <p className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm">
                 Job type*
-              </label>
+              </p>
               <JobPostingDropdown
                 isWorkplaceOpen={isWorkplaceOpen}
                 setIsWorkplaceOpen={setIsWorkplaceOpen}
@@ -268,12 +329,9 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
               />
             </div>
             <div className="flex w-1/2 flex-col space-y-2">
-              <label
-                htmlFor="job-title"
-                className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm"
-              >
+              <p className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm">
                 Level*
-              </label>
+              </p>
               <JobPostingDropdown
                 isWorkplaceOpen={isWorkplaceOpen}
                 setIsWorkplaceOpen={setIsWorkplaceOpen}
@@ -290,6 +348,19 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
               />
             </div>
           </div>
+          <Button
+            disabled={isRewriteDisabled}
+            onClick={generateDescription}
+            variant="outline"
+            className="flex w-fit items-center space-x-2 rounded-full px-4 outline outline-1 hover:outline-2"
+          >
+            {isAILoading ? (
+              <AiOutlineLoading3Quarters className="size-4 animate-spin" /> // Loading spinner with animation
+            ) : (
+              <PiSparkleFill className="size-4" />
+            )}
+            <p>Rewrite with AI</p>
+          </Button>
           <div>
             <p className="mb-4 font-semibold max-[450px]:text-lg min-[450px]:text-xl">
               Description*
@@ -298,6 +369,9 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
               setFormData={setFormData}
               formData={formData}
               isError={isDescriptionError}
+              triggerTypingAnimation={triggerTypingAnimation}
+              setTriggerTypingAnimation={setTriggerTypingAnimation}
+              setIsAILoading={setIsAILoading}
             />
           </div>
           <p className="font-semibold max-[450px]:text-lg min-[450px]:text-xl">
@@ -309,7 +383,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
             right candidates.
           </p>
           <div className="flex flex-wrap">
-            {formData.required_skills !== null &&
+            {formData.required_skills.length > 0 &&
               formData.required_skills.map((skill, index) => (
                 <Button
                   onClick={() =>
@@ -383,7 +457,6 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
           <Button
             onClick={() => {
               setIsReviewModalOpen(true);
-              console.log(formData.description);
             }}
             variant="ghost"
             className="text-base text-blue-500 hover:bg-blue-100 hover:text-blue-700"
@@ -394,6 +467,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
             type="submit"
             onClick={handleSubmit}
             className="rounded-full bg-blue-500 text-lg text-white hover:bg-blue-700 hover:text-white"
+            disabled={handleDisable()}
           >
             Post a job
           </Button>

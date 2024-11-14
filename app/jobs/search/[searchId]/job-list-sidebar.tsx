@@ -1,21 +1,25 @@
 "use client";
+import CompanyImage from "@/app/assets/company.png";
 import GrayAvatar from "@/app/assets/gray-avatar.png";
-import { JobsPost } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
+import { JobPostsWithUsers } from "./job-content";
 interface JobListSideBarProps {
-  data: JobsPost;
+  data: JobPostsWithUsers;
+  jobs: JobPostsWithUsers[];
   isSelection: boolean;
   isLoading: boolean;
+  setPostIndex: (index: number) => void;
 }
 
 const JobListSideBar = ({
   data,
+  jobs,
   isSelection,
   isLoading,
+  setPostIndex,
 }: JobListSideBarProps) => {
   if (isLoading) {
     return (
@@ -33,33 +37,34 @@ const JobListSideBar = ({
     );
   }
   return (
-    <Link
-      href={`/jobs/search/${data.id}`}
+    <div
+      onClick={() => setPostIndex(jobs.indexOf(data))}
       className={`flex cursor-pointer items-start justify-between space-x-4 border-b p-4 ${
         isSelection ? "border-b-2 border-l-2 border-l-black bg-slate-200" : ""
       }`}
     >
       <div className="flex space-x-5">
         <Image
-          src="https://github.com/shadcn.png"
+          src={CompanyImage}
           alt="Company logo"
-          width={70}
-          height={70}
+          width={60}
+          height={60}
+          className="object-cover"
         />
         <div>
           <p className="text-lg font-semibold text-blue-600 hover:underline">
             {data.title}
           </p>
-          <p className="text-sm">{data.company}</p>
+          <p className="text-sm">{data.company_name}</p>
           <p className="text-sm text-gray-600">
-            {data.location} · {data.workplaceType}{" "}
+            {data.location} · {data.workplace_type}{" "}
           </p>
         </div>
       </div>
       <Button className="rounded-full p-3" variant="ghost">
         <X className="size-4 p-0" />
       </Button>
-    </Link>
+    </div>
   );
 };
 

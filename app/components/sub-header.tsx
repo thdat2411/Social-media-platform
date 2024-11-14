@@ -13,8 +13,14 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSearchingCategoriesList from "../hooks/useSearchingCategoriesList";
 import SubHeaderDropdown from "../jobs/search/[searchId]/drop-down";
+import { JobPostsWithUsers } from "../jobs/search/[searchId]/job-content";
 
-const SubHeader = () => {
+interface SubHeaderProps {
+  jobs?: JobPostsWithUsers[] | null;
+  setJobs?: React.Dispatch<React.SetStateAction<JobPostsWithUsers[] | null>>;
+}
+
+const SubHeader = ({ jobs, setJobs }: SubHeaderProps) => {
   const [isCateogryOpen, setIsCategoryOpen] = useState(false);
   const router = useRouter();
   const categoryList = useSearchingCategoriesList();
@@ -31,7 +37,7 @@ const SubHeader = () => {
 
   const onCategoryClick = (category: string) => {
     if (category === "Jobs") {
-      router.push("/jobs/search/1");
+      router.push("/jobs/search/");
     } else if (category === "Posts") {
       router.push("/search/posts");
     } else if (category === "People") {
@@ -54,6 +60,8 @@ const SubHeader = () => {
         <SubHeaderDropdown
           key={item.title}
           title={item.title}
+          jobs={jobs!}
+          setJobs={setJobs}
           content={item.content}
           isCheckbox={item.title === "Date posted" ? false : true}
           activeFilters={activeFilters}
@@ -85,7 +93,7 @@ const SubHeader = () => {
 
   if (isWhatCategory !== "All") {
     return (
-      <div className="sticky top-0 z-20 w-screen py-3 shadow-lg">
+      <div className="sticky top-0 z-20 w-screen bg-white py-3 shadow-lg">
         <div className="flex w-[860px] justify-end space-x-2 max-[1260px]:w-full max-[1260px]:justify-center">
           <DropdownMenu open={isCateogryOpen} onOpenChange={setIsCategoryOpen}>
             <DropdownMenuTrigger asChild>
@@ -117,7 +125,7 @@ const SubHeader = () => {
     );
   } else {
     return (
-      <div className="sticky top-0 z-20 w-screen py-3 shadow-lg">
+      <div className="sticky top-0 z-20 w-screen bg-white py-3 shadow-lg">
         <div className="flex w-[650px] justify-end space-x-6">
           {category.map(
             (item) =>
@@ -126,7 +134,7 @@ const SubHeader = () => {
                   onClick={() => onCategoryClick(item)}
                   key={item}
                   variant="outline"
-                  className="rounded-full border-2 hover:border-black"
+                  className="rounded-full p-0 px-4 outline outline-1 hover:outline-2"
                 >
                   {item}
                 </Button>

@@ -36,6 +36,8 @@ model user {
   job_preference                           job_preference[]
 
   notification notification[]
+
+  search_history search_history[]
 }
 
 model account {
@@ -186,4 +188,15 @@ model notification {
   user user @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([user_id])
+}
+
+model search_history {
+  id         String   @id @default(cuid())
+  user_id    String
+  term       String   @db.VarChar(255) // The search term entered by the user
+  created_at DateTime @default(now()) // Timestamp of when the search was made
+
+  user user @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id]) // Index for fast retrieval by user
 }

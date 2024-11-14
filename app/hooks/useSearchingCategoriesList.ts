@@ -14,8 +14,8 @@ const useSearchingCategoriesList = () => {
       {
         label: "Jobs",
         href: "#jobs",
-        active: pathname === "/jobs/search/1",
-        pathname: "/jobs/search/1",
+        active: pathname === "/jobs/search",
+        pathname: "/jobs/search",
       },
       {
         label: "Posts",

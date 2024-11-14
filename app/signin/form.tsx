@@ -20,7 +20,12 @@ const LoginForm = () => {
   const router = useRouter();
   const session = useSession();
 
-  const { register, handleSubmit, watch } = useForm<FieldValues>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FieldValues>({
     defaultValues: {
       email: "",
       password: "",
@@ -49,8 +54,8 @@ const LoginForm = () => {
           setError(callback.error);
         }
         if (callback?.ok) {
-          toast.success("Logged in!");
           router.push("/feed");
+          toast.success("Logged in!");
         }
       })
       .finally(() => setIsLoading(false));
@@ -113,7 +118,7 @@ const LoginForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative mb-4">
           <input
-            {...register("email", { required: true })}
+            {...register("email", { required: "Email is required" })}
             className={`w-full rounded-md border p-2 transition-all ${
               isEmailFocused || emailValue !== "" ? "pt-5" : "pt-2"
             }`}
@@ -131,6 +136,11 @@ const LoginForm = () => {
           >
             Email
           </label>
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.email.message as string}
+            </p>
+          )}
         </div>
         <div className="relative mb-4">
           <div
@@ -141,7 +151,7 @@ const LoginForm = () => {
           >
             <input
               className={`} w-full focus:outline-none`}
-              {...register("password", { required: true })}
+              {...register("password", { required: "Password is required" })}
               placeholder=" "
               disabled={isLoading}
               type={!showPassword ? "password" : "text"}
@@ -169,6 +179,11 @@ const LoginForm = () => {
               />
             )}
           </div>
+          {errors.password && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.password.message as string}
+            </p>
+          )}
         </div>
         <Link
           className="mb-4 mt-2 block text-sm font-bold text-blue-600 hover:underline"

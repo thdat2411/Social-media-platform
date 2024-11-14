@@ -42,7 +42,7 @@ const useRoutes = () => {
       },
       {
         label: "Notifications",
-        href: "/notifications?filter=all",
+        href: "/notifications",
         icon: FaBell,
         active: pathname === "/notifications",
       },
@@ -50,7 +50,9 @@ const useRoutes = () => {
         label: "Post a job",
         href: "/job-posting",
         icon: FaPenSquare,
+        active: pathname === "/job-posting",
       },
+
     ],
     [pathname]
   );

@@ -1,5 +1,4 @@
 import CameraImage from "@/app/assets/camera.jpg";
-import ConfirmModal from "@/app/components/confirm-modal";
 import { defaultEvent } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,13 +13,21 @@ import { Separator } from "@/components/ui/separator";
 import { user } from "@prisma/client";
 import { format, toZonedTime } from "date-fns-tz";
 import { Camera, ChevronDown, Pencil, Trash2 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import DateInput from "./date-input";
-import ImageHeaderEditor from "./image-header-editor";
-import PostModal, { Event } from "./post-modal";
+import { Event } from "./post-modal";
 import TimeInput from "./time-input";
+
+const ConfirmModal = dynamic(() => import("@/app/components/confirm-modal"), {
+  ssr: false,
+});
+const ImageHeaderEditor = dynamic(() => import("./image-header-editor"), {
+  ssr: false,
+});
+const PostModal = dynamic(() => import("./post-modal"), { ssr: false });
 
 interface EventModalProps {
   open: boolean;
@@ -36,7 +43,6 @@ interface EventModalProps {
 const EventModal = ({
   open,
   setOpen,
-  setNestedEventModal, // TODO: Fix "'setNestedEventModal' is defined but never used."
   nestedEventModal,
   formData,
   setFormData,

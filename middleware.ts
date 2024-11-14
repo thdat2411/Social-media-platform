@@ -4,7 +4,7 @@ export default withAuth({
   callbacks: {
     authorized: ({ req, token }) => {
       const ignoredPaths = [
-        "/",
+        "/home",
         "/signin",
         "/signup",
         "/api/register",
@@ -19,7 +19,7 @@ export default withAuth({
     },
   },
   pages: {
-    signIn: "/signin",
+    signIn: "/home",
   },
   secret: process.env.NEXTAUTH_SECRET,
 });

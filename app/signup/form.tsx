@@ -21,7 +21,11 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const { register, handleSubmit } = useForm<FieldValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FieldValues>({
     defaultValues: {
       name: "",
       email: "",
@@ -30,34 +34,41 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
   });
   const onSubmit: SubmitHandler<FieldValues> = async (value) => {
     setIsLoading(true);
-    console.log(value.email);
-    const response = await axios.post("/api/register/check-email", {
-      email: value.email,
-    });
-    const isValidEmail = response.data.isValid;
-    if (isValidEmail === false) {
-      setError("This email has already been registered");
-      setIsLoading(false);
-    } else if (isValidEmail === true) {
-      setData({
-        ...data,
+
+    try {
+      const response = await axios.post("/api/register/check-email", {
         email: value.email,
-        password_hash: value.password,
-        image: data?.image || null,
-        name: value.name || null,
-        id: data?.id || "",
-        emailVerified: data?.emailVerified || null,
-        full_name: data?.full_name || null,
-        location: data?.location || null,
-        birth_date: data?.birth_date || null,
-        headline_image: data?.headline_image || null,
-        phone_number: data?.phone_number || null,
-        bio: data?.bio || null,
-        role: data?.role || null,
-        created_at: data?.created_at || null,
-        updated_at: data?.updated_at || null,
       });
-      setIsRegister(true);
+
+      const isValidEmail = response.data.isValid;
+
+      if (!isValidEmail) {
+        setError("This email has already been registered");
+      } else {
+        setData({
+          ...data,
+          email: value.email,
+          password_hash: value.password,
+          image: data?.image || null,
+          name: value.name || null,
+          id: data?.id || "",
+          emailVerified: data?.emailVerified || null,
+          full_name: data?.full_name || null,
+          location: data?.location || null,
+          birth_date: data?.birth_date || null,
+          headline_image: data?.headline_image || null,
+          phone_number: data?.phone_number || null,
+          bio: data?.bio || null,
+          role: data?.role || null,
+          created_at: data?.created_at || null,
+          updated_at: data?.updated_at || null,
+        });
+
+        setIsRegister(true);
+      }
+    } catch {
+      setError("An error occurred while checking email.");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -90,9 +101,18 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
             disabled={isLoading}
             {...register("email", {
               required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: "Enter a valid email",
+              },
               onChange: () => setError(""),
             })}
           />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.email.message as string}
+            </p>
+          )}
           {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
 
@@ -134,18 +154,19 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
         </div>
         <p className="mb-4 text-center text-xs text-gray-600">
           By clicking Agree and Join or Continue, you agree to LinkedIn&apos;s{" "}
-          {""}
           <a className="text-blue-600" href="#">
             User Agreement
           </a>
           ,
           <a className="text-blue-600" href="#">
-            {""} Privacy Policy, and {""}
-          </a>{" "}
+            {" "}
+            Privacy Policy
+          </a>
+          , and{" "}
           <a className="text-blue-600" href="#">
             Cookie Policy
-          </a>{" "}
-          của LinkedIn.
+          </a>
+          .
         </p>
         <Button
           className="mb-4 w-full rounded-full bg-blue-500 py-2 text-base text-white hover:bg-blue-700 hover:text-white"
