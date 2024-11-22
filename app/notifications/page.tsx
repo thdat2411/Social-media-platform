@@ -1,13 +1,12 @@
-"use client";
 import NotifcationImage from "@/app/assets/notifcation_image.png";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React from "react";
+import getCurrentUser from "../actions/getCurrentUser";
 import FooterLink from "../components/footerLink";
 import NotificationMainContent from "./main-content";
 
-const NotificationPage = () => {
-  const router = useRouter();
+const NotificationPage = async () => {
+  const user = await getCurrentUser();
 
   return (
     <div className="relative flex h-full">
@@ -17,10 +16,9 @@ const NotificationPage = () => {
             <p className="text-xl font-semibold">Notifications</p>
           </aside>
         </div>
-        <NotificationMainContent />
+        <NotificationMainContent user={user!} />
         <div className="sticky top-20 flex h-[200px] w-[300px] flex-col space-y-6 bg-white">
           <Image
-            onClick={() => router.push("/jobs")}
             src={NotifcationImage}
             width={300}
             height={300}

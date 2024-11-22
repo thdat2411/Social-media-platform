@@ -1,12 +1,10 @@
-import Notification from "@/app/components/notification";
 import type { Metadata } from "next";
-import { useSession } from "next-auth/react";
 import { Inter } from "next/font/google";
 import React, { Suspense } from "react";
 import { Toaster } from "sonner";
-import getCurrentUser from "./actions/getCurrentUser";
 import Header from "./components/header";
 import AuthContext from "./context/AuthContext";
+import { NotificationProvider } from "./context/NoftificationContext";
 import { PusherProvider } from "./context/PusherContext";
 import "./globals.css";
 import LoadingPage from "./loading";
@@ -29,12 +27,13 @@ export default async function RootLayout({
         <Suspense fallback={<LoadingPage />}>
           <AuthContext>
             <PusherProvider>
-              <Notification />
-              <Toaster richColors visibleToasts={5} />
-              <div className="h-full">
-                <Header />
-                {children}
-              </div>
+              <NotificationProvider>
+                <Toaster richColors visibleToasts={5} duration={5000} />
+                <div className="h-full">
+                  <Header />
+                  {children}
+                </div>
+              </NotificationProvider>
             </PusherProvider>
           </AuthContext>
         </Suspense>

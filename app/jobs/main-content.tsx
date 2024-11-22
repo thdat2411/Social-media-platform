@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { job_posting } from "@prisma/client";
+import { job_posting, user } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Clock, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -11,7 +11,9 @@ export type History = {
   location: string;
 };
 
-export type JobsPost = job_posting & { applicantCount: number };
+export type JobsPost = job_posting & { user?: user } & {
+  _count?: { job_applications: number };
+};
 
 interface JobsMainContentProps {
   jobPosts: JobsPost[];
@@ -71,7 +73,7 @@ const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="mx-4 w-1/2 max-[900px]:w-[80%]">
+    <div className="mx-4 w-[45%] max-[900px]:w-[80%]">
       <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white shadow-sm">
         <div className="flex flex-col space-y-2">
           <p className="px-4 pt-4 text-xl font-semibold">Job picks for you</p>
@@ -85,7 +87,7 @@ const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
           </div>
           <Button
             onClick={() => {
-              router.push("/jobs/search");
+              router.push("/jobs/search?discover=recommended");
             }}
             variant="ghost"
             className="h-14 w-full rounded-l-none rounded-r-none rounded-tl-none rounded-tr-none p-0 pr-3"

@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
+    domains: ['*'],
     remotePatterns: [
       {
         protocol: "https",
@@ -18,6 +19,15 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "social-img.staticblitz.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
+      }
     ],
   },
   webpack(config) {

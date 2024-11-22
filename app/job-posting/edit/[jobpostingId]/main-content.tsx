@@ -298,7 +298,6 @@ const EditJobPostingMainContent = ({
               formData={formData}
               isError={validationErrors.description}
               triggerTypingAnimation={false}
-              setTriggerTypingAnimation={() => {}}
             />
           </div>
           <p className="font-semibold max-[450px]:text-lg min-[450px]:text-xl">

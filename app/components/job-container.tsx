@@ -1,14 +1,16 @@
+import CompanyImage from "@/app/assets/company.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { job_posting } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { Lists } from "../search/main-content";
+import { formatDate } from "../utils/utils";
 
 interface JobContainerProps {
   label: string;
-  lists: Lists[];
+  lists: job_posting[];
   index: number;
-  item: Lists;
+  item: job_posting;
 }
 
 const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
@@ -21,7 +23,7 @@ const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
       }`}
     >
       <div className="flex space-x-4">
-        {label !== "Jobs" ? (
+        {label !== "job" ? (
           <Avatar>
             <AvatarImage
               src="https://github.com/shadcn.png"
@@ -31,18 +33,23 @@ const JobContainer = ({ index, item, label, lists }: JobContainerProps) => {
           </Avatar>
         ) : (
           <Image
-            src="https://github.com/shadcn.png"
-            alt="Profile picture"
-            // width={64}
-            // height={64}
-            className="size-16"
+            src={CompanyImage}
+            alt=""
+            width={64}
+            height={64}
+            className="size-14"
           />
         )}
         <div className="flex flex-col space-y-1">
-          <p className="text-lg font-semibold hover:underline">{item.label}</p>
-          <p className="text-sm text-gray-600">{item.hiringName}</p>
-          <p className="text-sm text-gray-600">{item.location}</p>
-          <p className="text-sm text-gray-600">{item.createdAt}</p>
+          <p className="text-lg font-semibold hover:underline">{item.title}</p>
+          <p className="text-sm text-gray-600">{item.company_name}</p>
+          <p className="text-sm text-muted-foreground">
+            {item.location} (
+            {item.workplace_type === "On-site" ? "On-site" : ""})
+          </p>
+          <p className="text-sm text-gray-600">
+            {item.created_at ? formatDate(item.created_at) : "N/A"}
+          </p>
         </div>
       </div>
       <Button

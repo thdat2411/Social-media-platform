@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { ReactPhotoEditor } from "react-photo-editor";
+import "react-photo-editor/dist/style.css";
 
 interface PhotoEditorProps {
   open: boolean;

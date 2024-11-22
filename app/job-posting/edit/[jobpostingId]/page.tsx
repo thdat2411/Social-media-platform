@@ -26,7 +26,7 @@ const JobPostingEditPage = () => {
 
   if (!jobPosting || !user) {
     return (
-      <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-300 bg-opacity-50">
         <div className="flex flex-col items-center">
           <Loader className="size-10 animate-spin" />
         </div>
@@ -36,7 +36,7 @@ const JobPostingEditPage = () => {
   return (
     <div className="my-7 flex w-full justify-center">
       <div className="min-[1500px]: flex justify-between max-[1670px]:w-[75%] max-[1250px]:w-[85%] min-[1670px]:w-[60%]">
-        <EditJobPostingMainContent job_posting={jobPosting!} user={user!} />;
+        <EditJobPostingMainContent job_posting={jobPosting!} user={user!} />
         <div className="flex w-[25%] flex-col space-y-2 overflow-x-hidden">
           <div className="space-y-1 overflow-x-hidden rounded-lg border bg-white p-6">
             <HiOutlineLightBulb className="mb-6 size-6" color="green" />

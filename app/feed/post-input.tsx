@@ -1,9 +1,10 @@
 "use client";
+import CalendarImage from "@/app/assets/calendar-hover.png";
+import PictureImage from "@/app/assets/picture-hover.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { user } from "@prisma/client";
-import { GoFileMedia } from "react-icons/go";
-import { MdCalendarMonth } from "react-icons/md";
+import Image from "next/image";
 import { defaultEvent } from "../utils/utils";
 import { Event } from "./components/post-modal";
 
@@ -44,12 +45,12 @@ const PostInput = ({
           onClick={() => setIsPostModalOpen(true)}
           onBlur={() => setIsPostModalOpen(false)}
         >
-          <p>
+          <p className="overflow-hidden">
             {draftContent === null ? "Start a post" : `Draft: ${draftContent}`}
           </p>
         </Button>
       </div>
-      <div className="mt-4 flex flex-wrap justify-around">
+      <div className="mt-2 flex flex-wrap justify-around">
         <Button
           onClick={() => {
             setIsImageModalOpen(true);
@@ -59,7 +60,7 @@ const PostInput = ({
           variant="ghost"
           className="mr-2 space-x-2 rounded-lg bg-white px-4 py-2 text-gray-700 transition-all hover:scale-110"
         >
-          <GoFileMedia className="size-6" color="#378FE9" />
+          <Image src={PictureImage} alt="" className="size-6" />
           <p>Media</p>
         </Button>
         <Button
@@ -71,7 +72,7 @@ const PostInput = ({
           variant="ghost"
           className="mr-2 space-x-2 rounded-lg bg-white px-4 py-2 text-gray-700 transition-all hover:scale-110"
         >
-          <MdCalendarMonth className="size-6" color="#C37D16" />
+          <Image src={CalendarImage} alt="" className="size-5" />
           <p>Event</p>
         </Button>
       </div>

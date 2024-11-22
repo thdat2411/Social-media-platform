@@ -45,7 +45,7 @@ const CategoryListSidebar = () => {
     }
   };
   return (
-    <aside className="sticky top-20 h-fit w-1/5 rounded-lg border border-[#DADEE2] bg-white shadow-sm">
+    <aside className="sticky top-20 h-fit w-[15%] rounded-lg border border-[#DADEE2] bg-white shadow-sm">
       <div className="flex flex-col px-3 py-4">
         <p className="pb-3 text-lg font-semibold">On this page</p>
 

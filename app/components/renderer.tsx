@@ -1,3 +1,5 @@
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
 import { useEffect, useRef, useState } from "react";
 
 interface RendererProps {
@@ -9,15 +11,20 @@ const Renderer = ({ value }: RendererProps) => {
   const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
-    const currentRef = renderRef.current;
-    if (currentRef) {
-      currentRef.innerHTML = value;
-      const isEmpty = !value?.replace(/<(.|\n)*?>/g, "").trim().length;
-      setIsEmpty(isEmpty);
-    }
+    if (!renderRef.current) return;
+    const container = renderRef.current;
+    const quill = new Quill(document.createElement("div"), {
+      theme: "snow",
+    });
+    quill.enable(false);
+    const contents = quill.clipboard.convert({ html: value });
+    quill.setContents(contents);
+    const isEmpty = !value?.replace(/<(.|\n)*?>/g, "").trim().length;
+    setIsEmpty(isEmpty);
+    container.innerHTML = quill.root.innerHTML;
     return () => {
-      if (currentRef) {
-        currentRef.innerHTML = "";
+      if (container) {
+        container.innerHTML = "";
       }
     };
   }, [value]);

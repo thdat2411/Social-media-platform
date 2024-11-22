@@ -11,7 +11,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { job_posting, user } from "@prisma/client";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { DialogClose } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FaListCheck } from "react-icons/fa6";

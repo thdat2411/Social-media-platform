@@ -3,7 +3,7 @@ import { user } from "@prisma/client";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { Event } from "./components/post-modal";
-import FeedPost from "./post";
+import FeedPost, { PostwithLiked } from "./post";
 import PostInput from "./post-input";
 
 const PostModal = dynamic(() => import("./components/post-modal"), {
@@ -17,9 +17,10 @@ const EventModal = dynamic(() => import("./components/event-modal"), {
 });
 interface FeedMainContentProps {
   user: user;
+  posts: PostwithLiked[] | null;
 }
 
-const FeedMainContent = ({ user }: FeedMainContentProps) => {
+const FeedMainContent = ({ user, posts }: FeedMainContentProps) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -31,7 +32,6 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
   const [image, setImage] = useState<File | null>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log(sessionStorage.getItem("user"));
   }, []);
   return (
     <>
@@ -73,7 +73,7 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
         isIn={false}
         user={user}
       />
-      <div className="mx-4 w-1/2 overflow-y-auto pb-6 max-[1000px]:w-1/2 max-[700px]:mx-0 max-[700px]:my-2 max-[700px]:w-full">
+      <div className="mx-4 w-[52%] overflow-hidden pb-6 max-[1000px]:w-[65%]">
         <PostInput
           setIsPostModalOpen={() => setIsPostModalOpen(true)}
           setIsImageModalOpen={() => {
@@ -86,7 +86,9 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
           setNestedEventModal={setNestedEventModal}
           user={user}
         />
-        <FeedPost />
+        {posts?.map((post) => (
+          <FeedPost user={user} key={post.id} post={post} />
+        ))}
       </div>
     </>
   );

@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { JobPostsWithUsers } from "./job-content";
+import { JobsPost } from "../main-content";
+
 interface JobListSideBarProps {
-  data: JobPostsWithUsers;
-  jobs: JobPostsWithUsers[];
+  data: JobsPost;
+  jobs: JobsPost[];
   isSelection: boolean;
   isLoading: boolean;
   setPostIndex: (index: number) => void;
@@ -39,7 +40,7 @@ const JobListSideBar = ({
   return (
     <div
       onClick={() => setPostIndex(jobs.indexOf(data))}
-      className={`flex cursor-pointer items-start justify-between space-x-4 border-b p-4 ${
+      className={`flex cursor-pointer items-start justify-between space-x-4 border-b px-4 py-8 ${
         isSelection ? "border-b-2 border-l-2 border-l-black bg-slate-200" : ""
       }`}
     >

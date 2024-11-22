@@ -7,21 +7,18 @@ export const getCurrentJobPosting = async (id: string) => {
                 id,
             },
             include: {
-                job_applications: true,
+                _count: {
+                    select: { job_applications: true }
+                }
             }
         });
         if (!job_posting) {
             return null
         }
 
-        const { job_applications, ...job_posting_fields } = job_posting;
 
-        const job_posting_with_applicant_count = {
-            ...job_posting_fields,
-            applicantCount: job_applications.length
-        };
 
-        return job_posting_with_applicant_count;
+        return job_posting;
     } catch (error) {
         console.error("Error fetching job posting:", error);
         return null;

@@ -87,6 +87,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     job_type: "Full-time",
     level: "Entry level",
     required_skills: [],
+    status: "",
   });
 
   useEffect(() => {

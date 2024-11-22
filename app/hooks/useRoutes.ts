@@ -1,14 +1,6 @@
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
-import {
-  FaBell,
-  FaBriefcase,
-  FaCommentDots,
-  FaHome,
-  FaPenSquare,
-  FaUserFriends,
-} from "react-icons/fa";
-//
+
 
 const useRoutes = () => {
   const pathname = usePathname();
@@ -18,38 +10,38 @@ const useRoutes = () => {
       {
         label: "Home",
         href: "/feed",
-        icon: FaHome,
+        iconHover: "/home.mp4",
         active: pathname === "/feed",
       },
       {
         label: "My Network",
         href: "/mynetwork",
-        icon: FaUserFriends,
+        iconHover: "/friendship.mp4",
         active: pathname === "/mynetwork",
       },
 
       {
         label: "Jobs",
         href: "/jobs",
-        icon: FaBriefcase,
+        iconHover: "/job-seeking.mp4",
         active: pathname === "/jobs",
       },
       {
         label: "Messaging",
         href: "/message",
-        icon: FaCommentDots,
+        iconHover: "/message.mp4",
         active: pathname === "/message",
       },
       {
         label: "Notifications",
         href: "/notifications",
-        icon: FaBell,
+        iconHover: "/notification.mp4",
         active: pathname === "/notifications",
       },
       {
         label: "Post a job",
         href: "/job-posting",
-        icon: FaPenSquare,
+        iconHover: "/post.mp4",
         active: pathname === "/job-posting",
       },
 

@@ -61,15 +61,29 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
+        const existingHistory = await prisma.search_history.findFirst({
+            where: {
+                user_id: user.id,
+                term: keyword,
+            },
+        });
+        if (existingHistory) {
+            const history = await prisma.search_history.update({
+                where: {
+                    id: existingHistory.id,
+                },
+                data: {
+                    created_at: new Date(),
+                },
+            });
+            return NextResponse.json({ searchingHistory: history }, { status: 200 });
+        }
         const searchingHistory = await prisma.search_history.create({
             data: {
                 user_id: user.id,
                 term: keyword,
             },
         });
-        if (!searchingHistory) {
-            return NextResponse.json({ error: "History not found" }, { status: 404 });
-        }
         return NextResponse.json({ searchingHistory }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });

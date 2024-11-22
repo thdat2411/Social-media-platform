@@ -28,10 +28,10 @@ export async function GET(req: NextRequest) {
 }
 
 // Function to send notifications to Pusher channel
-export const notifyUser = async (userId: string, message: string) => {
+export const notifyUser = async (userId: string, type: string, message: string) => {
     try {
         await pusher.trigger(`user-${userId}`, 'new-notification',
-            message,
+            { message: message, userId: userId, type: type },
         );
         console.log(`Notification sent to user-${userId}`);
     } catch (error) {

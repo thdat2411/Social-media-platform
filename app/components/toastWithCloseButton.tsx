@@ -26,7 +26,12 @@ export const useShowToastWithCloseButton = () => {
               <X className="size-5" />
             </button>
           </div>
-          <p className="text self-start">{message}</p>
+          <p
+            className="text self-start"
+            dangerouslySetInnerHTML={{
+              __html: message,
+            }}
+          />
           <p className="self-end text-xs text-gray-500">
             {formatDate(new Date(), "HH:mm - dd/MM ")}
           </p>

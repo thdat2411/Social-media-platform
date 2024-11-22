@@ -13,8 +13,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
-import { usePusher } from "../context/PusherContext";
+import { useNotification } from "../context/NoftificationContext";
 import useRoutes from "../hooks/useRoutes";
+import HoverableIcon from "./hoverable-icon";
 
 const ConfirmModal = dynamic(() => import("./confirm-modal"), { ssr: false });
 const SearchDropDown = dynamic(() => import("./search-dropdown"), {
@@ -41,9 +42,10 @@ const Header = () => {
   const [isJobsPage, setIsJobsPage] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const pusher = usePusher();
-  const [notificationCount, setNotificationCount] = useState(0);
+  const { notificationCount, setNotificationCount } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
+  const [hoveredRoute, setHoveredRoute] = useState<string | null>(null);
+
   /*-----------------------------------------------------------*/
   useEffect(() => {
     if (session.data) {
@@ -73,14 +75,15 @@ const Header = () => {
   /*-----------------------------------------------------------*/
   const handleSearchSubmit = async () => {
     if (jobSearchValue) {
-      const reponse = await axios.post(
+      const response = await axios.post(
         `/api/history?keyword=${jobSearchValue}`
       );
-      const data = await reponse.data;
-      if (data.success) {
+
+      if (response.status === 200) {
         router.push(`/search?keyword=${jobSearchValue}`);
       }
     }
+    setIsJobSearchFocus(false);
   };
   /*-----------------------------------------------------------*/
   const handleConfirmModal = async () => {
@@ -161,48 +164,43 @@ const Header = () => {
     };
   }, [isJobSearchFocus, isMobile]);
   /*-----------------------------------------------------------*/
-  useEffect(() => {
-    if (session.data?.user) {
-      const fetchUnreadNotifications = async () => {
-        try {
-          setIsLoading(true);
-          const { data } = await axios.get("/api/notification/unread-count");
-          const unreadCount = data.unreadCount;
-          if (unreadCount > 0) {
-            setNotificationCount(unreadCount);
-          }
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Failed to fetch unread notifications", error);
-        }
-      };
+  // useEffect(() => {
+  //   if (session.data?.user) {
+  //     if (pusher) {
+  //       const handleNewNotification = () => {
+  //         setNotificationCount((prev) => prev + 1);
+  //       };
+  //       bindEvent("new-notification", handleNewNotification);
 
-      fetchUnreadNotifications();
-    }
-  }, [session.data?.user]);
+  //       return () => {
+  //         unbindEvent("new-notification");
+  //       };
+  //     }
+  //   }
+  // }, [
+  //   pusher,
+  //   session.data?.user,
+  //   bindEvent,
+  //   setNotificationCount,
+  //   unbindEvent,
+  // ]);
   /*-----------------------------------------------------------*/
   useEffect(() => {
-    if (session.data?.user) {
-      if (pusher) {
-        const channel = pusher.pusher?.subscribe(
-          `user-${session.data?.user.id}`
-        );
-
-        const handleNewNotification = () => {
-          setNotificationCount((prev) => prev + 1);
-        };
-        channel?.bind("new-notification", handleNewNotification);
-
-        return () => {
-          channel?.unbind("new-notification", handleNewNotification);
-          pusher.pusher?.unsubscribe(`user-${session.data?.user.id}`);
-        };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        setIsJobSearchFocus(false);
+        setIsSeeAll(false);
       }
-    }
-  }, [pusher, session.data?.user]);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
   /*-----------------------------------------------------------*/
 
-  /*-----------------------------------------------------------*/
   if (!session.data || !user || isLoading) {
     return null;
   } else {
@@ -223,7 +221,7 @@ const Header = () => {
       return (
         <>
           {(isJobSearchFocus || isLocationSearchFocus) && (
-            <div className="fixed inset-0 z-10 bg-black bg-opacity-30" />
+            <div className="fixed inset-0 z-10 bg-slate-900 bg-opacity-30" />
           )}
           <ConfirmModal
             open={isConfirmModalOpen}
@@ -373,11 +371,21 @@ const Header = () => {
                         className={`link relative flex cursor-pointer flex-col items-center justify-center hover:text-[#0A66C2] ${
                           route.active ? "text-gray-800" : ""
                         } group`}
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        onMouseLeave={() => handleMouseLeave(index)}
+                        onMouseEnter={() => {
+                          handleMouseEnter(index);
+                          setHoveredRoute(route.label);
+                        }}
+                        onMouseLeave={() => {
+                          handleMouseLeave(index);
+                          setHoveredRoute(null);
+                        }}
                         onClick={() => {
                           handleMouseLeave(index);
                           if (route.label === "Notifications") {
+                            sessionStorage.setItem(
+                              `notificationCount-${user.id}`,
+                              "0"
+                            );
                             setNotificationCount(0);
                           }
                         }}
@@ -387,10 +395,10 @@ const Header = () => {
                             underlineWidths[index] > 0 ? "flex-grow" : ""
                           }`}
                         >
-                          <route.icon
-                            className={`relative mt-2 size-6 ${
-                              route.active ? "text-[#0A66C2]" : ""
-                            }`}
+                          <HoverableIcon
+                            iconHover={route.iconHover}
+                            isHovered={hoveredRoute === route.label}
+                            className="relative size-9"
                           />
                           {route.label === "Notifications" &&
                             notificationCount > 0 && (
@@ -400,7 +408,7 @@ const Header = () => {
                             )}
                           <p
                             className={`text-xs ${
-                              route.active ? "text-[#0A66C2]" : ""
+                              route.active ? "font-medium text-[#0A66C2]" : ""
                             }`}
                           >
                             {route.label}
@@ -408,7 +416,7 @@ const Header = () => {
 
                           {!route.active ? (
                             <span
-                              className={`absolute bottom-0 h-0.5 rounded-full bg-[#0A66C2]`}
+                              className={`absolute bottom-0 h-[2.5px] bg-[#0A66C2]`}
                               style={{
                                 width: route.active
                                   ? "64px"
@@ -422,7 +430,7 @@ const Header = () => {
                             />
                           ) : (
                             <span
-                              className={`absolute bottom-0 h-0.5 w-16 justify-between rounded-full bg-[#0A66C2]`}
+                              className={`absolute bottom-0 h-[2.5px] w-16 justify-between rounded-full bg-[#0A66C2]`}
                             />
                           )}
                         </div>

@@ -12,15 +12,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSearchingCategoriesList from "../hooks/useSearchingCategoriesList";
-import SubHeaderDropdown from "../jobs/search/[searchId]/drop-down";
-import { JobPostsWithUsers } from "../jobs/search/[searchId]/job-content";
+import { JobsPost } from "../jobs/main-content";
+import SubHeaderDropdown from "../jobs/search/drop-down";
 
 interface SubHeaderProps {
-  jobs?: JobPostsWithUsers[] | null;
-  setJobs?: React.Dispatch<React.SetStateAction<JobPostsWithUsers[] | null>>;
+  jobs?: JobsPost[] | null;
+  setJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
+  setTotalPages: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const SubHeader = ({ jobs, setJobs }: SubHeaderProps) => {
+const SubHeader = ({ jobs, setJobs, setTotalPages }: SubHeaderProps) => {
   const [isCateogryOpen, setIsCategoryOpen] = useState(false);
   const router = useRouter();
   const categoryList = useSearchingCategoriesList();
@@ -62,6 +63,7 @@ const SubHeader = ({ jobs, setJobs }: SubHeaderProps) => {
           title={item.title}
           jobs={jobs!}
           setJobs={setJobs}
+          setTotalPages={setTotalPages}
           content={item.content}
           isCheckbox={item.title === "Date posted" ? false : true}
           activeFilters={activeFilters}

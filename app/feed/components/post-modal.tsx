@@ -1,15 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import EventIconHover from "@/app/assets/calendar-hover.png";
+import EventIcon from "@/app/assets/calendar.png";
+import PictureImageHover from "@/app/assets/picture-hover.png";
+import PictureImage from "@/app/assets/picture.png";
+import SmileIconHover from "@/app/assets/smile-hover.png";
+import SmileIcon from "@/app/assets/smile.png";
 import { defaultEvent } from "@/app/utils/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { user } from "@prisma/client";
+import axios from "axios";
 import { ChevronDown, Pencil, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaRegSmile } from "react-icons/fa";
-import { MdCalendarMonth, MdOutlinePermMedia } from "react-icons/md";
 import { ReactPhotoEditor } from "react-photo-editor";
 import { useDebounce } from "use-debounce";
 import { EmojiPopover } from "../../components/emoji-popover";
@@ -18,6 +26,7 @@ import {
   default as Event,
   default as EventPostField,
 } from "./event-post-field";
+import PreviewContainer from "./preview-container";
 
 const ConfirmModal = dynamic(() => import("../../components/confirm-modal"));
 export type Event = {
@@ -81,7 +90,52 @@ const PostModal = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [debouncedPostContent] = useDebounce(postContent, 300);
   const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
+  const [isSmileHovered, setIsSmileHovered] = useState(false);
+  const [isEmojiFocused, setIsEmojiFocused] = useState(false);
+  const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isEventHovered, setIsEventHovered] = useState(false);
+  const [linkPreview, setLinkPreview] = useState<any>(null);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const router = useRouter();
+  /*------------------------------------------------------------------*/
+  const extractURL = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.match(urlRegex);
+  };
 
+  /*------------------------------------------------------------------*/
+  const fetchLinkPreview = async (url: string) => {
+    try {
+      setIsPreviewLoading(true);
+      if (url.includes(window.location.origin)) {
+        const jobId = url.split("/").pop();
+        const response = await axios.get(`/api/jobs/view/${jobId}`);
+        const { jobPost } = response.data;
+        setLinkPreview({ ...jobPost, url });
+      } else {
+        const response = await axios.get(`/api/fetchLinkPreview?url=${url}`);
+        const { preview } = response.data;
+        setLinkPreview(preview);
+      }
+      setIsPreviewLoading(false);
+    } catch (error) {
+      console.error("Error fetching link preview:", error);
+      setLinkPreview(null); // Reset if there's an error
+    }
+  };
+
+  /*------------------------------------------------------------------*/
+  useEffect(() => {
+    if (!linkPreview) {
+      const urls = extractURL(postContent);
+      if (urls && urls.length > 0) {
+        fetchLinkPreview(urls[0]);
+      } else {
+        console.log("No URL detected");
+      }
+    }
+  }, [postContent]);
+  /*------------------------------------------------------------------*/
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostContent(e.target.value);
   };
@@ -89,7 +143,7 @@ const PostModal = ({
   const handleEmojiSelect = (emoji: string) => {
     setPostContent((prev) => prev + emoji);
   };
-
+  /*------------------------------------------------------------------*/
   useEffect(() => {
     if (draftContent) {
       setDraftContent?.(debouncedPostContent);
@@ -98,7 +152,7 @@ const PostModal = ({
       setEditedImage(draftImage);
     }
   }, [draftContent, draftImage, debouncedPostContent, setDraftContent]);
-
+  /*------------------------------------------------------------------*/
   useEffect(() => {
     if (open) {
       const reader = new FileReader();
@@ -113,65 +167,66 @@ const PostModal = ({
       };
     }
   }, [image, open]);
-
+  /*------------------------------------------------------------------*/
   const handleSaveDraft = () => {
     if (postContent.trim() !== "") {
       setDraftContent?.(postContent);
-      localStorage.setItem("draftContent", JSON.stringify(postContent));
+      sessionStorage.setItem("draftContent", JSON.stringify(postContent));
     }
     if (editedImage !== null) {
       setDraftImage?.(editedImage);
-      localStorage.setItem("draftImage", JSON.stringify(editedImage));
+      sessionStorage.setItem("draftImage", JSON.stringify(editedImage));
     }
     setIsHavingText?.(false);
     setTriggerReset?.(true);
     setOpen(false);
     setIsConfirmModalOpen(false);
   };
-
+  /*------------------------------------------------------------------*/
   const handleDiscardDraft = () => {
-    localStorage.removeItem("draftContent");
-    localStorage.removeItem("draftImage");
+    sessionStorage.removeItem("draftContent");
+    sessionStorage.removeItem("draftImage");
     setDraftContent?.(null);
     setDraftImage?.(null);
     setPostContent("");
+    setLinkPreview(null);
     setEditedImage(null);
     setOpen(false);
     setIsConfirmModalOpen(false);
   };
-
+  /*------------------------------------------------------------------*/
   const handleClose = () => {
     if (
       (postContent.trim() !== "" ||
         editedImage !== null ||
-        event !== undefined) &&
+        event !== undefined ||
+        linkPreview) &&
       isIn === false
     ) {
       setIsConfirmModalOpen(true);
     } else {
-      const draftContent = localStorage.getItem("draftContent");
-      const draftImage = localStorage.getItem("draftImage");
+      const draftContent = sessionStorage.getItem("draftContent");
+      const draftImage = sessionStorage.getItem("draftImage");
       if (draftContent || draftImage) {
         if (draftContent) {
-          localStorage.removeItem("draftContent");
+          sessionStorage.removeItem("draftContent");
           setDraftContent?.(null);
         }
         if (draftImage) {
-          localStorage.removeItem("draftImage");
+          sessionStorage.removeItem("draftImage");
           setDraftImage?.(null);
         }
       }
-
       setNestedEventModal?.(false);
       setNestedMediaModal?.(false);
       setOpen(false);
     }
   };
-
+  /*------------------------------------------------------------------*/
   const handleSaveImage = (editedFile: File) => {
     setEditedImage(URL.createObjectURL(editedFile));
   };
-
+  /*------------------------------------------------------------------*/
   const handleEditButton = async () => {
     if (editedImage !== null) {
       const fileName = "draft-image.jpg";
@@ -189,7 +244,7 @@ const PostModal = ({
     }
     setOpen(false);
   };
-
+  /*------------------------------------------------------------------*/
   const handleOpenEvent = () => {
     setIsEventModalOpen?.(true);
     setEvent?.(defaultEvent);
@@ -197,7 +252,7 @@ const PostModal = ({
     setOpen(false);
     setNestedEventModal?.(true);
   };
-
+  /*------------------------------------------------------------------*/
   const handleDeleteButton = () => {
     if (event !== undefined) {
       setEvent?.(undefined);
@@ -206,6 +261,22 @@ const PostModal = ({
       setEditedImage(null);
     }
   };
+  /*------------------------------------------------------------------*/
+  const handlePost = () => {
+    const body = {
+      user_id: user.id,
+      content: postContent,
+      image_url: editedImage,
+      preview_url: linkPreview?.url,
+    };
+    axios.post("/api/post", body).then((response) => {
+      if (response.status === 200) {
+        router.refresh();
+      }
+    });
+  };
+  /*------------------------------------------------------------------*/
+
   return (
     <>
       <ReactPhotoEditor
@@ -235,14 +306,14 @@ const PostModal = ({
         width={event?.eventName === "" || event === undefined ? "360" : "400"}
       />
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="top-1/3 mt-16 w-full max-w-2xl overflow-hidden bg-gray-50 p-0">
+        <DialogContent className="top-1/3 mt-16 w-full max-w-3xl overflow-hidden bg-gray-50 p-0">
           <DialogTitle className="hidden">Post</DialogTitle>
           <div className="relative rounded-lg border bg-white p-7">
             <Button
               variant="ghost"
               className="flex items-center rounded-3xl px-4 py-10"
             >
-              <Avatar>
+              <Avatar className="size-12">
                 <AvatarImage
                   src={user?.image || undefined}
                   className="size-12"
@@ -259,15 +330,35 @@ const PostModal = ({
                 </div>
               </div>
             </Button>
-            <div className="relative max-h-[50vh] overflow-y-auto">
+            <div className="relative h-[40vh] overflow-y-auto">
               <textarea
                 className={`mt-4 w-full rounded-lg p-2 text-lg focus:border-transparent focus:outline-none ${
-                  editedImage !== null || event !== undefined ? "h-28" : "h-40"
+                  editedImage !== null || event !== undefined || linkPreview
+                    ? "min-h-32"
+                    : "min-h-72"
                 }`}
                 placeholder="What do you want to say?"
                 value={postContent}
                 onChange={handleInputChange}
               />
+              {linkPreview &&
+                (isPreviewLoading ? (
+                  <div>...Loading preview</div>
+                ) : (
+                  <div className="flex flex-col">
+                    <Button
+                      variant="ghost"
+                      className="mb-2 self-end rounded-full bg-[#404040] p-3 hover:bg-black"
+                      onClick={() => {
+                        setLinkPreview(null);
+                      }}
+                    >
+                      <X size={18} strokeWidth={2.5} color="white" />
+                    </Button>
+                    <PreviewContainer data={linkPreview} isComment={false} />
+                  </div>
+                ))}
+
               {(editedImage !== null || event !== undefined) && (
                 <div className="mb-4 flex w-full flex-col">
                   <div className="mr-2 flex items-center justify-end space-x-5">
@@ -302,11 +393,24 @@ const PostModal = ({
                 </div>
               )}
             </div>
-            {editedImage === null && event === undefined && (
+            {editedImage === null && event === undefined && !linkPreview && (
               <>
-                <EmojiPopover onEmojiSelect={handleEmojiSelect}>
-                  <Button variant="ghost" className="w-fit rounded-full">
-                    <FaRegSmile className="size-6 cursor-pointer text-gray-500 hover:text-gray-800" />
+                <EmojiPopover
+                  onEmojiSelect={handleEmojiSelect}
+                  setIsEmojiFocused={setIsEmojiFocused}
+                >
+                  <Button
+                    variant="ghost"
+                    className="w-fit rounded-full transition-all duration-100 hover:scale-110"
+                    onMouseEnter={() => setIsSmileHovered(true)}
+                    onMouseLeave={() => setIsSmileHovered(false)}
+                    onFocus={() => setIsEmojiFocused(true)}
+                  >
+                    {!isSmileHovered && !isEmojiFocused ? (
+                      <Image src={SmileIcon} alt="" className="size-5" />
+                    ) : (
+                      <Image src={SmileIconHover} className="size-6" alt="" />
+                    )}
                   </Button>
                 </EmojiPopover>
                 <div className="ml-4 mt-7 flex items-center justify-start space-x-9 text-gray-500">
@@ -318,32 +422,61 @@ const PostModal = ({
                         setNestedMediaModal?.(true);
                       }}
                       variant="ghost"
-                      className="flex items-center space-x-4 rounded-full p-2"
+                      className="flex items-center space-x-4 rounded-full p-3 transition-all duration-100 hover:scale-110"
+                      onMouseEnter={() => setIsImageHovered(true)}
+                      onMouseLeave={() => setIsImageHovered(false)}
                     >
-                      <MdOutlinePermMedia className="size-6 cursor-pointer hover:text-gray-800" />
+                      {!isImageHovered ? (
+                        <Image
+                          src={PictureImage}
+                          alt="Upload"
+                          className="size-6"
+                        />
+                      ) : (
+                        <Image
+                          src={PictureImageHover}
+                          alt="Upload"
+                          className="size-7"
+                        />
+                      )}
                     </Button>
                   </Hint>
                   <Hint label="Create an event">
                     <Button
                       onClick={handleOpenEvent}
                       variant="ghost"
-                      className="flex items-center space-x-4 rounded-full p-2"
+                      className="flex items-center space-x-4 rounded-full p-3 transition-all duration-100 hover:scale-110"
+                      onMouseEnter={() => setIsEventHovered(true)}
+                      onMouseLeave={() => setIsEventHovered(false)}
                     >
-                      <MdCalendarMonth className="size-6 cursor-pointer hover:text-gray-800" />
+                      {!isEventHovered ? (
+                        <Image
+                          src={EventIcon}
+                          alt="Upload"
+                          className="size-5"
+                        />
+                      ) : (
+                        <Image
+                          src={EventIconHover}
+                          alt="Upload"
+                          className="size-6"
+                        />
+                      )}
                     </Button>
                   </Hint>
                 </div>
               </>
             )}
+
             <div className="mt-4 w-full border"></div>
             <div
               className={`mt-5 flex ${
-                editedImage !== null || event !== undefined
+                editedImage !== null || event !== undefined || linkPreview
                   ? "justify-between"
                   : "justify-end"
               }`}
             >
-              {(editedImage !== null || event !== undefined) && (
+              {(editedImage !== null || event !== undefined || linkPreview) && (
                 <EmojiPopover onEmojiSelect={handleEmojiSelect}>
                   <Button variant="ghost" className="w-fit rounded-full">
                     <FaRegSmile className="size-6 cursor-pointer text-gray-500 hover:text-gray-800" />
@@ -353,7 +486,8 @@ const PostModal = ({
               <Button
                 type="submit"
                 disabled={!postContent}
-                className="mr-4 rounded-full bg-blue-500 px-4 py-2 text-white"
+                className="mr-4 rounded-full bg-blue-500 px-4 py-2 text-lg text-white"
+                onClick={handlePost}
               >
                 Post
               </Button>

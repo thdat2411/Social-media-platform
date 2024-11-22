@@ -7,9 +7,9 @@ interface JobPostingDescriptionProps {
   setFormData: (data: job_posting) => void;
   formData: job_posting;
   isError: boolean;
-  triggerTypingAnimation: boolean;
-  setTriggerTypingAnimation: (value: boolean) => void;
-  setIsAILoading: (value: boolean) => void;
+  triggerTypingAnimation?: boolean;
+  setTriggerTypingAnimation?: (value: boolean) => void;
+  setIsAILoading?: (value: boolean) => void;
 }
 
 const JobPostingDescription = ({
@@ -41,7 +41,7 @@ const JobPostingDescription = ({
         ...formDataRef.current,
         description: text,
       });
-      console.log("Check: ", formDataRef.current);
+      console.log("Check: ", text);
     },
     [setFormData]
   );
@@ -157,13 +157,14 @@ const JobPostingDescription = ({
       } else {
         isTypingRef.current = false;
         setIsExecuting(false);
-        setTriggerTypingAnimation(false);
+        setTriggerTypingAnimation!(false);
 
         // Update word count and form data after animation
         if (quillRef.current) {
           const finalText = quillRef.current.root.innerHTML;
           const count = calculateWordCount(finalText);
           setWordCount(count);
+          console.log("Final: ", finalText);
           updateFormData(finalText);
         }
       }
@@ -175,10 +176,12 @@ const JobPostingDescription = ({
   useEffect(() => {
     if (triggerTypingAnimation && !isExecuting && !hasAnimated) {
       startTypingAnimation();
-      setIsAILoading(true);
+      setIsAILoading?.(true);
     } else if (!triggerTypingAnimation) {
       setHasAnimated(false);
-      setIsAILoading(false);
+      if (setIsAILoading) {
+        setIsAILoading(false);
+      }
     }
   }, [triggerTypingAnimation, startTypingAnimation, isExecuting, hasAnimated]);
 

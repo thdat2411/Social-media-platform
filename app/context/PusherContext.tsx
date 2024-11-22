@@ -1,10 +1,12 @@
 "use client";
 import { useSession } from "next-auth/react";
-import Pusher from "pusher-js";
-import { createContext, useContext, useEffect, useState } from "react";
+import Pusher, { Channel } from "pusher-js";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export interface PusherContextType {
   pusher: Pusher | null;
+  bindEvent: (eventName: string, callback: (data: unknown) => void) => void;
+  unbindEvent: (eventName: string) => void;
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
@@ -12,10 +14,10 @@ const PusherContext = createContext<PusherContextType | undefined>(undefined);
 export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
   const [pusher, setPusher] = useState<Pusher | null>(null);
+  const channelRef = useRef<Channel | null>(null);
 
   useEffect(() => {
     if (session?.user?.id && !pusher) {
-      console.log("render");
       const userId = session.user.id;
       Pusher.logToConsole = true;
       const pusherClient = new Pusher(
@@ -25,12 +27,8 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
           forceTLS: true,
         }
       );
-
       const channel = pusherClient.subscribe(`user-${userId}`);
-      console.log(channel);
-      channel.bind("new-notification", (data: string) => {
-        console.log("New notification received:", data);
-      });
+      channelRef.current = channel;
 
       setPusher(pusherClient);
 
@@ -40,12 +38,22 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
         channel.unbind_all();
         channel.unsubscribe();
         pusherClient.disconnect();
+        setPusher(null);
+        channelRef.current = null;
       };
     }
-  }, [session, pusher]);
+  }, [session?.user.id]);
+
+  const bindEvent = (eventName: string, callback: (data: unknown) => void) => {
+    channelRef.current?.bind(eventName, callback);
+  };
+
+  const unbindEvent = (eventName: string) => {
+    channelRef.current?.unbind(eventName);
+  };
 
   return (
-    <PusherContext.Provider value={{ pusher }}>
+    <PusherContext.Provider value={{ pusher, bindEvent, unbindEvent }}>
       {children}
     </PusherContext.Provider>
   );

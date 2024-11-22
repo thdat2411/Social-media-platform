@@ -37,7 +37,7 @@ export const authOptions: AuthOptions = {
           where: { email: credentials.email },
         });
         if (!user || !user.password_hash) {
-          throw new Error("No user");
+          throw new Error("Invalid email. Please try again.");
         }
 
         const isCorrectPassword = await bcrypt.compare(
@@ -46,7 +46,7 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isCorrectPassword) {
-          throw new Error("Invalid password");
+          throw new Error("Password is incorrect. Please try again");
         }
 
         return {

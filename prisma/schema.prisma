@@ -38,6 +38,7 @@ model user {
   notification notification[]
 
   search_history search_history[]
+  like           like[]
 }
 
 model account {
@@ -87,7 +88,7 @@ model job_application {
   created_at     DateTime?    @default(now()) @db.Timestamp(6)
   updated_at     DateTime?    @default(now()) @db.Timestamp(6)
   job_listings   job_posting? @relation(fields: [job_listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  users          user?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user           user?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([job_listing_id, user_id])
 }
@@ -106,8 +107,11 @@ model job_posting {
   required_skills  String[]
   created_at       DateTime?         @default(now()) @db.Timestamp(6)
   updated_at       DateTime?         @default(now()) @db.Timestamp(6)
+  status           String?           @db.VarChar(50)
   job_applications job_application[]
   user             user?             @relation(fields: [employer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  notification notification[]
 }
 
 model message {
@@ -122,24 +126,29 @@ model message {
 }
 
 model post {
-  id         String    @id @default(cuid())
-  user_id    String?
-  content    String
-  image_url  String?
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @default(now()) @db.Timestamp(6)
-  user       user?     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  comment    comment[]
+  id           String         @id @default(cuid())
+  user_id      String?
+  content      String
+  image_url    String?
+  preview_url  String?
+  created_at   DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at   DateTime?      @default(now()) @db.Timestamp(6)
+  user         user?          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  comment      comment[]
+  likes        like[]
+  notification notification[]
 }
 
 model comment {
-  id         String    @id @default(cuid())
-  post_id    String
-  user_id    String
-  content    String
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @default(now()) @updatedAt
-  parent_id  String? // For replies to other comments
+  id          String    @id @default(cuid())
+  post_id     String
+  user_id     String
+  content     String
+  image_url   String?
+  preview_url String?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @updatedAt
+  parent_id   String? // For replies to other comments
 
   post post @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   user user @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -151,12 +160,19 @@ model comment {
 }
 
 model like {
-  id         String  @id @default(cuid())
-  comment_id String
-  comment    comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  userId     String?
+  id          String   @id @default(cuid())
+  user_id     String
+  entity_type String   @db.VarChar(50)
+  entity_id   String
+  created_at  DateTime @default(now())
 
-  @@unique([comment_id]) // Ensures a user can like a comment only once
+  user      user     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  comment   comment? @relation(fields: [commentId], references: [id])
+  commentId String?
+  post      post?    @relation(fields: [postId], references: [id])
+  postId    String?
+
+  @@unique([user_id, entity_type, entity_id]) // Ensures a user can like a specific entity only once
 }
 
 model job_preference {
@@ -177,15 +193,19 @@ model job_preference {
 }
 
 model notification {
-  id         String   @id @default(cuid())
-  user_id    String
-  type       String   @db.VarChar(50)
-  content    String   @db.VarChar(255)
-  is_read    Boolean  @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id             String   @id @default(cuid())
+  user_id        String
+  job_posting_id String?
+  post_id        String?
+  type           String   @db.VarChar(50)
+  content        String   @db.VarChar(255)
+  is_read        Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
-  user user @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user        user         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  job_posting job_posting? @relation(fields: [job_posting_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  post        post?        @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([user_id])
 }

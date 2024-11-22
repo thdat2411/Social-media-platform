@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { ChevronDown } from "lucide-react";
-import React, { useMemo, useState } from "react";
-import { JobPostsWithUsers } from "./job-content";
+import React, { useState } from "react";
+import { JobsPost } from "../main-content";
 
 interface SubHeaderDropdownProps {
   title: string;
-  jobs?: JobPostsWithUsers[];
-  setJobs?: React.Dispatch<React.SetStateAction<JobPostsWithUsers[] | null>>;
+  jobs?: JobsPost[];
+  setJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
+  setTotalPages?: React.Dispatch<React.SetStateAction<number>>;
   content: string[];
   isCheckbox: boolean;
   activeFilters: string[];
@@ -25,6 +26,7 @@ const SubHeaderDropdown = ({
   title,
   jobs,
   setJobs,
+  setTotalPages,
   content,
   isCheckbox,
   activeFilters,
@@ -44,11 +46,11 @@ const SubHeaderDropdown = ({
   const [prevDatePostSelectedItems, setPrevDatePostSelectedItems] =
     useState<string>("Any time");
 
-  const [jobsTemp, setJobsTemp] = useState<JobPostsWithUsers[] | null>(
+  const [jobsTemp, setJobsTemp] = useState<JobsPost[] | null>(jobs ?? null);
+
+  const [originalJobs, setOriginalJobs] = useState<JobsPost[] | null>(
     jobs ?? null
   );
-
-  const originalJobs = useMemo(() => jobs, []);
 
   const handleChange = (item: string) => {
     if (title === "Experience level") {
@@ -144,6 +146,8 @@ const SubHeaderDropdown = ({
       });
     }
     setJobs!(jobsTemp);
+    setOriginalJobs!(jobsTemp);
+    setTotalPages!(Math.ceil(jobsTemp!.length / 15));
     setIsDropDownOpen(false);
   };
 

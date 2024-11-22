@@ -17,18 +17,18 @@ const PostedSidebar = () => {
         <Separator />
         <Link
           href="/my-items/posted-jobs"
-          className={`px-4 py-3 ${
+          className={`bg-white px-4 py-3 ${
             pathName === "/my-items/posted-jobs"
               ? "border-l-4 border-l-blue-600 text-blue-600"
               : "text-[#666666] hover:text-black"
           } `}
         >
-          Posted jobs
+          Job postings
         </Link>
         <Separator />
         <Link
           href="/my-items/saved-posts"
-          className={`px-4 py-3 ${
+          className={`bg-white px-4 py-3 ${
             pathName === "/my-items/saved-posts"
               ? "border-l-4 border-l-blue-600 text-blue-600"
               : "text-[#666666] hover:text-black"

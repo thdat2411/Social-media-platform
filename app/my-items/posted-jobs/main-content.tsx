@@ -1,5 +1,9 @@
 "use client";
+import ApllicationIcon from "@/app/assets/application.png";
 import CompanyImage from "@/app/assets/company.png";
+import PencilIcon from "@/app/assets/pencil.png";
+import TrashIcon from "@/app/assets/trash.png";
+import { JobsPost } from "@/app/jobs/main-content";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,24 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { job_posting } from "@prisma/client";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Ellipsis,
-  Pencil,
-  SquarePen,
-  Trash2,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Ellipsis, SquarePen } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface PostedJobsMainContentProps {
-  jobPosts:job_posting[];
+  jobPosts: JobsPost[];
 }
 
-const PostedJobsMainContent = ({jobPosts}:PostedJobsMainContentProps) => {
+const PostedJobsMainContent = ({ jobPosts }: PostedJobsMainContentProps) => {
   const postedJobs = jobPosts;
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,7 +63,7 @@ const PostedJobsMainContent = ({jobPosts}:PostedJobsMainContentProps) => {
   return (
     <>
       <div className="mx-4 w-1/2 space-y-5">
-        <div className="ml-8 rounded-lg border p-7">
+        <div className="ml-8 rounded-lg border bg-white p-7">
           <Button
             onClick={() => router.push("/job-posting")}
             variant="outline"
@@ -80,11 +76,12 @@ const PostedJobsMainContent = ({jobPosts}:PostedJobsMainContentProps) => {
           </Button>
         </div>
         <div className="ml-8 rounded-lg border">
-          <div className="flex flex-col">
+          <div className="flex flex-col bg-white">
             <div className="bg-[#F9FAFB]">
-              <p className="p-7 text-2xl font-medium">Posted Jobs</p>
+              <p className="p-7 text-2xl font-medium">Job Postings</p>
             </div>
             <Separator />
+            {}
             {currentPageJobs.map((job) => (
               <>
                 <div key={job.id} className="flex p-6">
@@ -121,14 +118,28 @@ const PostedJobsMainContent = ({jobPosts}:PostedJobsMainContentProps) => {
                           variant="ghost"
                           className="flex w-full items-center justify-start space-x-2"
                         >
-                          <Pencil />
+                          <Image src={PencilIcon} alt="" className="size-5" />
                           <p>Edit post</p>
+                        </Button>
+                        <Button
+                          onClick={() =>
+                            router.push(`/manage-applications?${job.id}`)
+                          }
+                          variant="ghost"
+                          className="flex w-full items-center justify-start space-x-2"
+                        >
+                          <Image
+                            src={ApllicationIcon}
+                            alt=""
+                            className="size-5"
+                          />
+                          <p>View Applicants</p>
                         </Button>
                         <Button
                           variant="ghost"
                           className="flex w-full items-center justify-start space-x-2"
                         >
-                          <Trash2 />
+                          <Image src={TrashIcon} alt="" className="size-5" />
                           <p>Delete post</p>
                         </Button>
                       </DropdownMenuContent>
@@ -138,7 +149,7 @@ const PostedJobsMainContent = ({jobPosts}:PostedJobsMainContentProps) => {
                 <Separator />
               </>
             ))}
-            <div className="my-4 flex items-center justify-center space-x-7">
+            <div className="my-4 flex items-center justify-center space-x-7 bg-white">
               <Button
                 variant="ghost"
                 onClick={() => handlePageChange(currentPage - 1)}

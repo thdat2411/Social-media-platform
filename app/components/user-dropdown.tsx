@@ -69,6 +69,18 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
             <Settings />
           </Button>
           <Separator />
+          {user?.role === "recruiter" && (
+            <>
+              <Button
+                className="my-2 flex items-center justify-between"
+                variant="ghost"
+              >
+                <p className="text-base">Your post</p>
+                <Settings />
+              </Button>
+              <Separator />
+            </>
+          )}
           <Button
             onClick={() => {
               signOut();

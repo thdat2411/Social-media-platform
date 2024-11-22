@@ -119,7 +119,7 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
       prevLocationSuggestions.includes(locationInputValue);
     return !(
       (jobInputValue && locationInputValue && isJobValid && isLocationValid) ||
-      isLoading
+      !isLoading
     );
   };
   /*----------------------------------------------------------------------- */

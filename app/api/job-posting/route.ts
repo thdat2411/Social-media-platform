@@ -1,6 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { notifyUser } from "../pusher/route";
 
 export async function POST(request: NextRequest) {
     try {
@@ -23,7 +24,8 @@ export async function POST(request: NextRequest) {
                 level,
                 required_skills,
                 location,
-                employer_id
+                employer_id,
+                status: "active",
             },
         });
         if (!job_posting) {
@@ -34,6 +36,7 @@ export async function POST(request: NextRequest) {
                 user_id: employer_id,
                 type: "job_posting",
                 content: `<strong>${company_name}</strong> have created a new jobs: "<strong>${title}</strong>". Check it out now!`,
+                job_posting_id: job_posting.id,
             }
         });
 
@@ -74,7 +77,37 @@ export async function PUT(req: NextRequest) {
                 employer_id
             }
         });
-
+        const posting_notification = await prisma.notification.create({
+            data: {
+                user_id: employer_id,
+                type: "job_posting_update",
+                content: `The post "<strong>${title}</strong>" from <strong>${company_name}</strong> that you applied for has been updated. Click to see the changes!`,
+                job_posting_id: job_posting.id,
+            }
+        });
+        if (!job_posting) {
+            return new NextResponse("Job posting not updated", { status: 500 });
+        }
+        const applicants = await prisma.job_application.findMany({
+            where: {
+                job_listing_id: id
+            }
+        });
+        if (applicants) {
+            for (const applicant of applicants) {
+                try {
+                    if (applicant.user_id) {
+                        await notifyUser(applicant.user_id, posting_notification.content, posting_notification.type);
+                    }
+                }
+                catch {
+                    return new NextResponse("Error sending notification to applicant", { status: 500 });
+                }
+            }
+        }
+        if (!posting_notification) {
+            return NextResponse.json({ error: "Notification not created" }, { status: 500 });
+        }
         if (!job_posting) {
             return new NextResponse("Job posting not updated", { status: 500 });
         }

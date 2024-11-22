@@ -16,12 +16,14 @@ interface EmojiPopoverProps {
   children: React.ReactNode;
   hint?: string;
   onEmojiSelect: (value: string) => void;
+  setIsEmojiFocused?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const EmojiPopover = memo(function EmojiPopover({
   children,
   hint = "Emoji",
   onEmojiSelect,
+  setIsEmojiFocused,
 }: EmojiPopoverProps) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -29,6 +31,7 @@ export const EmojiPopover = memo(function EmojiPopover({
   const onSelect = (value: EmojiClickData) => {
     onEmojiSelect(value.emoji);
     setPopoverOpen(false);
+    setIsEmojiFocused?.(false);
     setTimeout(() => {
       setTooltipOpen(false);
     }, 500);
@@ -40,7 +43,7 @@ export const EmojiPopover = memo(function EmojiPopover({
         <Tooltip
           open={tooltipOpen}
           onOpenChange={setTooltipOpen}
-          delayDuration={50}
+          delayDuration={20}
         >
           <PopoverTrigger asChild>
             <TooltipTrigger asChild>{children}</TooltipTrigger>
@@ -49,7 +52,10 @@ export const EmojiPopover = memo(function EmojiPopover({
             <p className="text-xs font-medium">{hint}</p>
           </TooltipContent>
         </Tooltip>
-        <PopoverContent className="w-full border-none p-0 shadow-none">
+        <PopoverContent
+          className="w-full border-none p-0 shadow-none"
+          onBlur={() => setIsEmojiFocused?.(false)}
+        >
           <EmojiPicker onEmojiClick={onSelect} />
         </PopoverContent>
       </Popover>
