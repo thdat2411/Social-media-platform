@@ -90,7 +90,7 @@ const SavedPostMainContent = () => {
                     </p>
                     <p className="text-sm">{post.title}</p>
                     <div className="flex items-center text-xs text-muted-foreground">
-                      <p>{formatDate(post.date)} ∙ </p>
+                      <p>{formatDate(new Date(post.date))} ∙ </p>
                       <Earth className="ml-2 size-4" />
                     </div>
                   </div>

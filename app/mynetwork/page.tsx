@@ -52,7 +52,7 @@ const MyNetworkPage = () => {
               <>
                 <p className="text-lg">People you may know</p>
                 <div className="flex flex-wrap justify-between">
-                  {myNetwork?.slice(0, 8).map((user, index) => (
+                  {myNetwork?.slice(0, 8).map((user) => (
                     <div
                       key={user.id}
                       className="mt-4 flex h-[260px] w-[23%] flex-col items-center rounded-lg border bg-white shadow-sm max-[1250px]:w-[30%]"

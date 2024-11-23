@@ -1,7 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { notifyUser } from "../pusher/route";
+import { notifyUser } from "@/lib/pusher";
 
 export async function POST(request: NextRequest) {
     try {

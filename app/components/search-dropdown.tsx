@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { search_history } from "@prisma/client";
-import axios from "axios";
 import { ChevronLeft, Clock4 } from "lucide-react";
 import React from "react";
 
@@ -16,7 +15,6 @@ interface SearchDropDownProps {
 
 const SearchDropDown = ({
   recentItem,
-  setRecentItem,
   setIsSeeAll,
   setIsConfirmModalOpen,
   isSeeAll,

@@ -5,7 +5,6 @@ import { post, user } from "@prisma/client";
 import { MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { formatDate } from "../../utils/utils";
 
 interface UserActivityProps {
   setIsPostModalOpen: (value: boolean) => void;
@@ -40,7 +39,6 @@ const UserActivity = ({ setIsPostModalOpen, userPosts }: UserActivityProps) => {
                 >
                   <p className="text-[#666666]">
                     <span className="font-semibold">User</span> posted this ∙{" "}
-                    {formatDate(post.created_at?.toDateString() || "")}
                   </p>
                   <p>{post.content}</p>
                 </div>

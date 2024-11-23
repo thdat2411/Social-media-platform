@@ -12,11 +12,7 @@ interface SearchMainContentProps {
   posts: post[];
 }
 
-const SearchMainContent = ({
-  jobPosts,
-  people,
-  posts,
-}: SearchMainContentProps) => {
+const SearchMainContent = ({ jobPosts }: SearchMainContentProps) => {
   const lists = useSearchingCategoriesList();
   const router = useRouter();
   return (

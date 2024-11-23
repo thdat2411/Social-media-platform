@@ -31,17 +31,20 @@ export async function GET(req: NextRequest) {
     try {
         const url = new URL(req.url);
         const postId = url.searchParams.get("postId");
+        const commentId = url.searchParams.get("commentId");
         const user = getCurrentUser()
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 })
         }
-        if (!postId) {
-            return NextResponse.json({ error: "postId is required" }, { status: 400 })
+        if (!postId && !commentId) {
+            return NextResponse.json({ error: "postId or commentId is required" }, { status: 400 })
         }
         const comments = await prisma.comment.findMany({
-            where: {
-                post_id: postId
-            },
+            where: commentId
+                ? { parent_id: commentId }
+                : postId
+                    ? { post_id: postId }
+                    : undefined,
             include: {
                 user: true,
                 likes: {
@@ -72,7 +75,6 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 })
     }
-
 }
 
 export async function PUT(req: NextRequest) {

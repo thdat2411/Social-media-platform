@@ -3,7 +3,6 @@ import Banner2 from "@/app/assets/banner2.svg";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
-import FooterLink from "../components/footerLink";
 import LandingHeader from "./landing-header";
 import LandingMainContent from "./landing-main-content";
 

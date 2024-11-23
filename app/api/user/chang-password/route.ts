@@ -18,7 +18,10 @@ export async function PUT(req: NextRequest) {
                 password_hash: newHasedPassword,
             },
         });
-        return user;
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        return NextResponse.json({ user }, { status: 200 });
     } catch {
         return NextResponse.json({ error: "Change Password Error" }, { status: 500 });
     }

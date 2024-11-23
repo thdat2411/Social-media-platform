@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import getSession from "./getSession";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 const getCurrentUser = async () => {
   try {
-    const session = await getSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return null;
     }
@@ -17,10 +18,12 @@ const getCurrentUser = async () => {
     if (!currentUser) {
       return null;
     }
+
     return currentUser;
   } catch (err) {
-    console.error(err);
+    console.error("Error in getCurrentUser:", err);
     return null;
   }
 };
+
 export default getCurrentUser;

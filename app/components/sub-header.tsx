@@ -18,7 +18,7 @@ import SubHeaderDropdown from "../jobs/search/drop-down";
 interface SubHeaderProps {
   jobs?: JobsPost[] | null;
   setJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
-  setTotalPages: React.Dispatch<React.SetStateAction<number>>;
+  setTotalPages?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SubHeader = ({ jobs, setJobs, setTotalPages }: SubHeaderProps) => {

@@ -5,7 +5,7 @@ import { formatDate } from "@/app/utils/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { user } from "@prisma/client";
-import { Pin, PinOff, SquareArrowOutUpRight } from "lucide-react";
+import { Pin, PinOff } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";

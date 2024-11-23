@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { job_application, user } from "@prisma/client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 
 interface JobApplicationPageProps {
   jobPostApplications: (job_application & { user: user })[];

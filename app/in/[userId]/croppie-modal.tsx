@@ -19,7 +19,7 @@ interface CroppieModalProps {
   image: string | null;
   setImage: (image: string | null) => void;
   isAvatarImage?: boolean;
-  userId: string;
+  userId?: string;
 }
 
 const CroppieModal = ({

@@ -1,34 +1,34 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { HfInference } from "@huggingface/inference";
+// import { HfInference } from "@huggingface/inference";
 import { NextRequest, NextResponse } from "next/server";
 
 const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
-const client = new HfInference(HUGGING_FACE_API_KEY);
+// const client = new HfInference(HUGGING_FACE_API_KEY);
 
 if (!HUGGING_FACE_API_KEY) {
     throw new Error("Hugging Face API key is missing");
 }
 
 // Utility function to fetch job description suggestions
-async function fetchHistoryRecommendation(keyword: string) {
-    const prompt = `Based on the search term '${keyword}, suggest a list of related skills, job titles, or industries that a LinkedIn user might be interested in. The list should include job roles like 'Software Engineer', 'Data Scientist', or 'Internship Opportunities' and related skills such as 'JavaScript', 'Python', or 'Machine Learning'. Also include industries like 'Technology', 'Finance', or 'Healthcare'. Provide at least 5-10 recommendations that a LinkedIn user would likely find relevant.`;
+// async function fetchHistoryRecommendation(keyword: string) {
+//     const prompt = `Based on the search term '${keyword}, suggest a list of related skills, job titles, or industries that a LinkedIn user might be interested in. The list should include job roles like 'Software Engineer', 'Data Scientist', or 'Internship Opportunities' and related skills such as 'JavaScript', 'Python', or 'Machine Learning'. Also include industries like 'Technology', 'Finance', or 'Healthcare'. Provide at least 5-10 recommendations that a LinkedIn user would likely find relevant.`;
 
-    let output = "";
-    const stream = client.chatCompletionStream({
-        model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 1500,
-    });
+//     let output = "";
+//     const stream = client.chatCompletionStream({
+//         model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+//         messages: [{ role: "user", content: prompt }],
+//         max_tokens: 1500,
+//     });
 
-    for await (const chunk of stream) {
-        if (chunk.choices && chunk.choices[0].delta.content) {
-            output += chunk.choices[0].delta.content;
-        }
-    }
+//     for await (const chunk of stream) {
+//         if (chunk.choices && chunk.choices[0].delta.content) {
+//             output += chunk.choices[0].delta.content;
+//         }
+//     }
 
-    return output;
-}
+//     return output;
+// }
 
 
 export async function GET() {

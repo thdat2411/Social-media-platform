@@ -52,7 +52,7 @@ const EventModal = ({
   const [isTimeDropdownVisible, setTimeDropdownVisible] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isImageEditorModalOpen, setIsImageEditorModalOpen] = useState(false);
-  const [isEditImageOpen, setIsEditImageOpen] = useState(false); // TODO: Fix "'setIsEditImageOpen' is assigned a value but never used."
+  const [isEditImageOpen, setIsEditImageOpen] = useState(false);
   const [isEditImageDropdownOpen, setIsEditImageDropdownOpen] = useState(false);
   const [isHavingText, setIsHavingText] = useState(false);
   const [triggerReset, setTriggerReset] = useState(false);
@@ -62,9 +62,12 @@ const EventModal = ({
   const timezoneDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsEditImageOpen(false);
+  }, []);
+  /*----------------------------------------------------------------*/
+  useEffect(() => {
     const zones = Intl.supportedValuesOf("timeZone");
     const groupedTimeZones: Map<string, string[]> = new Map();
-
     zones.forEach((zone) => {
       const utcDate = new Date();
       const zonedDate = toZonedTime(utcDate, zone);
@@ -91,14 +94,14 @@ const EventModal = ({
 
     setTimeZones(formattedTimeZones);
   }, []);
-
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     if (isHavingText === false && triggerReset) {
       setFormData(defaultEvent);
       setTriggerReset(false);
     }
   }, [isHavingText, triggerReset]); // TODO: Fix "React Hook useEffect has a missing dependency: 'setFormData'."
-
+  /*----------------------------------------------------------------*/
   const handleClickOutside = (event: MouseEvent) => {
     if (
       timezoneDropdownRef.current &&
@@ -107,7 +110,7 @@ const EventModal = ({
       setTimeDropdownVisible(false);
     }
   };
-
+  /*----------------------------------------------------------------*/
   const handleCloseWithData = () => {
     if (
       (formData?.eventName ||
@@ -130,20 +133,20 @@ const EventModal = ({
       setFormData(undefined);
     }
   };
-
+  /*----------------------------------------------------------------*/
   const onClose = () => {
     setIsConfirmModalOpen(false);
     setOpen(false);
     setFormData(undefined);
   };
-
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
+  /*----------------------------------------------------------------*/
   const setFileData: React.ChangeEventHandler<HTMLInputElement> | null = (
     e
   ) => {
@@ -169,7 +172,7 @@ const EventModal = ({
       setOpen(false);
     }
   };
-
+  /*----------------------------------------------------------------*/
   const handleDisabled = () => {
     if (
       (formData?.isInPerson === false && formData.eventName && formData.zone) ||
@@ -183,7 +186,7 @@ const EventModal = ({
       return true;
     }
   };
-
+  /*----------------------------------------------------------------*/
   return (
     <>
       <ConfirmModal

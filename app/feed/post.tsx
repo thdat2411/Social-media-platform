@@ -18,10 +18,10 @@ import { Earth } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useShowToastWithCloseButton } from "../components/toastWithCloseButton";
 import { formatDate } from "../utils/utils";
 import CommentInput from "./comment-input";
-import CommentsContainer from "./comments-container";
+import PostComment from "./comments";
+
 
 export type PostwithLiked = post & { user: user | null } & {
   commentCount: number;
@@ -45,11 +45,11 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
   const words = post ? post.content.split(" ") : "";
   const shouldTruncate = words.length > 20;
   const [showCommentInput, setShowCommentInput] = useState(false);
-  const [iPost, setIPost] = useState<PostwithLiked>(post);
+  const [iPost, setIPost] = useState<PostwithLiked | null>(post);
   const [comments, setComments] = useState<CommentsWithLiked[]>([]);
   //   const [comments, setComments] = useState([]);
   const [showFullText, setShowFullText] = useState(false);
-  const customToast = useShowToastWithCloseButton();
+  // const customToast = useShowToastWithCloseButton();
   const [isLikedHovered, setIsLikedHovered] = useState(false);
   const [isMesageHovered, setIsCommentHovered] = useState(false);
   const [isSentHovered, setIsSentHovered] = useState(false);
@@ -86,14 +86,14 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
     const isLike = iPost?.likedByUser;
     if (isLike === false) {
       const response = await axios.put(
-        `/api/post?action=Like&postId=${postId}`
+        `/api/like?action=Like&postId=${postId}`
       );
       if (response.status !== 200) {
         console.log("Error updating like");
       }
     } else {
       const response = await axios.put(
-        `/api/post?action=Dislike&postId=${postId}`
+        `/api/like?action=Dislike&postId=${postId}`
       );
       if (response.status !== 200) {
         console.log("Error updating dislike");
@@ -106,7 +106,9 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
     setIPost({
       ...post,
       likedByUser: !isLike,
-      likeCount: isLike ? iPost.likeCount - 1 : iPost.likeCount + 1,
+      likeCount: isLike
+        ? (iPost?.likeCount ?? 0) - 1
+        : (iPost?.likeCount ?? 0) + 1,
     });
     if (iPost?.id) {
       debounceUpdateLike(iPost.id); // Ensure this function handles debouncing correctly
@@ -153,7 +155,7 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
 
   if (isLoading) {
     return (
-      <div className="mb-6 flex h-[250px] w-full flex-col justify-between border bg-gray-200 p-4">
+      <div className="mb-6 flex h-[250px] w-full flex-col justify-between rounded-lg border bg-gray-200 p-4">
         <div className="flex space-x-4">
           <Skeleton className="h-12 w-12 rounded-full bg-gray-400" />
           <div className="flex flex-col justify-center space-y-2">
@@ -340,7 +342,17 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
             <CommentInput post={iPost} isEdit={false} setPost={setIPost} />
             {comments.length > 0 && (
               <div className="mt-6 w-full">
-                <CommentsContainer comments={comments} user={user} />
+                <div className="flex w-full flex-col space-y-8">
+                  {comments?.map((comment, index) => (
+                    <div key={comment.id}>
+                      <PostComment
+                        user={user}
+                        position={index}
+                        comment={comment}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

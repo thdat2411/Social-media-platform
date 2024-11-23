@@ -12,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { user } from "@prisma/client";
 import axios from "axios";
+import { debounce } from "lodash";
 import { Ellipsis } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -31,7 +32,54 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
   const [preview, setPreview] = useState<any>(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isReply, setIsReply] = useState(false);
+  const [replies, setReplies] = useState<CommentsWithLiked[]>([]);
+/*----------------------------------------------------------------*/
+  const debounceUpdateLike = debounce(async (commentId: string) => {
+    const isLike = iComment?.likedByUser;
+    if (isLike === false) {
+      const response = await axios.put(
+        `/api/like?action=Like&commentId=${commentId}`
+      );
+      if (response.status !== 200) {
+        console.log("Error updating like");
+      }
+    } else {
+      const response = await axios.put(
+        `/api/like?action=Dislike&commentId=${commentId}`
+      );
+      if (response.status !== 200) {
+        console.log("Error updating dislike");
+      }
+    }
+  }, 2000);
+/*----------------------------------------------------------------*/
+  const handleLikePost = () => {
+    const isLike = iComment?.likedByUser;
+    setIComment({
+      ...iComment!,
+      likedByUser: !isLike,
+      likeCount: isLike
+        ? (iComment?.likeCount ?? 0) - 1
+        : (iComment?.likeCount ?? 0) + 1,
+    });
+    if (iComment?.id) {
+      debounceUpdateLike(iComment.id);
+    }
+  };
+/*----------------------------------------------------------------*/
+  const handleLoadReplies = async () => {
+    try {
+      const response = await axios.get(`/api/comment?commentId=${comment?.id}`);
+      if (response.status === 200) {
+        const { comments } = response.data;
+        setReplies(comments);
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+/*----------------------------------------------------------------*/
   useEffect(() => {
     const fetchPreview = async () => {
       if (iComment?.preview_url) {
@@ -110,7 +158,8 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
               <div className="flex items-center space-x-2">
                 {iComment?.updated_at &&
                   iComment?.created_at &&
-                  iComment.updated_at > iComment.created_at && (
+                  iComment.updated_at > iComment.created_at &&
+                  comment?.user_id === user.id && (
                     <p className="text-xs text-gray-500">(edited)</p>
                   )}
                 {iComment?.user_id === user.id && (
@@ -164,9 +213,10 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
                 <div className="mt-2 flex items-center space-x-3">
                   <div className="flex items-center space-x-1">
                     <p
+                      onClick={handleLikePost}
                       className={`cursor-pointer rounded-md p-1 text-xs font-semibold hover:bg-slate-100 ${iComment?.likedByUser ? "text-black" : "text-gray-600"}`}
                     >
-                      Like
+                      {iComment?.likedByUser ? "Liked" : "Like"}
                     </p>
                     {(iComment?.likeCount ?? 0) > 0 && (
                       <>
@@ -180,7 +230,13 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
                   </div>
                   <div className="border-1 h-5 w-[2px] border"></div>
                   <div className="flex space-x-2">
-                    <p className="cursor-pointer rounded-md p-1 text-xs font-semibold text-gray-600 hover:bg-slate-100">
+                    <p
+                      className="cursor-pointer rounded-md p-1 text-xs font-semibold text-gray-600 hover:bg-slate-100"
+                      onClick={() => {
+                        setIsReply(!isReply);
+                        handleLoadReplies();
+                      }}
+                    >
                       Reply
                     </p>
                     {(iComment?.replyCount ?? 0) > 0 && (
@@ -207,6 +263,32 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
               />
             )}
           </div>
+          {isReply && (
+            <>
+              <CommentInput
+                comment={iComment}
+                setComment={setIComment}
+                isEdit={false}
+                isReply={isReply}
+                setIsReply={setIsReply}
+              />
+              {replies.length > 0 && (
+                <div className="mt-6 w-full">
+                  <div className="flex w-full flex-col space-y-8">
+                    {replies?.map((reply, index) => (
+                      <div key={reply.id}>
+                        <PostComment
+                          user={user}
+                          position={index}
+                          comment={reply}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     );

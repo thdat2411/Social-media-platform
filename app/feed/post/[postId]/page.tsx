@@ -1,7 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import React from "react";
 import FeedSideBar from "../../sidebar";
-import PostMainContent from "./main-content";
+import SinglePostMainContent from "./main-content";
 
 const PostPage = async () => {
   const user = await getCurrentUser();
@@ -9,7 +9,7 @@ const PostPage = async () => {
     <div className="relative">
       <div className="mx-auto mt-4 flex w-full max-w-6xl">
         <FeedSideBar user={user!} />
-        <PostMainContent />
+        <SinglePostMainContent user={user!} />
       </div>
     </div>
   );

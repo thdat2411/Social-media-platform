@@ -19,15 +19,17 @@ interface CommentInputProps {
   setComment?: React.Dispatch<React.SetStateAction<CommentsWithLiked | null>>;
   isEdit?: boolean;
   setIsEdit?: React.Dispatch<React.SetStateAction<boolean>>;
+  isReply?: boolean;
+  setIsReply?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CommentInput = ({
   post,
-  setPost,
   comment,
   setComment,
   isEdit,
   setIsEdit,
+  isReply,
 }: CommentInputProps) => {
   const [data, setData] = useState<CommentsWithLiked | PostwithLiked | null>(
     comment ?? post ?? null
@@ -37,7 +39,6 @@ const CommentInput = ({
   );
   const [isFocused, setIsFocused] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-
   const [isSmileHovered, setIsSmileHovered] = useState(false);
   const [isEmojiFocused, setIsEmojiFocused] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
@@ -45,25 +46,24 @@ const CommentInput = ({
   const [linkPreview, setLinkPreview] = useState<any>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const inputClass = `flex w-full items-center py-1 px-4 border-2 border-gray-300 rounded-full ${
-    isFocused ? "border-gray-500" : ""
-  } ${isEdit ? "text-sm" : ""}`;
-  const textareaClass = `flex flex-col w-full py-1 px-2 border-2 border-gray-300 rounded-2xl ${
-    isFocused ? "border-gray-500" : ""
-  } ${isEdit ? "text-sm" : ""}`;
-
+  const inputClass = `flex w-full items-center py-1 px-4 outline rounded-full text-sm  outline-gray-400 ${
+    isFocused ? "outline-[1.5px]" : "outline-1 "
+  }}`;
+  const textareaClass = `flex flex-col w-full py-1 px-2 outline rounded-2xl text-sm outline-gray-400 ${
+    isFocused ? "outline-[1.5px]" : "outline-1"
+  }`;
   const inputRef = React.useRef<HTMLInputElement>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-
+  /*----------------------------------------------------------------*/
   const extractURL = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.match(urlRegex);
   };
-
+  /*----------------------------------------------------------------*/
   const handleEmojiSelect = (emoji: string) => {
     setCommentText((prev) => prev + emoji);
   };
-
+  /*----------------------------------------------------------------*/
   const handleImageUpload: React.ChangeEventHandler<HTMLInputElement> = (
     event
   ) => {
@@ -76,10 +76,12 @@ const CommentInput = ({
       reader.readAsDataURL(file);
     }
   };
+  /*----------------------------------------------------------------*/
   const removeImage = () => {
     setImageUrl("");
     setCommentText(commentText?.replace(/!\[Image\]\((.*?)\)/, ""));
   };
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     if (textareaRef.current && (commentText?.trim().length ?? 0) > 0) {
       textareaRef.current.focus();
@@ -89,7 +91,7 @@ const CommentInput = ({
       );
     }
   }, [commentText]);
-
+  /*----------------------------------------------------------------*/
   const fetchLinkPreview = async (url: string) => {
     try {
       setIsPreviewLoading(true);
@@ -109,6 +111,7 @@ const CommentInput = ({
       setLinkPreview(null); // Reset if there's an error
     }
   };
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     console.log(linkPreview);
     if (!linkPreview && (!isEdit || (isEdit && !data?.preview_url))) {
@@ -124,7 +127,7 @@ const CommentInput = ({
       }
     }
   }, [commentText]);
-
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     if (commentText?.trim().length === 0 && !imageUrl && inputRef.current) {
       inputRef.current.focus();
@@ -132,14 +135,14 @@ const CommentInput = ({
       textareaRef.current.focus();
     }
   }, [commentText, imageUrl]);
-
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"; // Reset height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set height based on content
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [commentText, textareaRef]);
-
+  /*----------------------------------------------------------------*/
   const handleInsertComment = () => {
     try {
       setIsLoading(true);
@@ -168,7 +171,7 @@ const CommentInput = ({
       console.error("Error inserting comment:", error);
     }
   };
-
+  /*----------------------------------------------------------------*/
   const updateComment = () => {
     try {
       setIsLoading(true);
@@ -206,13 +209,13 @@ const CommentInput = ({
       console.error("Error updating comment:", error);
     }
   };
-
+  /*----------------------------------------------------------------*/
   const renderInputField = () => (
     <div className={inputClass}>
       <input
         ref={inputRef}
         className="w-full outline-none"
-        placeholder="Write a comment..."
+        placeholder={isReply ? "Add a reply..." : "Add a comment..."}
         value={commentText}
         onChange={(e) => setCommentText(e.target.value)}
         onFocus={() => setIsFocused(true)}
@@ -273,7 +276,7 @@ const CommentInput = ({
       />
     </div>
   );
-
+  /*----------------------------------------------------------------*/
   const renderTextareaField = () => (
     <div className={textareaClass}>
       <textarea
@@ -361,20 +364,20 @@ const CommentInput = ({
           </EmojiPopover>
           {!imageUrl && !linkPreview && renderImageUpload()}
         </div>
-        {!isEdit ? (
+        {!isEdit && !isReply ? (
           <Button
             variant="ghost"
             type="submit"
-            className="p-3c rounded-full"
+            className="rounded-full p-3"
             onClick={handleInsertComment}
             disabled={isLoading}
           >
             <SendHorizontal className="size-5" />
           </Button>
-        ) : (
+        ) : !isReply ? (
           <div className="flex space-x-2">
             <Button
-              className="h-6 cursor-pointer rounded-full bg-slate-500 px-2 py-1 text-xs text-white hover:bg-slate-700"
+              className="h-6 cursor-pointer rounded-full bg-slate-500 px-2 py-1 text-xs text-white hover:bg-slate-700 hover:text-white"
               disabled={
                 commentText === data?.content || commentText?.length === 0
               }
@@ -389,11 +392,21 @@ const CommentInput = ({
               Cancel
             </Button>
           </div>
+        ) : (
+          <Button
+            variant="ghost"
+            type="submit"
+            className="h-6 cursor-pointer rounded-full bg-slate-500 px-2 py-1 text-sm text-white hover:bg-slate-700 hover:text-white"
+            onClick={handleInsertComment}
+            disabled={isLoading}
+          >
+            Reply
+          </Button>
         )}
       </div>
     </div>
   );
-
+  /*----------------------------------------------------------------*/
   const renderImageUpload = () => (
     <>
       <label
@@ -426,7 +439,7 @@ const CommentInput = ({
       />
     </>
   );
-
+  /*----------------------------------------------------------------*/
   return (
     <div
       className={`mt-4 flex space-x-2 ${commentText?.trim().length === 0 && !imageUrl && !linkPreview ? "items-center" : "items-start"}`}

@@ -3,7 +3,8 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import { getUserById } from "@/app/actions/getUserById";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { notifyUser } from "@/app/api/pusher/route";
+import { notifyUser } from "@/lib/pusher";
+
 
 export async function GET(req: NextRequest) {
     const url = new URL(req.url);
