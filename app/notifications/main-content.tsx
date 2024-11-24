@@ -30,8 +30,11 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const pageSize = 15;
+  const [userId, setUserId] = useState<string>("");
 
-  const userId = user.id;
+  useEffect(() => {
+    setUserId(user.id);
+  }, [user]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -39,13 +42,14 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
     if (filter) {
       setCurrentFilter(filter.charAt(0).toUpperCase() + filter.slice(1));
     }
+
     // const storedNotifications = sessionStorage.getItem(
     //   `notifications-${userId}`
     // );
     // if (storedNotifications) {
     //   setNotifications(JSON.parse(storedNotifications));
     // }
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     fetchNotifications();

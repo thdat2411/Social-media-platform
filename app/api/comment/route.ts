@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { user_id, post_id, content, image_url, preview_url } = body;
-        if (!user_id || !content) {
+        const { user_id, post_id, content, image_url, preview_url, parent_id } = body;
+        if (!user_id && !content) {
             return NextResponse.json({ error: "user_id and content are required" }, { status: 400 })
         }
         const post = await prisma.comment.create({
@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
                 post_id,
                 content,
                 image_url,
-                preview_url
+                preview_url,
+                parent_id,
             }
         });
         if (!post) {

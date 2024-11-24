@@ -20,7 +20,6 @@ const JobPostingDescription = ({
   setTriggerTypingAnimation,
   setIsAILoading,
 }: JobPostingDescriptionProps) => {
-  console.log("Init: ", formData);
   const containerRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -41,7 +40,6 @@ const JobPostingDescription = ({
         ...formDataRef.current,
         description: text,
       });
-      console.log("Check: ", text);
     },
     [setFormData]
   );
@@ -101,7 +99,10 @@ const JobPostingDescription = ({
   }, [isMounted]);
 
   useEffect(() => {
-    setIsMounted(true);
+    // Check if the window object is defined before initializing Quill
+    if (typeof window !== "undefined" && !quillRef.current) {
+      setIsMounted(true);
+    }
   }, []);
 
   const startTypingAnimation = useCallback(() => {
@@ -164,7 +165,6 @@ const JobPostingDescription = ({
           const finalText = quillRef.current.root.innerHTML;
           const count = calculateWordCount(finalText);
           setWordCount(count);
-          console.log("Final: ", finalText);
           updateFormData(finalText);
         }
       }

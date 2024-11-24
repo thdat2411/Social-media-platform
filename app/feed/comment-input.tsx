@@ -21,6 +21,8 @@ interface CommentInputProps {
   setIsEdit?: React.Dispatch<React.SetStateAction<boolean>>;
   isReply?: boolean;
   setIsReply?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsReplied?: React.Dispatch<React.SetStateAction<boolean>>;
+  userId?: string;
 }
 
 const CommentInput = ({
@@ -30,6 +32,8 @@ const CommentInput = ({
   isEdit,
   setIsEdit,
   isReply,
+  setIsReplied,
+  userId,
 }: CommentInputProps) => {
   const [data, setData] = useState<CommentsWithLiked | PostwithLiked | null>(
     comment ?? post ?? null
@@ -147,11 +151,12 @@ const CommentInput = ({
     try {
       setIsLoading(true);
       const body = {
-        user_id: data?.user_id,
+        user_id: userId,
         post_id: data?.id,
         content: commentText,
         image_url: imageUrl,
-        preview_url: linkPreview.url,
+        preview_url: linkPreview ? linkPreview.url : null,
+        parent_id: isReply ? data?.id : null,
       };
       axios
         .post("/api/comment", body)
@@ -397,7 +402,10 @@ const CommentInput = ({
             variant="ghost"
             type="submit"
             className="h-6 cursor-pointer rounded-full bg-slate-500 px-2 py-1 text-sm text-white hover:bg-slate-700 hover:text-white"
-            onClick={handleInsertComment}
+            onClick={() => {
+              handleInsertComment();
+              setIsReplied?.(true);
+            }}
             disabled={isLoading}
           >
             Reply

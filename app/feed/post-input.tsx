@@ -29,14 +29,13 @@ const PostInput = ({
   setNestedEventModal,
   user,
 }: PostInputProps) => {
-  const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
   return (
     <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white p-4 shadow-sm">
       <div className="flex items-center space-x-2">
         <Avatar className="size-14">
-          <AvatarImage src={user.image!} />
+          <AvatarImage src={user?.image || ""} />
           <AvatarFallback className="bg-blue-300 text-xl text-white">
-            {avatarFallBack}
+            {user?.name.split(" ").pop()?.charAt(0).toUpperCase() || ""}
           </AvatarFallback>
         </Avatar>
         <Button

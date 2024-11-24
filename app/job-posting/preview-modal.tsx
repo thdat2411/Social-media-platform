@@ -11,11 +11,15 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { job_posting, user } from "@prisma/client";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
 import { MdBusinessCenter } from "react-icons/md";
-import Renderer from "../components/renderer";
+
+const Renderer = dynamic(() => import("@/app/components/renderer"), {
+  ssr: false,
+});
 
 interface PreviewModalProps {
   open: boolean;

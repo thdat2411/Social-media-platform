@@ -22,7 +22,6 @@ import { formatDate } from "../utils/utils";
 import CommentInput from "./comment-input";
 import PostComment from "./comments";
 
-
 export type PostwithLiked = post & { user: user | null } & {
   commentCount: number;
   likeCount: number;
@@ -85,16 +84,12 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
   const debounceUpdateLike = debounce(async (postId: string) => {
     const isLike = iPost?.likedByUser;
     if (isLike === false) {
-      const response = await axios.put(
-        `/api/like?action=Like&postId=${postId}`
-      );
+      const response = await axios.post(`/api/like?postId=${postId}`);
       if (response.status !== 200) {
         console.log("Error updating like");
       }
     } else {
-      const response = await axios.put(
-        `/api/like?action=Dislike&postId=${postId}`
-      );
+      const response = await axios.delete(`/api/like?postId=${postId}`);
       if (response.status !== 200) {
         console.log("Error updating dislike");
       }
@@ -346,6 +341,7 @@ const FeedPost = ({ post, user }: FeedPostProps) => {
                   {comments?.map((comment, index) => (
                     <div key={comment.id}>
                       <PostComment
+                        postUserId={iPost?.user?.id ?? ""}
                         user={user}
                         position={index}
                         comment={comment}

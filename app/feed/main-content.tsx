@@ -30,6 +30,12 @@ const FeedMainContent = ({ user, posts }: FeedMainContentProps) => {
   const [nestedEventModal, setNestedEventModal] = useState(false);
   const [formData, setFormData] = useState<Event | undefined>(undefined);
   const [image, setImage] = useState<File | null>(null);
+  const [currentUser, setCurrentUser] = useState<user | null>(null);
+
+  useEffect(() => {
+    setCurrentUser(user);
+  }, [user]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -51,7 +57,7 @@ const FeedMainContent = ({ user, posts }: FeedMainContentProps) => {
         event={formData}
         setEvent={setFormData}
         isIn={false}
-        user={user}
+        user={currentUser!}
       />
       <MediaModal
         open={isOpenEditModal}
@@ -61,7 +67,7 @@ const FeedMainContent = ({ user, posts }: FeedMainContentProps) => {
         nestedMediaModal={nestedMediaModal}
         setNestedMediaModal={setNestedMediaModal}
         isIn={false}
-        user={user}
+        user={currentUser!}
       />
       <EventModal
         open={isEventModalOpen}
@@ -71,7 +77,7 @@ const FeedMainContent = ({ user, posts }: FeedMainContentProps) => {
         formData={formData}
         setFormData={setFormData}
         isIn={false}
-        user={user}
+        user={currentUser!}
       />
       <div className="mx-4 w-[52%] overflow-hidden pb-6 max-[1000px]:w-[65%]">
         <PostInput
@@ -84,10 +90,10 @@ const FeedMainContent = ({ user, posts }: FeedMainContentProps) => {
           setFormData={setFormData}
           setNestedMediaModal={setNestedMediaModal}
           setNestedEventModal={setNestedEventModal}
-          user={user}
+          user={currentUser!}
         />
         {posts?.map((post) => (
-          <FeedPost user={user} key={post.id} post={post} />
+          <FeedPost user={currentUser!} key={post.id} post={post} />
         ))}
       </div>
     </>

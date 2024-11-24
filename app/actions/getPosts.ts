@@ -1,7 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import getCurrentUser from "./getCurrentUser";
 
-export const getPosts = async (currentUserId: string) => {
+export const getPosts = async () => {
     try {
+        const user = await getCurrentUser();
+        if (!user) {
+            return null;
+        }
         const posts = await prisma.post.findMany({
             include: {
                 user: true, // Include post author details
@@ -24,7 +29,7 @@ export const getPosts = async (currentUserId: string) => {
 
         // Process posts to include additional fields
         const processedPosts = posts.map(({ user, _count, likes, ...post }) => {
-            const likedByUser = likes.some(like => like.user_id === currentUserId);
+            const likedByUser = likes.some(like => like.user_id === user?.id);
 
             return {
                 ...post,

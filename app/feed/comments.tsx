@@ -22,38 +22,37 @@ import PreviewContainer from "./components/preview-container";
 import { CommentsWithLiked } from "./post";
 
 interface CommentProps {
+  postUserId?: string;
   comment: CommentsWithLiked | null;
   user: user;
   position: number;
+  setIsReplied?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PostComment = ({ comment, user, position }: CommentProps) => {
+const PostComment = ({ comment, user, position, postUserId }: CommentProps) => {
   const [iComment, setIComment] = useState<CommentsWithLiked | null>(comment);
   const [preview, setPreview] = useState<any>(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isReply, setIsReply] = useState(false);
   const [replies, setReplies] = useState<CommentsWithLiked[]>([]);
-/*----------------------------------------------------------------*/
+  const [isReplied, setIsReplied] = useState(false);
+  /*----------------------------------------------------------------*/
   const debounceUpdateLike = debounce(async (commentId: string) => {
     const isLike = iComment?.likedByUser;
     if (isLike === false) {
-      const response = await axios.put(
-        `/api/like?action=Like&commentId=${commentId}`
-      );
+      const response = await axios.post(`/api/like?commentId=${commentId}`);
       if (response.status !== 200) {
         console.log("Error updating like");
       }
     } else {
-      const response = await axios.put(
-        `/api/like?action=Dislike&commentId=${commentId}`
-      );
+      const response = await axios.delete(`/api/like?commentId=${commentId}`);
       if (response.status !== 200) {
         console.log("Error updating dislike");
       }
     }
   }, 2000);
-/*----------------------------------------------------------------*/
+  /*----------------------------------------------------------------*/
   const handleLikePost = () => {
     const isLike = iComment?.likedByUser;
     setIComment({
@@ -67,7 +66,7 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
       debounceUpdateLike(iComment.id);
     }
   };
-/*----------------------------------------------------------------*/
+  /*----------------------------------------------------------------*/
   const handleLoadReplies = async () => {
     try {
       const response = await axios.get(`/api/comment?commentId=${comment?.id}`);
@@ -79,7 +78,7 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
       console.error("Error fetching comments:", error);
     }
   };
-/*----------------------------------------------------------------*/
+  /*----------------------------------------------------------------*/
   useEffect(() => {
     const fetchPreview = async () => {
       if (iComment?.preview_url) {
@@ -146,7 +145,7 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
             <div className="flex flex-col justify-center">
               <div className="flex items-center">
                 <p className="text-sm font-medium">{iComment?.user.name}</p>
-                {iComment?.user.id === user.id && (
+                {iComment?.user.id === postUserId && (
                   <p className="ml-2 rounded-md bg-slate-500 px-2 text-xs font-semibold text-white">
                     Author
                   </p>
@@ -265,24 +264,29 @@ const PostComment = ({ comment, user, position }: CommentProps) => {
           </div>
           {isReply && (
             <>
-              <CommentInput
-                comment={iComment}
-                setComment={setIComment}
-                isEdit={false}
-                isReply={isReply}
-                setIsReply={setIsReply}
-              />
+              {!isReplied && (
+                <CommentInput
+                  comment={iComment}
+                  setComment={setIComment}
+                  isEdit={false}
+                  isReply={isReply}
+                  setIsReply={setIsReply}
+                  setIsReplied={setIsReplied}
+                  userId={user.id}
+                />
+              )}
               {replies.length > 0 && (
                 <div className="mt-6 w-full">
                   <div className="flex w-full flex-col space-y-8">
                     {replies?.map((reply, index) => (
-                      <div key={reply.id}>
-                        <PostComment
-                          user={user}
-                          position={index}
-                          comment={reply}
-                        />
-                      </div>
+                      <PostComment
+                        key={reply.id}
+                        postUserId={postUserId}
+                        user={user}
+                        setIsReplied={setIsReplied}
+                        position={index}
+                        comment={reply}
+                      />
                     ))}
                   </div>
                 </div>

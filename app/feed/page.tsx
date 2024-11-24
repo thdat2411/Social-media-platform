@@ -5,7 +5,7 @@ import FeedSideBar from "./sidebar";
 
 const FeedPage = async () => {
   const user = await getCurrentUser();
-  const posts = await getPosts(user!.id);
+  const posts = await getPosts();
   return (
     <div className="relative flex h-full w-full justify-center">
       <div className="mt-4 flex w-[60%] justify-start max-[1669px]:w-[70%] max-[1669px]:justify-center max-[1440px]:w-[80%] max-[1000px]:w-[85%]">

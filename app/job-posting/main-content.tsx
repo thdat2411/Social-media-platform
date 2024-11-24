@@ -19,9 +19,11 @@ import {
 import JobPostingDropdown from "./drop-down";
 import InputSugesstion from "./input-suggestion";
 import PreviewModal from "./preview-modal";
+
 const JobPostingDescription = dynamic(() => import("./description-textarea"), {
   ssr: false,
 });
+
 export type FormDataType = {
   jobTitle: string;
   company: string;
@@ -57,7 +59,6 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
   const [isDescriptionError, setIsDescriptionError] = useState(false);
   const [triggerTypingAnimation, setTriggerTypingAnimation] = useState(false);
   const [isAILoading, setIsAILoading] = useState(false);
-
   const workplaceType = useMemo(() => ["On-site", "Remote", "Hybrid"], []);
   const jobType = useMemo(
     () => ["Full-time", "Part-time", "Contract", "Temporary", "Internship"],
@@ -89,12 +90,26 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     required_skills: [],
     status: "",
   });
+  /*-------------------------------------------------------------*/
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  /*-------------------------------------------------------------*/
 
   useEffect(() => {
-    // Log formData only after it has been updated
-    console.log(formData);
-  }, [formData]); // Runs whenever formData changes
+    // Run only on client-side after the component mounts
+    if (typeof window !== undefined && skill.length > 0) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
 
+      if (context) {
+        context.font = "16px sans-serif"; // Match input font size and family
+        const textWidth = context.measureText(skill).width;
+        setInputWidth(`${Math.max(80, textWidth + 20)}px`); // Ensure a minimum width
+      }
+    }
+  }, [skill]);
+  /*-------------------------------------------------------------*/
   const generateDescription = async () => {
     if (!formData.title || !formData.company_name || !formData.location) {
       return;
@@ -129,7 +144,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
       toast.error("Failed to generate job description");
     }
   };
-
+  /*-------------------------------------------------------------*/
   const debouncedFilterSuggestions = debounce((value) => {
     if (!value) {
       setSkill("");
@@ -140,13 +155,13 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
       .slice(0, 20);
     setSkillSuggestion(filteredTitles);
   }, 300);
-
+  /*-------------------------------------------------------------*/
   const handleSkillChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSkill(value);
     debouncedFilterSuggestions(value);
   };
-
+  /*-------------------------------------------------------------*/
   const handleSubmit = () => {
     if (
       formData.title === "" ||
@@ -186,7 +201,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
         });
     }
   };
-
+  /*-------------------------------------------------------------*/
   const isRewriteDisabled = useMemo(() => {
     return (
       !formData.title ||
@@ -195,21 +210,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
       isAILoading
     );
   }, [formData.title, formData.company_name, formData.location, isAILoading]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    if (context) {
-      context.font = "16px sans-serif";
-      const textWidth = context.measureText(skill).width;
-      setInputWidth(`${Math.max(80, textWidth + 20)}px`);
-    }
-  }, [skill]);
-
+  /*-------------------------------------------------------------*/
   const handleDisable = () => {
     if (
       formData.title === "" ||
@@ -223,7 +224,7 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
     }
     return false;
   };
-
+  /*-------------------------------------------------------------*/
   return (
     <>
       <PreviewModal

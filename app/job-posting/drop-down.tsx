@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { job_posting } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface JobPostingDropdownProps {
   isWorkplaceOpen: boolean;
@@ -38,32 +38,6 @@ const JobPostingDropdown = ({
   level,
   whatDropdown,
 }: JobPostingDropdownProps) => {
-  const [dimensions, setDimensions] = useState<{
-    width: number | undefined;
-    height: number | undefined;
-  }>({
-    width: undefined,
-    height: undefined,
-  });
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (typeof window !== "undefined") {
-        setDimensions({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-        console.log(dimensions);
-      }
-    };
-
-    updateDimensions();
-
-    window.addEventListener("resize", updateDimensions);
-
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
   if (whatDropdown === "workplace") {
     return (
       <DropdownMenu open={isWorkplaceOpen} onOpenChange={setIsWorkplaceOpen}>

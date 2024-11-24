@@ -76,12 +76,18 @@ const EditJobPostingMainContent = ({
     window.scrollTo(0, 0);
   }, []);
   useEffect(() => {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    if (context) {
-      context.font = "16px sans-serif";
-      const textWidth = context.measureText(skill).width;
-      setInputWidth(`${Math.max(80, textWidth + 20)}px`);
+    // Check if the window or document object is available
+    if (typeof window !== "undefined" && skill.length > 0) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      if (context) {
+        context.font = "16px sans-serif"; // Match input font size and family
+        const textWidth = context.measureText(skill).width;
+        setInputWidth(`${Math.max(80, textWidth + 20)}px`); // Ensure a minimum width
+      }
+    } else {
+      setInputWidth("80px"); // Default width for SSR
     }
   }, [skill]);
   const debouncedFilterSuggestions = debounce((value) => {

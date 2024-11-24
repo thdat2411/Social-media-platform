@@ -185,20 +185,20 @@ const Header = () => {
   //   unbindEvent,
   // ]);
   /*-----------------------------------------------------------*/
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        setIsJobSearchFocus(false);
-        setIsSeeAll(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === "hidden") {
+  //       setIsJobSearchFocus(false);
+  //       setIsSeeAll(false);
+  //     }
+  //   };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
+  //   };
+  // }, []);
   /*-----------------------------------------------------------*/
 
   if (!session.data || !user || isLoading) {

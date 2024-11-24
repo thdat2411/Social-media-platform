@@ -11,7 +11,7 @@ const Renderer = ({ value }: RendererProps) => {
   const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
-    if (!renderRef.current) return;
+    if (typeof window === "undefined" || !renderRef.current) return;
     const container = renderRef.current;
     const quill = new Quill(document.createElement("div"), {
       theme: "snow",
