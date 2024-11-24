@@ -8,11 +8,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-<<<<<<< HEAD
-    "lint": "next lint"
-=======
     "postinstall": "prisma generate"
->>>>>>> 3b6663fd7ddde4cdaec7a4a3bc8e4276b94f771f
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",

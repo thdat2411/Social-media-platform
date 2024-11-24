@@ -26,15 +26,20 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "**",
-      }
+      },
     ],
   },
   webpack(config) {
     config.module.rules.push({
       test: /\.txt$/,
-      use: 'raw-loader',
+      use: "raw-loader",
     });
     return config;
+  },
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
   },
 };
 

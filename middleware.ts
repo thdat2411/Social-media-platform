@@ -12,7 +12,7 @@ export default withAuth({
         "/api/register/user",
         "/api/register/job-preference",
         "/forgot-password",
-        "/api/email"
+        "/api/email",
       ];
 
       return ignoredPaths.includes(req.nextUrl.pathname) || !!token;
@@ -23,4 +23,3 @@ export default withAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
-
