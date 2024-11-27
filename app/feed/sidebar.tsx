@@ -25,21 +25,18 @@ const FeedSideBar = ({ user }: FeedSideBarProps) => {
         <div className="flex flex-col">
           <div className="h-fit">
             <Separator className="h-16 rounded-tl-lg rounded-tr-lg border-b bg-slate-600" />
-            <Avatar className="-top-7 ml-4 size-20">
+            <Avatar className="-top-9 ml-4 size-24">
               <AvatarImage src={currentUser?.image || ""} />
-              <AvatarFallback className="bg-blue-300 text-3xl text-white">
+              <AvatarFallback className="bg-blue-300 text-4xl text-white">
                 {currentUser?.name.split(" ").pop()?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </div>
         </div>
-        <div className="-mt-5 px-4 pb-4">
+        <div className="-mt-5 space-y-1 px-4 pb-4">
           <h2 className="text-lg font-semibold">{currentUser?.name}</h2>
-          <p className="text-sm text-gray-600">{currentUser?.bio}</p>
-          <p className="text-sm text-gray-600">{currentUser?.location}</p>
-          <p className="mt-2 text-sm text-gray-600">
-            HCMC University of Technology and Education
-          </p>
+          <p className="text-xs">{currentUser?.headline}</p>
+          <p className="text-xs text-gray-600">{currentUser?.location}</p>
         </div>
       </aside>
       <aside className="h-fit space-y-4 rounded-lg border bg-white p-6 shadow-sm">

@@ -72,6 +72,16 @@ const EditJobPostingMainContent = ({
     ],
     []
   );
+
+  useEffect(() => {
+    handleFormValidation();
+  }, [
+    formData.title,
+    formData.description,
+    formData.required_skills,
+    formData.location,
+  ]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -114,20 +124,18 @@ const EditJobPostingMainContent = ({
       description: formData.description === "",
     };
     setValidationErrors(errors);
-    return Object.values(errors).every((error) => !error);
   };
 
   const handleUpdate = async () => {
     setIsConfirmModalOpen(false);
-    if (!handleFormValidation()) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+
     setIsLoading(true);
     try {
-      await axios.put(`/api/job-posting/${job_posting.id}`, formData);
-      toast.success("Updated job posting successfully");
-      router.refresh();
+      const response = await axios.put(`/api/job-posting`, formData);
+      if (response.status === 200) {
+        toast.success("Job posting updated successfully");
+        router.push(`/jobs/view/${job_posting.id}`);
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         toast.error(error.response.data?.error || "Failed to update posting");
@@ -137,6 +145,30 @@ const EditJobPostingMainContent = ({
     } finally {
       setIsLoading(false);
     }
+  };
+  const handleDisabled = () => {
+    // Helper to compare arrays
+    const arraysAreEqual = (arr1: string[] = [], arr2: string[] = []) => {
+      if (arr1.length !== arr2.length) return false;
+      return arr1.every((item, index) => item === arr2[index]);
+    };
+
+    if (
+      (formData.title === job_posting.title || formData.title === "") &&
+      (formData.company_name === job_posting.company_name ||
+        formData.company_name === "") &&
+      (formData.location === job_posting.location ||
+        formData.location === "") &&
+      (formData.description === job_posting.description ||
+        formData.description === "") &&
+      formData.workplace_type === job_posting.workplace_type &&
+      formData.job_type === job_posting.job_type &&
+      formData.level === job_posting.level &&
+      arraysAreEqual(formData.required_skills, job_posting.required_skills) // Compare arrays
+    ) {
+      return true; // Disable button
+    }
+    return false; // Enable button
   };
 
   return (
@@ -197,7 +229,7 @@ const EditJobPostingMainContent = ({
               label="Job title"
               isError={validationErrors.title}
             />
-            <div className="flex w-1/2 flex-col space-y-2">
+            <div className="flex w-1/2 flex-col space-y-2 self-end">
               <label
                 htmlFor="job-title"
                 className={`${validationErrors.company_name ? "text-red-500" : "text-muted-foreground"} max-[450px]:text-xs min-[450px]:text-sm`}
@@ -206,7 +238,7 @@ const EditJobPostingMainContent = ({
               </label>
               <input
                 type="text"
-                className={`rounded-md p-2 max-[450px]:text-xs min-[450px]:text-sm ${validationErrors.company_name ? "outline outline-2 outline-red-500" : "border border-black"}`}
+                className={`rounded-md bg-slate-300 p-2 max-[450px]:text-xs min-[450px]:text-sm ${validationErrors.company_name ? "outline outline-2 outline-red-500" : "border border-black"}`}
                 value={formData?.company_name}
                 onChange={(e) =>
                   setFormData({
@@ -214,11 +246,12 @@ const EditJobPostingMainContent = ({
                     company_name: capitalizeFirstLetter(e.target.value),
                   })
                 }
+                disabled
               />
             </div>
           </div>
           <div className="flex w-full space-x-10 pb-7">
-            <div className="flex w-1/2 flex-col space-y-2">
+            <div className="flex w-1/2 flex-col space-y-2 self-end">
               <label
                 htmlFor="job-title"
                 className="text-muted-foreground max-[450px]:text-xs min-[450px]:text-sm"
@@ -389,7 +422,6 @@ const EditJobPostingMainContent = ({
           <Button
             onClick={() => {
               setIsReviewModalOpen(true);
-              console.log(formData.description);
             }}
             variant="ghost"
             className="text-base text-blue-500 hover:bg-blue-100 hover:text-blue-700"
@@ -402,12 +434,24 @@ const EditJobPostingMainContent = ({
               onClick={() => setIsConfirmModalOpen(true)}
               className="rounded-full bg-red-500 text-lg text-white hover:bg-red-700 hover:text-white"
             >
-              Delete
+              Cancel
             </Button>
             <Button
               type="submit"
-              onClick={() => setIsConfirmModalOpen(true)}
+              onClick={() => {
+                if (
+                  validationErrors.title === true ||
+                  validationErrors.company_name === true ||
+                  validationErrors.location === true ||
+                  validationErrors.description === true
+                ) {
+                  return;
+                } else {
+                  setIsConfirmModalOpen(true);
+                }
+              }}
               className="rounded-full bg-blue-500 text-lg text-white hover:bg-blue-700 hover:text-white"
+              disabled={handleDisabled()}
             >
               Update
             </Button>

@@ -29,7 +29,6 @@ interface PreviewModalProps {
 }
 
 const PreviewModal = ({ open, setOpen, formData, user }: PreviewModalProps) => {
-  console.log(formData);
   const [showAll, setShowAll] = useState(false);
   const skillsToShow = showAll
     ? formData.required_skills

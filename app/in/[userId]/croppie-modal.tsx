@@ -79,7 +79,7 @@ const CroppieModal = ({
       image: croppedImage,
       userId,
     };
-    console.log(updatedData);
+
     axios
       .put("/api/user/update-image", updatedData)
       .then(() => {

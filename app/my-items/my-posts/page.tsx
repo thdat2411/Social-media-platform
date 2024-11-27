@@ -1,20 +1,20 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
-import { getUserJobPosts } from "@/app/actions/getUserJobPosts";
+import getCurrentUserPosts from "@/app/actions/getCurrentUserPosts";
 import React from "react";
 import PostedSidebar from "../posted-sidebar";
-import PostedJobsMainContent from "./main-content";
+import MyPostsMainContent from "./main-content";
 
-const PostedJobsPage = async () => {
-  const jobPosts = await getUserJobPosts();
+const MyPostsPage = async () => {
   const user = await getCurrentUser();
+  const posts = await getCurrentUserPosts();
   return (
     <div className="relative">
       <div className="mx-auto mt-4 flex w-full max-w-6xl">
         <PostedSidebar userRole={user!.role!} />
-        <PostedJobsMainContent jobPosts={jobPosts!} />
+        <MyPostsMainContent posts={posts!} />
       </div>
     </div>
   );
 };
 
-export default PostedJobsPage;
+export default MyPostsPage;

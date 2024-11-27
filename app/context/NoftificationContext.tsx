@@ -11,6 +11,8 @@ const NotificationContext = createContext<{
   notifications: notification[];
   setNotificationCount: React.Dispatch<React.SetStateAction<number>>;
   setNotifications: React.Dispatch<React.SetStateAction<notification[]>>;
+  isNewPost: boolean;
+  setIsNewPost: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 export const NotificationProvider = ({
@@ -21,16 +23,24 @@ export const NotificationProvider = ({
   const { data: session } = useSession();
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState<notification[]>([]);
+  const [isNewPost, setIsNewPost] = useState(false);
   const showToast: (message: string) => void = useShowToastWithCloseButton();
-  const { bindEvent, unbindEvent, pusher } = usePusher();
+  const {
+    pusher,
+    subscribeToChannel,
+    unsubscribeFromChannel,
+    bindEvent,
+    unbindEvent,
+  } = usePusher();
 
+  // Fetch initial unread notifications and persist count
   useEffect(() => {
-    if (session?.user?.id) {
+    if (session?.user?.id && pusher) {
       const persistedCount = sessionStorage.getItem(
         `notificationCount-${session.user.id}`
       );
       if (persistedCount) {
-        setNotificationCount(persistedCount ? Number(persistedCount) : 0);
+        setNotificationCount(Number(persistedCount));
       } else {
         const fetchUnreadNotifications = async () => {
           try {
@@ -51,28 +61,36 @@ export const NotificationProvider = ({
         fetchUnreadNotifications();
       }
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, pusher]);
 
+  // Set up dynamic Pusher channel and events
   useEffect(() => {
     if (session?.user?.id && pusher) {
+      const userChannel = `user-${session.user.id}`;
+      const feedChannel = "feed";
+
+      subscribeToChannel(userChannel);
+      subscribeToChannel(feedChannel);
+
       const handleNotification = async (data: unknown) => {
         const { message, userId, type } = data as {
           message: string;
           userId: string;
           type: string;
         };
+
         showToast(message);
+
         setNotificationCount((prev) => {
           const newCount = prev + 1;
-          if (session?.user?.id) {
-            sessionStorage.setItem(
-              `notificationCount-${session.user.id}`,
-              String(newCount)
-            );
-          }
+          sessionStorage.setItem(
+            `notificationCount-${session.user.id}`,
+            String(newCount)
+          );
           return newCount;
         });
 
+        // Persist notification
         const response = await axios.post("/api/notification", {
           message,
           type,
@@ -82,27 +100,31 @@ export const NotificationProvider = ({
 
         setNotifications((prevNotifications) => {
           const updatedNotifications = [...prevNotifications, notification];
-          if (session?.user?.id) {
-            sessionStorage.setItem(
-              `notifications-${session.user.id}`,
-              JSON.stringify(updatedNotifications)
-            );
-          }
+          sessionStorage.setItem(
+            `notifications-${session.user.id}`,
+            JSON.stringify(updatedNotifications)
+          );
           return updatedNotifications;
         });
       };
 
-      bindEvent("new-notification", handleNotification);
-      console.log("Subscribed to new-notification event");
+      const handleNewPost = () => {
+        setIsNewPost(true);
+      };
+
+      bindEvent(userChannel, "new-notification", handleNotification);
+      bindEvent(feedChannel, "new-post", handleNewPost);
 
       return () => {
-        console.log("Unsubscribed from new-notification event");
-        unbindEvent("new-notification");
-        sessionStorage.removeItem(`notifications-${session?.user?.id}`);
-        sessionStorage.removeItem(`notificationCount-${session?.user?.id}`);
+        unbindEvent(userChannel, "new-notification");
+        unbindEvent(feedChannel, "new-post");
+        unsubscribeFromChannel(userChannel);
+        unsubscribeFromChannel(feedChannel);
+        sessionStorage.removeItem(`notifications-${session.user.id}`);
+        sessionStorage.removeItem(`notificationCount-${session.user.id}`);
       };
     }
-  }, [session?.user?.id, pusher]);
+  }, [session?.user?.id,pusher]);
 
   return (
     <NotificationContext.Provider
@@ -111,6 +133,8 @@ export const NotificationProvider = ({
         setNotificationCount,
         notifications,
         setNotifications,
+        isNewPost,
+        setIsNewPost,
       }}
     >
       {children}

@@ -12,16 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { user } from "@prisma/client";
 import axios from "axios";
-import { ChevronDown, Pencil, X } from "lucide-react";
+import { ChevronDown, Loader, Pencil, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaRegSmile } from "react-icons/fa";
 import { ReactPhotoEditor } from "react-photo-editor";
+import { text } from "stream/consumers";
 import { useDebounce } from "use-debounce";
 import { EmojiPopover } from "../../components/emoji-popover";
 import { Hint } from "../../components/hint";
+import { PostwithLiked } from "../post";
 import {
   default as Event,
   default as EventPostField,
@@ -62,6 +64,8 @@ interface PostModalProps {
   setEvent?: (event: Event | undefined) => void;
   isIn?: boolean;
   user: user;
+  isEdit?: boolean;
+  post?: PostwithLiked;
 }
 
 const PostModal = ({
@@ -83,10 +87,17 @@ const PostModal = ({
   setEvent,
   isIn,
   user,
+  isEdit,
+  post,
 }: PostModalProps) => {
+  console.log(isEdit);
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
-  const [postContent, setPostContent] = useState("");
-  const [editedImage, setEditedImage] = useState<string | null>(null);
+  const [postContent, setPostContent] = useState(
+    isEdit && post ? post.content : ""
+  );
+  const [editedImage, setEditedImage] = useState<string | null>(
+    isEdit && post ? post.image_url : null
+  );
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [debouncedPostContent] = useDebounce(postContent, 300);
   const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
@@ -94,9 +105,14 @@ const PostModal = ({
   const [isEmojiFocused, setIsEmojiFocused] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isEventHovered, setIsEventHovered] = useState(false);
-  const [linkPreview, setLinkPreview] = useState<any>(null);
+  const [linkPreview, setLinkPreview] = useState<any>(
+    isEdit && post ? post.preview_url : null
+  );
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   /*------------------------------------------------------------------*/
   const extractURL = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -138,6 +154,12 @@ const PostModal = ({
   /*------------------------------------------------------------------*/
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostContent(e.target.value);
+    handleAutoResize(e.target);
+  };
+
+  const handleAutoResize = (textarea: HTMLTextAreaElement) => {
+    textarea.style.height = "auto"; // Reset the height to auto to recalculate
+    textarea.style.height = `${textarea.scrollHeight}px`; // Set it to the scroll height
   };
 
   const handleEmojiSelect = (emoji: string) => {
@@ -167,6 +189,7 @@ const PostModal = ({
       };
     }
   }, [image, open]);
+
   /*------------------------------------------------------------------*/
   const handleSaveDraft = () => {
     if (postContent.trim() !== "") {
@@ -237,8 +260,6 @@ const PostModal = ({
       });
       setImage?.(draftImageFile);
       setIsPhotoEditorOpen(true);
-      console.log(isPhotoEditorOpen);
-      console.log(image);
     } else if (event !== undefined) {
       setIsEventModalOpen?.(true);
     }
@@ -263,6 +284,7 @@ const PostModal = ({
   };
   /*------------------------------------------------------------------*/
   const handlePost = () => {
+    setIsLoading(true);
     const body = {
       user_id: user.id,
       content: postContent,
@@ -271,6 +293,8 @@ const PostModal = ({
     };
     axios.post("/api/post", body).then((response) => {
       if (response.status === 200) {
+        setIsLoading(false);
+        setOpen(false);
         router.refresh();
       }
     });
@@ -306,9 +330,18 @@ const PostModal = ({
         width={event?.eventName === "" || event === undefined ? "360" : "400"}
       />
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="top-1/3 mt-16 w-full max-w-3xl overflow-hidden bg-gray-50 p-0">
+        <DialogContent
+          className={`top-[35%] mt-16 w-full max-w-3xl overflow-hidden bg-gray-50 p-0 ${editedImage || linkPreview ? "h-[80%]" : ""}`}
+        >
           <DialogTitle className="hidden">Post</DialogTitle>
           <div className="relative rounded-lg border bg-white p-7">
+            {isLoading && (
+              <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                <div className="flex flex-col items-center">
+                  <Loader className="size-10 animate-spin" />
+                </div>
+              </div>
+            )}
             <Button
               variant="ghost"
               className="flex items-center rounded-3xl px-4 py-10"
@@ -330,17 +363,35 @@ const PostModal = ({
                 </div>
               </div>
             </Button>
-            <div className="relative h-[40vh] overflow-y-auto">
+            <div
+              className={`relative overflow-y-auto ${
+                editedImage || linkPreview ? "h-[58vh]" : "h-[40vh]"
+              }`}
+            >
               <textarea
-                className={`mt-4 w-full rounded-lg p-2 text-lg focus:border-transparent focus:outline-none ${
+                ref={textareaRef}
+                className={`mt-4 w-full rounded-lg p-2 text-base font-normal focus:border-transparent focus:outline-none ${
                   editedImage !== null || event !== undefined || linkPreview
-                    ? "min-h-32"
+                    ? "min-h-40"
                     : "min-h-72"
                 }`}
                 placeholder="What do you want to say?"
                 value={postContent}
                 onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const { selectionStart, selectionEnd } =
+                      e.target as HTMLTextAreaElement;
+                    setPostContent(
+                      postContent?.substring(0, selectionStart) +
+                        "\n" +
+                        postContent?.substring(selectionEnd)
+                    );
+                    e.preventDefault();
+                  }
+                }}
               />
+
               {linkPreview &&
                 (isPreviewLoading ? (
                   <div>...Loading preview</div>
@@ -384,7 +435,7 @@ const PostModal = ({
                     <Image
                       src={editedImage}
                       alt="image"
-                      className="mt-4 rounded-lg border px-4"
+                      className="mt-4 w-full px-4"
                       width={672}
                       height={200}
                     />
@@ -485,11 +536,17 @@ const PostModal = ({
               )}
               <Button
                 type="submit"
-                disabled={!postContent}
+                disabled={
+                  !isEdit
+                    ? !postContent || isLoading
+                    : postContent === post?.content &&
+                      editedImage === post?.image_url &&
+                      linkPreview === post?.preview_url
+                }
                 className="mr-4 rounded-full bg-blue-500 px-4 py-2 text-lg text-white"
                 onClick={handlePost}
               >
-                Post
+                {isEdit ? "Save" : "Post"}
               </Button>
             </div>
           </div>

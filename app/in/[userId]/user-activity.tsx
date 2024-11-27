@@ -1,10 +1,11 @@
 "use client";
+import { formatDate } from "@/app/utils/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { post, user } from "@prisma/client";
 import { MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface UserActivityProps {
   setIsPostModalOpen: (value: boolean) => void;
@@ -12,8 +13,23 @@ interface UserActivityProps {
   userPosts: post[];
 }
 
-const UserActivity = ({ setIsPostModalOpen, userPosts }: UserActivityProps) => {
+const UserActivity = ({
+  setIsPostModalOpen,
+  userPosts,
+  user,
+}: UserActivityProps) => {
   const router = useRouter();
+  const [isMinimized, setIsMinimized] = useState(true);
+  const [shownPosts, setShownPosts] = useState<post[]>([]);
+
+  useEffect(() => {
+    if (isMinimized) {
+      setShownPosts(userPosts.slice(0, 3));
+    } else {
+      setShownPosts(userPosts);
+    }
+  }, [isMinimized]);
+
   return (
     <div className="mt-6 rounded-lg border bg-white shadow-md">
       <div className="flex items-center justify-between px-5 py-6">
@@ -30,7 +46,7 @@ const UserActivity = ({ setIsPostModalOpen, userPosts }: UserActivityProps) => {
         <>
           {" "}
           <div className="flex flex-col px-5">
-            {userPosts.slice(0, 3).map((post, index) => (
+            {shownPosts.map((post, index) => (
               <>
                 <div
                   onClick={() => router.push(`/feed/post/${post.id}`)}
@@ -38,16 +54,23 @@ const UserActivity = ({ setIsPostModalOpen, userPosts }: UserActivityProps) => {
                   className="flex w-full cursor-pointer flex-col text-sm"
                 >
                   <p className="text-[#666666]">
-                    <span className="font-semibold">User</span> posted this ∙{" "}
+                    <span className="text-sm font-semibold">{user.name}</span>{" "}
+                    posted this ∙{" "}
+                    {post.created_at
+                      ? formatDate(new Date(post.created_at))
+                      : "unknown date"}
                   </p>
                   <p>{post.content}</p>
                 </div>
-                {index < 2 && <Separator className="my-4" />}
+                {index < shownPosts.length - 1 && (
+                  <Separator className="my-4" />
+                )}
               </>
             ))}
           </div>
           <Separator className="mt-4" />
           <Button
+            onClick={() => setIsMinimized(!isMinimized)}
             variant="ghost"
             className="w-full space-x-3 rounded-b-lg rounded-l-none rounded-r-none"
           >

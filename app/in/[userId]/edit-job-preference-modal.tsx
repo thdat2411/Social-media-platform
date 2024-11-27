@@ -103,7 +103,7 @@ const EditJobPreferenceModal = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="absolute -mt-8 max-h-[800px] max-w-xl overflow-hidden bg-white">
           <DialogHeader className="p-3">
-            <DialogTitle className="text-xl">User Name</DialogTitle>
+            <DialogTitle className="text-xl">Edit job preference</DialogTitle>
           </DialogHeader>
           <Separator />
           <div className="flex h-[500px] flex-col space-y-8 overflow-y-auto px-2 pb-10">

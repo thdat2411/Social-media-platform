@@ -6,9 +6,11 @@ import SinglePostMainContent from "./main-content";
 const PostPage = async () => {
   const user = await getCurrentUser();
   return (
-    <div className="relative">
-      <div className="mx-auto mt-4 flex w-full max-w-6xl">
-        <FeedSideBar user={user!} />
+    <div className="relative flex h-full w-full justify-center">
+      <div className="mt-4 flex w-[60%] justify-start max-[1669px]:w-[70%] max-[1669px]:justify-center max-[1440px]:w-[80%] max-[1000px]:w-[85%]">
+        <div className="flex h-fit w-1/5 flex-col space-y-4 max-[1000px]:w-1/3">
+          <FeedSideBar user={user!} />
+        </div>
         <SinglePostMainContent user={user!} />
       </div>
     </div>

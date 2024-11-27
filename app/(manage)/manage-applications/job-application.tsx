@@ -63,8 +63,8 @@ const JobApplicationPage = ({
                   <p className="text-lg font-medium">
                     {jobPostApplication.user.name}
                   </p>
-                  {jobPostApplication.user?.bio && (
-                    <p>{jobPostApplication.user.bio}</p>
+                  {jobPostApplication.user?.headline && (
+                    <p>{jobPostApplication.user.headline}</p>
                   )}
                   <p className="text-sm text-muted-foreground">
                     applied{" "}

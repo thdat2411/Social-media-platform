@@ -76,6 +76,9 @@ export async function POST(req: NextRequest) {
                     created_at: new Date(),
                 },
             });
+            if (!history) {
+                return NextResponse.json({ error: "History not updated" }, { status: 500 });
+            }
             return NextResponse.json({ searchingHistory: history }, { status: 200 });
         }
         const searchingHistory = await prisma.search_history.create({
@@ -84,6 +87,9 @@ export async function POST(req: NextRequest) {
                 term: keyword,
             },
         });
+        if (!searchingHistory) {
+            return NextResponse.json({ error: "History not created" }, { status: 500 });
+        }
         return NextResponse.json({ searchingHistory }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });

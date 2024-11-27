@@ -34,6 +34,8 @@ const JobViewMainContent = ({
   user,
   employer,
 }: JobViewMainContentProps) => {
+  console.log(user);
+  console.log(employer);
   const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
   const [showAll, setShowAll] = useState(false);
   const [isApplicantModalOpen, setIsApplicantModalOpen] = useState(false);
@@ -125,7 +127,8 @@ const JobViewMainContent = ({
                       )}
                     </p>
                   </div>
-                  {employer?.id !== user.id && user.role === "jobseeker" ? (
+                  {employer?.id !== user.id &&
+                  (user.role === "jobseeker" || user.role === null) ? (
                     <Button
                       variant={"outline"}
                       onClick={() => setIsApplicantModalOpen(true)}
@@ -168,7 +171,7 @@ const JobViewMainContent = ({
                         {employer?.name}
                       </p>
                       <p className="text-sm">
-                        {employer?.bio ?? "No bio available"}
+                        {employer?.headline ?? "No bio available"}
                       </p>
                       <p className="self-start text-sm text-muted-foreground">
                         Job poster

@@ -58,7 +58,7 @@ export async function PUT(req: NextRequest) {
     try {
         const body = await req.json();
         const { id, title, company_name, description, workplace_type, job_type, level, required_skills, location, employer_id } = body;
-        if (!id || !title || !company_name || !description || !workplace_type || !job_type || !level || !location || !employer_id) {
+        if (!title || !description || !workplace_type || !job_type || !level || !location || !employer_id) {
             return new NextResponse("Missing info", { status: 400 });
         }
         const job_posting = await prisma.job_posting.update({

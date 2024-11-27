@@ -20,7 +20,8 @@ model user {
   phone_number                             Int?
   birth_date                               DateTime?
   location                                 String?           @db.VarChar(255)
-  bio                                      String?
+  address                                  String?           @db.VarChar(255)
+  headline                                 String?
   role                                     String?           @db.VarChar(50)
   created_at                               DateTime?         @default(now()) @db.Timestamp(6)
   updated_at                               DateTime?         @default(now()) @db.Timestamp(6)
@@ -172,7 +173,7 @@ model like {
   post      post?    @relation(fields: [postId], references: [id])
   postId    String?
 
-  @@unique([user_id, entity_type, entity_id]) // Ensures a user can like a specific entity only once
+  @@unique([user_id, entity_type, entity_id])
 }
 
 model job_preference {

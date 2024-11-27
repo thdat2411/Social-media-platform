@@ -42,9 +42,11 @@ const Header = () => {
   const [isJobsPage, setIsJobsPage] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const { notificationCount, setNotificationCount } = useNotification();
+  const { notificationCount, setNotificationCount, isNewPost, setIsNewPost } =
+    useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [hoveredRoute, setHoveredRoute] = useState<string | null>(null);
+  // const { pusher, bindEvent, unbindEvent } = usePusher();
 
   /*-----------------------------------------------------------*/
   useEffect(() => {
@@ -153,7 +155,6 @@ const Header = () => {
 
     // Set the initial state based on the current media query
     setIsMobile(mediaQueryList.matches);
-    console.log(isMobile);
 
     // Add event listener
     mediaQueryList.addEventListener("change", handleMediaQueryChange);
@@ -170,7 +171,11 @@ const Header = () => {
   //       const handleNewNotification = () => {
   //         setNotificationCount((prev) => prev + 1);
   //       };
+  //       const handleNewPost = () => {
+  //         setIsNewPost(true);
+  //       };
   //       bindEvent("new-notification", handleNewNotification);
+  //       bindEvent("new-post", handleNewPost);
 
   //       return () => {
   //         unbindEvent("new-notification");
@@ -388,6 +393,9 @@ const Header = () => {
                             );
                             setNotificationCount(0);
                           }
+                          if (route.label === "Home") {
+                            setIsNewPost(false);
+                          }
                         }}
                       >
                         <div
@@ -402,10 +410,13 @@ const Header = () => {
                           />
                           {route.label === "Notifications" &&
                             notificationCount > 0 && (
-                              <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                              <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-400 text-xs text-white">
                                 {notificationCount}
                               </span>
                             )}
+                          {route.label === "Home" && isNewPost && (
+                            <span className="absolute -right-1 top-2 flex size-3 items-center justify-center rounded-full bg-red-400 text-xs text-white" />
+                          )}
                           <p
                             className={`text-xs ${
                               route.active ? "font-medium text-[#0A66C2]" : ""

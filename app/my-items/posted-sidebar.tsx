@@ -5,7 +5,12 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { FaBookmark } from "react-icons/fa";
 
-const PostedSidebar = () => {
+interface PostedSidebarProps {
+  userRole: string;
+}
+
+const PostedSidebar = ({ userRole }: PostedSidebarProps) => {
+  console.log(userRole);
   const pathName = usePathname();
   return (
     <aside className="h-fit w-1/4 rounded-lg border shadow-sm">
@@ -16,15 +21,27 @@ const PostedSidebar = () => {
         </div>
         <Separator />
         <Link
-          href="/my-items/posted-jobs"
+          href="/my-items/my-posts"
           className={`bg-white px-4 py-3 ${
-            pathName === "/my-items/posted-jobs"
+            pathName === "/my-items/my-posts"
               ? "border-l-4 border-l-blue-600 text-blue-600"
               : "text-[#666666] hover:text-black"
           } `}
         >
-          Job postings
+          My posts
         </Link>
+        {userRole === "recruiter" && (
+          <Link
+            href="/my-items/posted-jobs"
+            className={`bg-white px-4 py-3 ${
+              pathName === "/my-items/posted-jobs"
+                ? "border-l-4 border-l-blue-600 text-blue-600"
+                : "text-[#666666] hover:text-black"
+            } `}
+          >
+            Job postings
+          </Link>
+        )}
         <Separator />
         <Link
           href="/my-items/saved-posts"

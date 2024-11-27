@@ -60,9 +60,9 @@ export const DetailApplication = ({
             </Avatar>
             <div className="flex flex-col space-y-1">
               <p className="text-base font-medium">{application?.user.name}</p>
-              {application?.user?.bio && (
+              {application?.user?.headline && (
                 <p className="text-sm text-muted-foreground">
-                  {application?.user.bio}
+                  {application?.user.headline}
                 </p>
               )}
               <p className="text-xs text-muted-foreground">

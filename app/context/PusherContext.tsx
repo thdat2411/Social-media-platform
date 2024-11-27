@@ -5,8 +5,14 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export interface PusherContextType {
   pusher: Pusher | null;
-  bindEvent: (eventName: string, callback: (data: unknown) => void) => void;
-  unbindEvent: (eventName: string) => void;
+  subscribeToChannel: (channelName: string) => void;
+  unsubscribeFromChannel: (channelName: string) => void;
+  bindEvent: (
+    channelName: string,
+    eventName: string,
+    callback: (data: unknown) => void
+  ) => void;
+  unbindEvent: (channelName: string, eventName: string) => void;
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
@@ -14,12 +20,10 @@ const PusherContext = createContext<PusherContextType | undefined>(undefined);
 export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
   const [pusher, setPusher] = useState<Pusher | null>(null);
-  const channelRef = useRef<Channel | null>(null);
+  const channelsRef = useRef<Record<string, Channel | null>>({});
 
   useEffect(() => {
     if (session?.user?.id && !pusher) {
-      const userId = session.user.id;
-      Pusher.logToConsole = true;
       const pusherClient = new Pusher(
         process.env.NEXT_PUBLIC_PUSHER_KEY as string,
         {
@@ -27,33 +31,76 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
           forceTLS: true,
         }
       );
-      const channel = pusherClient.subscribe(`user-${userId}`);
-      channelRef.current = channel;
-
+      console.log("Initialized Pusher");
       setPusher(pusherClient);
 
-      // Cleanup function for unsubscribing
+      // Cleanup when the component unmounts
       return () => {
-        console.log("Unsubscribing from Pusher channel");
-        channel.unbind_all();
-        channel.unsubscribe();
+        console.log("Cleaning up Pusher");
+        Object.values(channelsRef.current).forEach((channel) => {
+          if (channel) {
+            channel.unbind_all();
+            channel.unsubscribe();
+          }
+        });
         pusherClient.disconnect();
         setPusher(null);
-        channelRef.current = null;
+        channelsRef.current = {};
       };
     }
-  }, [session?.user.id]);
+  }, [session?.user?.id]);
 
-  const bindEvent = (eventName: string, callback: (data: unknown) => void) => {
-    channelRef.current?.bind(eventName, callback);
+  const subscribeToChannel = (channelName: string) => {
+    if (!pusher || channelsRef.current[channelName]) {
+      console.log(
+        `Pusher not initialized or already subscribed to ${channelName}`
+      );
+      return;
+    }
+
+    const channel = pusher.subscribe(channelName);
+    console.log(`Subscribed to ${channelName}`);
+    channelsRef.current[channelName] = channel;
   };
 
-  const unbindEvent = (eventName: string) => {
-    channelRef.current?.unbind(eventName);
+  const unsubscribeFromChannel = (channelName: string) => {
+    const channel = channelsRef.current[channelName];
+    console.log(`Unsubscribing from ${channelName}`);
+    if (channel) {
+      channel.unbind_all();
+      channel.unsubscribe();
+      channelsRef.current[channelName] = null;
+    }
+  };
+
+  const bindEvent = (
+    channelName: string,
+    eventName: string,
+    callback: (data: unknown) => void
+  ) => {
+    const channel = channelsRef.current[channelName];
+    if (channel) {
+      channel.bind(eventName, callback);
+    }
+  };
+
+  const unbindEvent = (channelName: string, eventName: string) => {
+    const channel = channelsRef.current[channelName];
+    if (channel) {
+      channel.unbind(eventName);
+    }
   };
 
   return (
-    <PusherContext.Provider value={{ pusher, bindEvent, unbindEvent }}>
+    <PusherContext.Provider
+      value={{
+        pusher,
+        subscribeToChannel,
+        unsubscribeFromChannel,
+        bindEvent,
+        unbindEvent,
+      }}
+    >
       {children}
     </PusherContext.Provider>
   );

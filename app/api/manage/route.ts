@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
     try {
         const url = new URL(req.url);
         const page = parseInt(url.searchParams.get("page") || "1");
-        console.log(page);
         const limit = 15; // Items per page
         const user = await getCurrentUser();
         if (!user) {
@@ -30,7 +29,6 @@ export async function GET(req: NextRequest) {
 
         });
 
-        console.log(jobPosts);
 
         const totalJobPosts = await getUserJobPosts();
         if (!totalJobPosts) {

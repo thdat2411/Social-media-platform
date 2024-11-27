@@ -65,16 +65,12 @@ const PreviewContainer = ({
                 alt={data.title}
                 width={200}
                 height={100}
-                className={`aspect-auto ${isComment ? "w-[15%]" : "w-[35%]"} rounded-lg object-contain`}
+                className={`aspect-auto w-[25%] rounded-lg object-contain`}
               />
             )}
             <div className="flex flex-col space-y-1">
-              <div className={`font-semibold ${isComment ? "text-sm" : ""}`}>
-                {data.title}
-              </div>
-              <div className={`${isComment ? "text-xs" : "text-sm"}`}>
-                {data.description}
-              </div>
+              <div className={`text-sm font-semibold`}>{data.title}</div>
+              <div className={`text-xs`}>{data.description}</div>
             </div>
           </Link>
 
@@ -85,7 +81,6 @@ const PreviewContainer = ({
               onClick={() => {
                 setLinkPreview?.(null);
                 setEditData?.((prev) => {
-                  console.log("Deleted");
                   return {
                     ...prev!,
                     preview_url: null,

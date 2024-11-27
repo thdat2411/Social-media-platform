@@ -15,6 +15,7 @@ import MediaModal from "../../feed/components/media-modal";
 import PostModal, { Event } from "../../feed/components/post-modal";
 import ContactInfoModal from "./contact-info-modal";
 import CroppieModal from "./croppie-modal";
+import EditIntroModal from "./edit-intro-modal";
 import EditJobPreferenceModal from "./edit-job-preference-modal";
 import JobPreferenceModal from "./job-preferences-modal";
 import PictureModal from "./pic-modal";
@@ -23,13 +24,16 @@ import UserActivity from "./user-activity";
 interface UserProfileMainContentProps {
   user: user;
   userPosts: post[];
+  users: user[];
 }
 
 const UserProfileMainContent = ({
   user,
   userPosts,
+  users,
 }: UserProfileMainContentProps) => {
   const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
+  const [currentUser, setCurrentUser] = useState<user>(user);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [isCroppieModalOpen, setIsCroppieModalOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -43,11 +47,11 @@ const UserProfileMainContent = ({
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const [isBgDropdownOpen, setIsBgDropdownOpen] = useState(false);
   const [isContactInfoModalOpen, setIsContactInfoModalOpen] = useState(false);
+  const [isEditIntroOpen, setIsEditIntroOpen] = useState(false);
   const [isEditReferenceModalOpen, setIsEditReferenceModalOpen] =
     useState(false);
   const [isJobPreferenceModalOpen, setIsJobPreferenceModalOpen] =
     useState(false);
-
   const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -61,22 +65,30 @@ const UserProfileMainContent = ({
   };
   return (
     <>
+      <EditIntroModal
+        open={isEditIntroOpen}
+        setOpen={setIsEditIntroOpen}
+        user={currentUser}
+        setCurrentUser={setCurrentUser}
+      />
       <CroppieModal
         open={isCroppieModalOpen}
         setOpen={setIsCroppieModalOpen}
         image={userAvatar}
         setImage={setUserAvatar}
         isAvatarImage={isAvatarImage}
-        userId={user.id}
+        userId={currentUser.id}
       />
       <PictureModal
         open={isPicModalOpen}
         setOpen={setIsPicModalOpen}
-        image={user.image ?? ""}
+        image={currentUser.image ?? ""}
       />
       <ContactInfoModal
         open={isContactInfoModalOpen}
         setOpen={setIsContactInfoModalOpen}
+        user={currentUser}
+        setUser={setCurrentUser}
       />
       <EditJobPreferenceModal
         open={isEditReferenceModalOpen}
@@ -85,6 +97,8 @@ const UserProfileMainContent = ({
       <JobPreferenceModal
         open={isJobPreferenceModalOpen}
         setOpen={setIsJobPreferenceModalOpen}
+        user={currentUser}
+        setUser={setCurrentUser}
       />
       <PostModal
         open={isPostModalOpen}
@@ -96,14 +110,14 @@ const UserProfileMainContent = ({
         setNestedMediaModal={setNestedMediaModal}
         event={formData}
         setEvent={setFormData}
-        user={user}
+        user={currentUser}
       />
       <MediaModal
         open={isOpenEditModal}
         setOpen={setIsOpenEditModal}
         nestedMediaModal={nestedMediaModal}
         setNestedMediaModal={setNestedMediaModal}
-        user={user}
+        user={currentUser}
       />
       <EventModal
         open={isEventModalOpen}
@@ -112,7 +126,7 @@ const UserProfileMainContent = ({
         setNestedEventModal={setNestedEventModal}
         formData={formData}
         setFormData={setFormData}
-        user={user}
+        user={currentUser}
       />
       <div className="flex w-full space-x-20">
         <div className="flex w-2/3 flex-col">
@@ -179,10 +193,10 @@ const UserProfileMainContent = ({
                   <DropdownMenuTrigger asChild>
                     <Avatar className="size-36">
                       <AvatarImage
-                        src={user.image ?? ""}
+                        src={currentUser.image ?? ""}
                         className="cursor-pointer rounded-full"
                       />
-                      <AvatarFallback className="bg-blue-300 text-5xl text-white">
+                      <AvatarFallback className="bg-blue-300 text-[60px] text-white">
                         {avatarFallBack}
                       </AvatarFallback>
                     </Avatar>
@@ -223,20 +237,29 @@ const UserProfileMainContent = ({
                   }}
                 />
               </div>
+              <div className="aboslute flex justify-end p-4">
+                <Button
+                  onClick={() => setIsEditIntroOpen(true)}
+                  variant={"ghost"}
+                  className="rounded-full p-3"
+                >
+                  <Pencil className="size-6" />
+                </Button>
+              </div>
             </div>
-            <div className="mt-20 px-6 pb-6">
+            <div className="mt-1 px-6 pb-6">
               <h1 className="text-2xl font-semibold">
-                Thái Đạt <i className="fas fa-check-circle text-blue-500"></i>
+                {currentUser.full_name}{" "}
+                <i className="fas fa-check-circle text-blue-500"></i>
               </h1>
-              <p className="text-gray-600">
-                Student at HCMC University of Technology and Education
-              </p>
+              <p className="text-gray-600">{currentUser.headline ?? ""}</p>
               <p className="text-sm text-muted-foreground">
-                Thủ Đức, Ho Chi Minh City, Vietnam ·{" "}
+                {currentUser.location ? currentUser.location + "·" : ""}
                 <span
                   onClick={() => setIsContactInfoModalOpen(true)}
                   className="cursor-pointer font-semibold text-blue-600 hover:underline"
                 >
+                  {" "}
                   Contact info
                 </span>
               </p>
@@ -264,11 +287,11 @@ const UserProfileMainContent = ({
           {/* User activity */}
           <UserActivity
             setIsPostModalOpen={setIsPostModalOpen}
-            user={user}
+            user={currentUser}
             userPosts={userPosts}
           />
         </div>
-        <ListUser />
+        <ListUser users={users} />
       </div>
     </>
   );

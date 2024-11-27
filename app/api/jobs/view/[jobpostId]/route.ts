@@ -27,7 +27,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    console.log(body);
     const { job_listing_id, user_id, cover_letter, resume_url } = body;
     if (!job_listing_id || !user_id || !cover_letter || !resume_url) {
         return NextResponse.json({ error: "Missing info" }, { status: 400 });

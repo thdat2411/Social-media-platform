@@ -50,7 +50,7 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
             <div className="flex flex-col">
               <p className="font-semibold">{user?.name}</p>
               <p className="break-words text-sm">
-                {user?.bio ?? "No bio available"}
+                {user?.headline ?? "No bio available"}
               </p>
             </div>
           </div>

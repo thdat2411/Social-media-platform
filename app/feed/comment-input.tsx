@@ -4,6 +4,7 @@ import SmileIconHover from "@/app/assets/smile-hover.png";
 import SmileIcon from "@/app/assets/smile.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { user } from "@prisma/client";
 import axios from "axios";
 import { SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
@@ -17,12 +18,12 @@ interface CommentInputProps {
   setPost?: React.Dispatch<React.SetStateAction<PostwithLiked | null>>;
   comment?: CommentsWithLiked | null;
   setComment?: React.Dispatch<React.SetStateAction<CommentsWithLiked | null>>;
+  setComments?: React.Dispatch<React.SetStateAction<CommentsWithLiked[]>>;
   isEdit?: boolean;
   setIsEdit?: React.Dispatch<React.SetStateAction<boolean>>;
   isReply?: boolean;
   setIsReply?: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsReplied?: React.Dispatch<React.SetStateAction<boolean>>;
-  userId?: string;
+  user: user;
 }
 
 const CommentInput = ({
@@ -32,8 +33,7 @@ const CommentInput = ({
   isEdit,
   setIsEdit,
   isReply,
-  setIsReplied,
-  userId,
+  user,
 }: CommentInputProps) => {
   const [data, setData] = useState<CommentsWithLiked | PostwithLiked | null>(
     comment ?? post ?? null
@@ -41,6 +41,7 @@ const CommentInput = ({
   const [commentText, setCommentText] = useState(
     isEdit ? comment?.content : ""
   );
+  const [currentUser, setCurrentUser] = useState<user | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isSmileHovered, setIsSmileHovered] = useState(false);
@@ -50,12 +51,8 @@ const CommentInput = ({
   const [linkPreview, setLinkPreview] = useState<any>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const inputClass = `flex w-full items-center py-1 px-4 outline rounded-full text-sm  outline-gray-400 ${
-    isFocused ? "outline-[1.5px]" : "outline-1 "
-  }}`;
-  const textareaClass = `flex flex-col w-full py-1 px-2 outline rounded-2xl text-sm outline-gray-400 ${
-    isFocused ? "outline-[1.5px]" : "outline-1"
-  }`;
+  const inputClass = `flex w-full items-center py-1 px-4 outline rounded-full text-sm  outline-gray-400 ${isFocused ? "outline-2" : "outline-1"}`;
+  const textareaClass = `flex flex-col w-full py-1 px-2 outline rounded-2xl text-sm outline-gray-400  ${isFocused ? "outline-2" : "outline-1"} `;
   const inputRef = React.useRef<HTMLInputElement>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   /*----------------------------------------------------------------*/
@@ -63,7 +60,13 @@ const CommentInput = ({
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.match(urlRegex);
   };
+
+  useEffect(() => {
+    setCurrentUser(user);
+  }, [user]);
+
   /*----------------------------------------------------------------*/
+
   const handleEmojiSelect = (emoji: string) => {
     setCommentText((prev) => prev + emoji);
   };
@@ -151,13 +154,14 @@ const CommentInput = ({
     try {
       setIsLoading(true);
       const body = {
-        user_id: userId,
-        post_id: data?.id,
+        user_id: currentUser?.id,
+        post_id: !isReply ? data?.id : null,
         content: commentText,
-        image_url: imageUrl,
+        image_url: imageUrl ? imageUrl : null,
         preview_url: linkPreview ? linkPreview.url : null,
         parent_id: isReply ? data?.id : null,
       };
+
       axios
         .post("/api/comment", body)
         .then((response) => {
@@ -292,13 +296,25 @@ const CommentInput = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         disabled={isLoading}
-        rows={1} // Initial row count
-        style={{ overflow: "hidden" }} // Prevent scrollbar
+        rows={1}
+        style={{ overflow: "hidden" }}
         autoFocus
         onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
+          if (e.key === "Enter") {
+            const { selectionStart, selectionEnd } =
+              e.target as HTMLTextAreaElement;
+            setCommentText(
+              commentText?.substring(0, selectionStart) +
+                "\n" +
+                commentText?.substring(selectionEnd)
+            );
+            setTimeout(() => {
+              textareaRef.current!.selectionStart =
+                textareaRef.current!.selectionEnd = selectionStart + 1;
+            }, 0);
             e.preventDefault();
-            handleInsertComment();
+          } else if (e.key === "Escape") {
+            setIsEdit?.(false);
           }
         }}
       />
@@ -387,6 +403,12 @@ const CommentInput = ({
                 commentText === data?.content || commentText?.length === 0
               }
               onClick={updateComment}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  updateComment();
+                }
+              }}
             >
               Save changes
             </Button>
@@ -402,10 +424,7 @@ const CommentInput = ({
             variant="ghost"
             type="submit"
             className="h-6 cursor-pointer rounded-full bg-slate-500 px-2 py-1 text-sm text-white hover:bg-slate-700 hover:text-white"
-            onClick={() => {
-              handleInsertComment();
-              setIsReplied?.(true);
-            }}
+            onClick={handleInsertComment}
             disabled={isLoading}
           >
             Reply
@@ -453,12 +472,14 @@ const CommentInput = ({
       className={`mt-4 flex space-x-2 ${commentText?.trim().length === 0 && !imageUrl && !linkPreview ? "items-center" : "items-start"}`}
     >
       {!isEdit && (
-        <Avatar>
+        <Avatar className="size-10">
           <AvatarImage
-            src="https://github.com/shadcn.png"
-            className="size-10 rounded-full"
+            src={currentUser?.image ?? ""}
+            className="rounded-full"
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback className="flex size-10 items-center justify-center bg-blue-300 text-lg font-medium text-white">
+            {currentUser?.name.split(" ").pop()?.charAt(0).toUpperCase() || ""}
+          </AvatarFallback>
         </Avatar>
       )}
       {commentText?.trim().length === 0 && !imageUrl && !linkPreview

@@ -171,3 +171,18 @@ export const jobPostingDescription: string =
 
 
 export const coverLetterSample: string = '<p>Dear [Employer\'s Name],</p><p><br></p><p>I am writing to express my interest in the [Job Title] position at [Company\'s Name] as advertised on [where you found the job posting]. With my background in [Your Field/Industry] and [number] years of experience in [specific relevant experience], I am confident in my ability to contribute effectively to your team.</p><p><br></p><p>In my previous role at [Your Previous Company], I successfully [describe a relevant achievement or responsibility that relates to the job]. This experience honed my skills in [mention specific skills relevant to the job], which I believe will be valuable in the [Job Title] role at [Company\'s Name].</p><p><br></p><p>I am particularly drawn to this position at [Company\'s Name] because [mention something specific about the company or its values that appeals to you]. I admire [specific aspect of the company or its mission], and I am eager to contribute to your team with my expertise in [relevant skills or experience].</p><p><br></p><p>I am excited about the opportunity to bring my unique talents to [Company\'s Name] and help drive [mention a specific goal or project]. Thank you for considering my application. I look forward to the possibility of discussing how I can contribute to your team.</p><p><br></p><p>Warm regards,</p><p>[Your Name]</p>';
+
+export const monthList = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+]

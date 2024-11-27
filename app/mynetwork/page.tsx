@@ -96,7 +96,7 @@ const MyNetworkPage = () => {
                         {user.name}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {user.bio}
+                        {user.headline}
                       </p>
                       <div className="flex h-full w-full flex-col justify-end p-4">
                         <Button

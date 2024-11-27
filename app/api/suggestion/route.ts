@@ -10,7 +10,7 @@ if (!HUGGING_FACE_API_KEY) {
 
 // Utility function to fetch job description suggestions
 async function fetchJobDescription(jobTitle: string, company: string, location: string, workplaceType: string, jobType: string, level: string) {
-    const prompt = `Write a detailed job description for LinkedIn for the role of ${jobTitle} at ${company}. The position is a ${jobType} role as ${level} based in ${location}`;
+    const prompt = `Assume you are a recruiter, you are hiring a job. Write a detailed job description for your hiring post for the role of ${jobTitle} at ${company}. The position is a ${jobType} role as ${level} based in ${location}. Description includes why company are hiring the job, what is the user responsiblities, job requirements and what the company offer for the job.`;
 
     let output = "";
     const stream = client.chatCompletionStream({

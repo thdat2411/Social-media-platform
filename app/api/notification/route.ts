@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
         let notifications;
 
-        if (user.role === "jobseeker") {
+        if (user.role === "jobseeker" || user.role === null) {
             notifications = await prisma.notification.findMany({
                 where: {
                     AND: [

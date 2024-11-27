@@ -21,10 +21,16 @@ const getCurrentUserPosts = async () => {
             where: {
                 user_id: currentUser.id,
             },
+            include: {
+                user: true,
+            },
+            orderBy: {
+                created_at: 'desc'
+            }
         });
 
         if (!posts) {
-            return null;
+            return [];
         }
         return posts;
     } catch (err) {
