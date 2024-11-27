@@ -10,7 +10,7 @@ const MyPostsPage = async () => {
   return (
     <div className="relative">
       <div className="mx-auto mt-4 flex w-full max-w-6xl">
-        <PostedSidebar userRole={user!.role!} />
+        <PostedSidebar user={user!} />
         <MyPostsMainContent posts={posts!} />
       </div>
     </div>

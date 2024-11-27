@@ -45,21 +45,6 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-  const totalJobPosts = await getUserJobPosts();
-  if (!totalJobPosts) {
-    return NextResponse.json(
-      { error: "No job posts found" },
-      { status: 404 }
-    );
-  }
-  const totalPages = Math.ceil(totalJobPosts.length / limit);
-  return NextResponse.json({ jobPosts, totalPages }, { status: 200 });
-} catch {
-  return NextResponse.json(
-    { error: "Error fetching job data" },
-    { status: 500 }
-  );
-}
 }
 
 export async function PUT(req: NextRequest) {

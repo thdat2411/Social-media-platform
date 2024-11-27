@@ -1,17 +1,23 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
+import { user } from "@prisma/client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaBookmark } from "react-icons/fa";
 
 interface PostedSidebarProps {
-  userRole: string;
+  user: user;
 }
 
-const PostedSidebar = ({ userRole }: PostedSidebarProps) => {
-  console.log(userRole);
+const PostedSidebar = ({ user }: PostedSidebarProps) => {
   const pathName = usePathname();
+  const [userRole, setUserRole] = useState<string>("");
+
+  useEffect(() => {
+    setUserRole(user.role ?? "");
+  }, [user]);
+
   return (
     <aside className="h-fit w-1/4 rounded-lg border shadow-sm">
       <div className="flex flex-col">

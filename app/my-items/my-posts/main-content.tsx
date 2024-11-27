@@ -14,7 +14,7 @@ import { post, user } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Earth, Ellipsis } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 type posts = post & { user: user | null };
@@ -25,14 +25,19 @@ interface SavedPostMainContentProps {
 
 const MyPostsMainContent = ({ posts }: SavedPostMainContentProps) => {
   const router = useRouter();
+  const [currentPosts, setCurrentPosts] = useState<posts[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentPagePosts = posts.slice(startIndex, endIndex);
+  const currentPagePosts = currentPosts.slice(startIndex, endIndex);
 
-  const totalPages = Math.ceil(posts.length / pageSize);
+  const totalPages = Math.ceil(currentPosts.length / pageSize);
   const maxPagesToShow = 3;
+
+  useEffect(() => {
+    setCurrentPosts(posts);
+  }, [posts]);
 
   const handlePageChange = (newPage: React.SetStateAction<number>) => {
     setCurrentPage(newPage);

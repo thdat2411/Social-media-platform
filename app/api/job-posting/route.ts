@@ -1,7 +1,6 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/pusher";
-import { notifyUser } from "@/lib/pusher";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
