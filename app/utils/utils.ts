@@ -27,7 +27,9 @@ export const capitalizeFirstLetter = (string: string) => {
 };
 
 export function transformDateString(dateString: string) {
-  const match = dateString.match(/(\d+)\s+(days?|hours?|minutes?|seconds?)\s+ago/);
+  const match = dateString.match(
+    /(\d+)\s+(days?|hours?|minutes?|seconds?)\s+ago/
+  );
   if (match) {
     const value = match[1];
     const unit = match[2].charAt(0); // Get the first letter of the unit

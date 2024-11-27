@@ -7,7 +7,7 @@ const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
 // const client = new HfInference(HUGGING_FACE_API_KEY);
 
 if (!HUGGING_FACE_API_KEY) {
-    throw new Error("Hugging Face API key is missing");
+  throw new Error("Hugging Face API key is missing");
 }
 
 // Utility function to fetch job description suggestions
@@ -30,85 +30,87 @@ if (!HUGGING_FACE_API_KEY) {
 //     return output;
 // }
 
-
 export async function GET() {
-    try {
-        const user = await getCurrentUser();
-        if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
-        }
-        const history = await prisma.search_history.findMany({
-            where: {
-                user_id: user.id,
-            },
-            orderBy: {
-                created_at: "desc",
-            },
-        });
-        return NextResponse.json({ userHistory: history }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ error: error }, { status: 500 });
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+    const history = await prisma.search_history.findMany({
+      where: {
+        user_id: user.id,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+    return NextResponse.json({ userHistory: history }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
 }
 export async function POST(req: NextRequest) {
-    try {
-        const url = new URL(req.url);
-        const keyword = url.searchParams.get("keyword");
-        if (!keyword) {
-            return NextResponse.json({ error: "Keyword is required" }, { status: 400 });
-        }
-        const user = await getCurrentUser();
-        if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
-        }
-        const existingHistory = await prisma.search_history.findFirst({
-            where: {
-                user_id: user.id,
-                term: keyword,
-            },
-        });
-        if (existingHistory) {
-            const history = await prisma.search_history.update({
-                where: {
-                    id: existingHistory.id,
-                },
-                data: {
-                    created_at: new Date(),
-                },
-            });
-            if (!history) {
-                return NextResponse.json({ error: "History not updated" }, { status: 500 });
-            }
-            return NextResponse.json({ searchingHistory: history }, { status: 200 });
-        }
-        const searchingHistory = await prisma.search_history.create({
-            data: {
-                user_id: user.id,
-                term: keyword,
-            },
-        });
-        if (!searchingHistory) {
-            return NextResponse.json({ error: "History not created" }, { status: 500 });
-        }
-        return NextResponse.json({ searchingHistory }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ error: error }, { status: 500 });
+  try {
+    const url = new URL(req.url);
+    const keyword = url.searchParams.get("keyword");
+    if (!keyword) {
+      return NextResponse.json({ error: "Keyword is required" }, { status: 400 });
     }
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    const existingHistory = await prisma.search_history.findFirst({
+      where: {
+        user_id: user.id,
+        term: keyword,
+      },
+    });
+    if (existingHistory) {
+      const history = await prisma.search_history.update({
+        where: {
+          id: existingHistory.id,
+        },
+        data: {
+          created_at: new Date(),
+        },
+      });
+      if (!history) {
+        return NextResponse.json({ error: "History not updated" }, { status: 500 });
+      }
+      return NextResponse.json({ searchingHistory: history }, { status: 200 });
+    }
+    const searchingHistory = await prisma.search_history.create({
+      data: {
+        user_id: user.id,
+        term: keyword,
+      },
+    });
+    if (!searchingHistory) {
+      return NextResponse.json({ error: "History not created" }, { status: 500 });
+    }
+    return NextResponse.json({ searchingHistory }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
 }
 
 export async function DELETE() {
-    try {
-        const user = await getCurrentUser();
-        if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
-        }
-        await prisma.search_history.deleteMany({
-            where: {
-                user_id: user.id,
-            },
-        });
-        return NextResponse.json({ message: "History deleted successfully" }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ error: error }, { status: 500 });
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+    await prisma.search_history.deleteMany({
+      where: {
+        user_id: user.id,
+      },
+    });
+    return NextResponse.json(
+      { message: "History deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
 }

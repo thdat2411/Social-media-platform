@@ -1,7 +1,31 @@
+import { Pool } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+const prismaClientSingleton = () => {
+  const connectionString = `${process.env.POSTGRES_PRISMA_URL}`;
 
-export const prisma = globalForPrisma.prisma || new PrismaClient();
+  if (!connectionString) {
+    throw new Error("POSTGRES_PRISMA_URL env var is not set");
+  }
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaNeon(pool);
+
+  return new PrismaClient({ adapter });
+};
+
+// Development with Docker only
+// import { PrismaClient } from "@prisma/client";
+
+// const prismaClientSingleton = () => {
+//   return new PrismaClient();
+// };
+
+declare const globalThis: {
+  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+} & typeof global;
+
+export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== "production") globalThis.prismaGlobal = prisma;

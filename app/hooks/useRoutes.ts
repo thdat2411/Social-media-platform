@@ -1,7 +1,6 @@
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
-
 const useRoutes = () => {
   const pathname = usePathname();
 
@@ -44,7 +43,6 @@ const useRoutes = () => {
         iconHover: "/post.mp4",
         active: pathname === "/job-posting",
       },
-
     ],
     [pathname]
   );

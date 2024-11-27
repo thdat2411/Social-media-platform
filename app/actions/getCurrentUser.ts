@@ -1,3 +1,4 @@
+import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import getSession from "./getSession";
 

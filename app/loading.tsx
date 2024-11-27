@@ -39,7 +39,7 @@ const LoadingPage = () => {
           </div>
           <div className="relative mt-10 h-0.5 w-44 rounded-full bg-gray-300">
             <div
-              className="absolute left-0 top-0 h-1 bg-blue-700 rounded-full "
+              className="absolute left-0 top-0 h-1 rounded-full bg-blue-700"
               style={{
                 width: `${progress}%`,
                 transition: "width 0.1s ease",

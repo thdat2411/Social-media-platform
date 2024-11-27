@@ -18,6 +18,7 @@ export const notifyUser = async (userId: string, type: string, message: string) 
             userId: userId,
             type: type,
         });
+        console.log(`Notification sent to user-${userId}`);
     } catch (error) {
         console.error(`Error publishing message for user ${userId}:`, error);
     }

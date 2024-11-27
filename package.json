@@ -12,6 +12,8 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
     "@huggingface/inference": "^2.8.1",
+    "@neondatabase/serverless": "^0.10.3",
+    "@prisma/adapter-neon": "^5.22.0",
     "@prisma/client": "^5.21.1",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -95,6 +97,6 @@
     "cookie": "^0.7.1"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0 <21"
   }
 }
