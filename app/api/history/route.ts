@@ -8,6 +8,7 @@ const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
 
 if (!HUGGING_FACE_API_KEY) {
   throw new Error("Hugging Face API key is missing");
+  throw new Error("Hugging Face API key is missing");
 }
 
 // Utility function to fetch job description suggestions
@@ -31,6 +32,23 @@ if (!HUGGING_FACE_API_KEY) {
 // }
 
 export async function GET() {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    const history = await prisma.search_history.findMany({
+      where: {
+        user_id: user.id,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+    return NextResponse.json({ userHistory: history }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
   try {
     const user = await getCurrentUser();
     if (!user) {
@@ -96,6 +114,23 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE() {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    await prisma.search_history.deleteMany({
+      where: {
+        user_id: user.id,
+      },
+    });
+    return NextResponse.json(
+      { message: "History deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
   try {
     const user = await getCurrentUser();
     if (!user) {

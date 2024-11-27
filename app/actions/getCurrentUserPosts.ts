@@ -7,35 +7,45 @@ const getCurrentUserPosts = async () => {
     if (!session?.user?.email) {
       return null;
     }
+    try {
+      const session = await getSession();
+      if (!session?.user?.email) {
+        return null;
+      }
 
-    const currentUser = await prisma.user.findUnique({
-      where: {
-        email: session.user.email as string,
-      },
-    });
+      const currentUser = await prisma.user.findUnique({
+        where: {
+          email: session.user.email as string,
+        },
+      });
+      const currentUser = await prisma.user.findUnique({
+        where: {
+          email: session.user.email as string,
+        },
+      });
 
-    if (!currentUser) {
+      if (!currentUser) {
+        return null;
+      }
+      const posts = await prisma.post.findMany({
+        where: {
+          user_id: currentUser.id,
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          created_at: 'desc'
+        }
+      });
+
+      if (!posts) {
+        return [];
+      }
+      return posts;
+    } catch (err) {
+      console.error(err);
       return null;
     }
-    const posts = await prisma.post.findMany({
-      where: {
-        user_id: currentUser.id,
-      },
-      include: {
-        user: true,
-      },
-      orderBy: {
-        created_at: 'desc'
-      }
-    });
-
-    if (!posts) {
-      return [];
-    }
-    return posts;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-};
-export default getCurrentUserPosts;
+  };
+  export default getCurrentUserPosts;

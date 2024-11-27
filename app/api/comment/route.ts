@@ -111,4 +111,35 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
   }
+  try {
+    const body = await req.json();
+    const { id, content, image_url, preview_url } = body;
+    if (!id || !content) {
+      return NextResponse.json(
+        { error: "id and content are required" },
+        { status: 400 }
+      );
+    }
+    const comment = await prisma.comment.update({
+      where: {
+        id,
+      },
+      data: {
+        content,
+        image_url,
+        preview_url,
+        updated_at: new Date(),
+      },
+    });
+    if (!comment) {
+      return NextResponse.json(
+        { error: "Comment not updated" },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json({ comment }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
 }
+
