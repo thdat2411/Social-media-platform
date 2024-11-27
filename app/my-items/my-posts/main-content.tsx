@@ -170,7 +170,7 @@ const MyPostsMainContent = ({ posts }: SavedPostMainContentProps) => {
           <Button
             variant="ghost"
             onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === Math.ceil(posts.length / pageSize)}
+            disabled={currentPage === Math.ceil(currentPosts.length / pageSize)}
           >
             <p>Next</p>
             <ChevronRight />
