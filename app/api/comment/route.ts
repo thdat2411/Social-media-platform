@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     if (!user_id && !content) {
       return NextResponse.json({ error: "user_id and content are required" }, { status: 400 })
     }
-    const post = await prisma.comment.create({
+    const comment = await prisma.comment.create({
       data: {
         user_id,
         post_id,
@@ -20,10 +20,12 @@ export async function POST(req: NextRequest) {
         parent_id,
       }
     });
-    if (!post) {
+
+    if (!comment) {
       return NextResponse.json({ error: "Post not created" }, { status: 500 })
     }
-    return NextResponse.json({ post }, { status: 200 })
+
+    return NextResponse.json({ comment }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 })
   }

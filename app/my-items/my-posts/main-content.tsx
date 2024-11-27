@@ -116,7 +116,12 @@ const MyPostsMainContent = ({ posts }: SavedPostMainContentProps) => {
                     </div>
                   </div>
                 </div>
-                <p className="mt-6 line-clamp-3 text-sm">{post.content}</p>
+                <p
+                  className="mt-6 line-clamp-3 text-sm"
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
+                  {post.content}
+                </p>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild className="">
@@ -129,7 +134,9 @@ const MyPostsMainContent = ({ posts }: SavedPostMainContentProps) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="absolute -right-6 flex w-[200px] flex-col items-center justify-start">
                   <Button
-                    onClick={() => {}}
+                    onClick={() =>
+                      router.push(`/feed/post/${post.id}?isEdit=true`)
+                    }
                     variant="ghost"
                     className="flex w-full items-center justify-start space-x-2"
                   >

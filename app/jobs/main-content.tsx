@@ -80,21 +80,29 @@ const JobsMainContent = ({ jobPosts }: JobsMainContentProps) => {
           <p className="px-4 text-sm text-[#919191]">
             Based on your profile and search history
           </p>
-          <div className="flex w-full flex-col space-y-3 p-4">
-            {jobs.map((item) => (
-              <JobsContainer key={item.id} item={item} lists={jobs} />
-            ))}
-          </div>
-          <Button
-            onClick={() => {
-              router.push("/jobs/search?discover=recommended");
-            }}
-            variant="ghost"
-            className="h-14 w-full rounded-l-none rounded-r-none rounded-tl-none rounded-tr-none p-0 pr-3"
-          >
-            <p>Show all</p>
-            <MoveRight />
-          </Button>
+          {jobs.length !== 0 ? (
+            <>
+              <div className="flex w-full flex-col space-y-3 p-4">
+                {jobs.map((item) => (
+                  <JobsContainer key={item.id} item={item} lists={jobs} />
+                ))}
+              </div>
+              <Button
+                onClick={() => {
+                  router.push("/jobs/search?discover=recommended");
+                }}
+                variant="ghost"
+                className="h-14 w-full rounded-l-none rounded-r-none rounded-tl-none rounded-tr-none p-0 pr-3"
+              >
+                <p>Show all</p>
+                <MoveRight />
+              </Button>
+            </>
+          ) : (
+            <div className="flex w-full flex-col space-y-3 p-4">
+              <p className="text-center">No jobs found</p>
+            </div>
+          )}
         </div>
       </div>
       <div className="mb-4 rounded-lg border-[1.5px] border-[#DADEE2] bg-white shadow-sm">

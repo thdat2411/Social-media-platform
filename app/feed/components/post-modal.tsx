@@ -142,12 +142,14 @@ const PostModal = ({
 
   /*------------------------------------------------------------------*/
   useEffect(() => {
-    if (!linkPreview) {
-      const urls = extractURL(postContent);
-      if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]);
-      } else {
-        console.log("No URL detected");
+    if (!editedImage) {
+      if (!linkPreview) {
+        const urls = extractURL(postContent);
+        if (urls && urls.length > 0) {
+          fetchLinkPreview(urls[0]);
+        } else {
+          console.log("No URL detected");
+        }
       }
     }
   }, [postContent]);

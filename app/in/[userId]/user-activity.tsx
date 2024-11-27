@@ -60,7 +60,12 @@ const UserActivity = ({
                       ? formatDate(new Date(post.created_at))
                       : "unknown date"}
                   </p>
-                  <p>{post.content}</p>
+                  <p
+                    className="line-clamp-3 text-xs"
+                    style={{ whiteSpace: "pre-wrap" }}
+                  >
+                    {post.content}
+                  </p>
                 </div>
                 {index < shownPosts.length - 1 && (
                   <Separator className="my-4" />
@@ -69,14 +74,16 @@ const UserActivity = ({
             ))}
           </div>
           <Separator className="mt-4" />
-          <Button
-            onClick={() => setIsMinimized(!isMinimized)}
-            variant="ghost"
-            className="w-full space-x-3 rounded-b-lg rounded-l-none rounded-r-none"
-          >
-            <p className="text-base">Show all posts</p>
-            <MoveRight />
-          </Button>
+          {userPosts.length > 3 && (
+            <Button
+              onClick={() => setIsMinimized(!isMinimized)}
+              variant="ghost"
+              className="w-full space-x-3 rounded-b-lg rounded-l-none rounded-r-none"
+            >
+              <p className="text-base">Show all posts</p>
+              <MoveRight />
+            </Button>
+          )}
         </>
       ) : (
         <div className="flex px-5 pb-10">

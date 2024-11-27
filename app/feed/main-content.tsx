@@ -49,45 +49,67 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
   }, []);
 
   useEffect(() => {
+    console.log("Fetching posts for page:", page);
+
     const fetchPosts = async () => {
+      // Prevent fetching if no more posts or already loading
+      if (isLoading || !hasMore) return;
+
       setIsLoading(true);
-      const response = await axios.get(`/api/posts?page=${page}`);
-      if (response.status === 200) {
-        const { posts: fetchedPosts } = response.data;
-        if (fetchedPosts.length === 0) {
-          setHasMore(false); // No more posts available
-        } else {
-          setPosts((prevPosts) => [...prevPosts, ...fetchedPosts]);
+
+      try {
+        const response = await axios.get(`/api/posts?page=${page}`);
+        if (response.status === 200) {
+          const { posts: fetchedPosts } = response.data;
+
+          console.log(`Posts fetched for page ${page}:`, fetchedPosts);
+
+          // Check if there are no new posts
+          if (!fetchedPosts || fetchedPosts.length === 0) {
+            setHasMore(false); // Stop further fetches
+          } else {
+            // Add new posts to the state, avoiding duplicates
+            setPosts((prevPosts) => [
+              ...prevPosts,
+              ...fetchedPosts.filter(
+                (post: PostwithLiked) =>
+                  !prevPosts.some((p) => p.id === post.id)
+              ),
+            ]);
+          }
         }
-      } else {
-        console.error("Failed to fetch posts");
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchPosts();
-  }, [page]);
+  }, [page, hasMore, isLoading]);
 
   useEffect(() => {
+    let debounceTimeout: NodeJS.Timeout;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isLoading && hasMore) {
-          setPage((prevPage) => prevPage + 1);
+          clearTimeout(debounceTimeout);
+          debounceTimeout = setTimeout(() => {
+            setPage((prevPage) => prevPage + 1);
+          }, 300); // Adjust debounce timing
         }
       },
       {
-        rootMargin: "50px",
+        rootMargin: "50px", // Adjust margin to trigger early
       }
     );
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
+    if (observerRef.current) observer.observe(observerRef.current);
 
     return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
+      clearTimeout(debounceTimeout);
+      if (observerRef.current) observer.unobserve(observerRef.current);
     };
   }, [isLoading, hasMore]);
 
@@ -144,15 +166,15 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
           setNestedEventModal={setNestedEventModal}
           user={currentUser!}
         />
-        {posts?.map((post, index) => (
+        {posts?.map((post) => (
           <motion.div
-            key={index}
+            key={post.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <FeedPost user={currentUser!} key={index} post={post} />
+            <FeedPost user={currentUser!} key={post.id} post={post} />
           </motion.div>
         ))}
         <div ref={observerRef} />

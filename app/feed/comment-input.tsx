@@ -120,17 +120,18 @@ const CommentInput = ({
   };
   /*----------------------------------------------------------------*/
   useEffect(() => {
-    console.log(linkPreview);
-    if (!linkPreview && (!isEdit || (isEdit && !data?.preview_url))) {
-      const urls = extractURL(commentText ?? "");
-      if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]);
-      } else {
-        console.log("No URL detected");
-      }
-    } else if (isEdit && data?.preview_url) {
-      if (!linkPreview) {
-        fetchLinkPreview(data?.preview_url);
+    if (!imageUrl) {
+      if (!linkPreview && (!isEdit || (isEdit && !data?.preview_url))) {
+        const urls = extractURL(commentText ?? "");
+        if (urls && urls.length > 0) {
+          fetchLinkPreview(urls[0]);
+        } else {
+          console.log("No URL detected");
+        }
+      } else if (isEdit && data?.preview_url) {
+        if (!linkPreview) {
+          fetchLinkPreview(data?.preview_url);
+        }
       }
     }
   }, [commentText]);
