@@ -24,8 +24,6 @@ interface JobContentProps {
 }
 
 const JobContent = ({ data, user }: JobContentProps) => {
-  console.log(data);
-  console.log(data.description);
   const avatarFallBack = data.user?.name.split(" ").pop()?.charAt(0);
   const [showAll, setShowAll] = useState(false);
   const skillsToShow = showAll

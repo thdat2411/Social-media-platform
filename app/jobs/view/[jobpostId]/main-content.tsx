@@ -34,8 +34,6 @@ const JobViewMainContent = ({
   user,
   employer,
 }: JobViewMainContentProps) => {
-  console.log(user);
-  console.log(employer);
   const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
   const [showAll, setShowAll] = useState(false);
   const [isApplicantModalOpen, setIsApplicantModalOpen] = useState(false);

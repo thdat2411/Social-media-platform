@@ -10,6 +10,7 @@ import SentIconHover from "@/app/assets/send-hover.png";
 import SentIcon from "@/app/assets/send.png";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +25,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Earth, Ellipsis, Loader, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { usePusher } from "../context/PusherContext";
@@ -48,21 +50,21 @@ export type CommentsWithLiked = comment & { user: user } & {
 interface FeedPostProps {
   post: PostwithLiked;
   user: user;
-  isPostModalOpen?: boolean;
-  setIsPostModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  isEdit?: boolean;
+  setIsEditPost?: (value: boolean) => void;
+  setReviewURL?: (value: any) => void;
 }
 
 const FeedPost = ({
   post,
   user,
-  isPostModalOpen,
-  setIsPostModalOpen,
-  isEdit,
+  setIsEditPost,
+  setReviewURL,
 }: FeedPostProps) => {
+  const url = `${window.location.href}`;
   const [currentUser, setCurrentUser] = useState<user | null>(null);
-  const words = post ? post.content.split(" ") : "";
+  const words = post.content ? post.content.split(" ") : "";
   const shouldTruncate = words.length > 20;
+  const router = useRouter();
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [iPost, setIPost] = useState<PostwithLiked | null>(post);
   const [comments, setComments] = useState<CommentsWithLiked[]>([]);
@@ -78,6 +80,7 @@ const FeedPost = ({
   const [page, setPage] = useState(1); // Add state to track the current page
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null); // Cursor for pagination
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { subscribeToChannel, unsubscribeFromChannel, bindEvent, unbindEvent } =
     usePusher();
@@ -115,9 +118,16 @@ const FeedPost = ({
       setComments((prevComments) => [comment, ...prevComments]);
     };
 
+    const handleNewReply = (data: unknown) => {
+      setIPost((prev) => ({
+        ...prev!,
+        commentCount: prev!.commentCount + 1,
+      }));
+    };
+
     const handleDeleteComment = (data: unknown) => {
       const { commentId } = data as { commentId: string };
-      console.log("Comment ID:", commentId);
+
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.id !== commentId)
       );
@@ -143,6 +153,7 @@ const FeedPost = ({
     };
 
     bindEvent(channelName, "new-comment", handleNewComment);
+    bindEvent(channelName, "new-reply", handleNewReply);
     bindEvent(channelName, "handle-like", handleLike);
     bindEvent(channelName, "delete-comment", handleDeleteComment);
 
@@ -152,39 +163,51 @@ const FeedPost = ({
       unbindEvent(channelName, "handle-like");
       unsubscribeFromChannel(channelName);
     };
-  }, [
-    iPost?.id,
-    currentUser,
-    subscribeToChannel,
-    unsubscribeFromChannel,
-    bindEvent,
-    unbindEvent,
-    setIPost,
-    setComments,
-  ]);
+  }, [iPost?.id, currentUser]);
 
-  const handleLoadComments = useCallback(async () => {
+  const handleLoadComments = async () => {
+    if (!iPost?.id || loadingMore) return;
+
+    setLoadingMore(true);
+
     try {
       const response = await axios.get(
-        `/api/comment?postId=${iPost?.id}&page=${page}&limit=3&cursor=${nextCursor || ""}`
+        `/api/comment?postId=${iPost.id}&limit=3&cursor=${nextCursor || ""}`
       );
+
       if (response.status === 200) {
         const { comments, nextCursor: newNextCursor } = response.data;
-        setComments((prevComments) => [...prevComments, ...comments]);
-        setNextCursor(newNextCursor);
-        setLoadingMore(false);
+
+        setComments((prevComments) => {
+          // Avoid duplicates by filtering new comments
+          const uniqueComments = comments?.filter(
+            (comment: CommentsWithLiked) =>
+              !prevComments.some((prev) => prev.id === comment.id)
+          );
+          // const uniqueComments = comments;
+          return [...prevComments, ...uniqueComments];
+        });
+
+        // Update the cursor for the next fetch
+        if (newNextCursor) {
+          setNextCursor(newNextCursor);
+        } else {
+          setNextCursor(null); // No more comments
+        }
       }
     } catch (error) {
       console.error("Error fetching comments:", error);
+    } finally {
+      setLoadingMore(false);
     }
-  }, [iPost?.id, page, nextCursor]);
+  };
 
   useEffect(() => {
     if (showCommentInput) {
+      handleLoadComments();
+    } else if (!showCommentInput) {
       setComments([]);
       setNextCursor(null);
-      setPage(1);
-      handleLoadComments();
     }
   }, [showCommentInput]);
 
@@ -241,7 +264,7 @@ const FeedPost = ({
           });
       }
     }
-  }, [post]);
+  }, [iPost?.id]);
 
   if (isLoading) {
     return (
@@ -263,17 +286,10 @@ const FeedPost = ({
   } else {
     return (
       <>
-        <PostModal
-          open={isPostModalOpen!}
-          setOpen={setIsPostModalOpen!}
-          user={user}
-          post={iPost!}
-          isEdit={isEdit}
-        />
         <div className="mb-6 rounded-lg border-[1.5px] border-[#DADEE2] bg-white p-4 shadow-sm">
           <div className="flex justify-between">
             <Link
-              href="#"
+              href={`/in?userId=${iPost?.user_id}`}
               className="mb-4 flex cursor-pointer items-start space-x-2"
             >
               <Avatar className="size-14">
@@ -301,8 +317,11 @@ const FeedPost = ({
                 </div>
               </div>
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild className="">
+            <DropdownMenu
+              open={isDropdownOpen}
+              onOpenChange={setIsDropdownOpen}
+            >
+              <DropdownMenuTrigger>
                 <Button
                   variant="ghost"
                   className="rounded-full p-3 hover:bg-[#F4F2EE]"
@@ -313,7 +332,17 @@ const FeedPost = ({
               <DropdownMenuContent className="absolute -right-6 flex w-[200px] flex-col items-center justify-start">
                 {currentUser?.id === iPost?.user?.id && (
                   <Button
-                    onClick={() => setIsPostModalOpen?.(true)}
+                    onClick={() => {
+                      if (
+                        url !==
+                        `${window.location.origin}/feed/post/${iPost?.id}?isEdit=true`
+                      ) {
+                        router.push(`/feed/post/${iPost?.id}?isEdit=true`);
+                      } else {
+                        setIsEditPost?.(true);
+                      }
+                      setIsDropdownOpen(false);
+                    }}
                     variant="ghost"
                     className="flex w-full items-center justify-start space-x-2"
                   >
@@ -322,7 +351,10 @@ const FeedPost = ({
                   </Button>
                 )}
                 <Button
-                  onClick={() => copyLink(post.id)}
+                  onClick={() => {
+                    copyLink(post.id);
+                    setIsDropdownOpen(false);
+                  }}
                   variant="ghost"
                   className="flex w-full items-center justify-start space-x-2"
                 >
@@ -352,15 +384,28 @@ const FeedPost = ({
           </div>
 
           {iPost?.image_url && (
-            <div className="flex w-full items-center justify-center rounded-lg border shadow-sm">
-              <Image
-                src={iPost?.image_url ?? ""}
-                alt=""
-                width={300}
-                height={100}
-                className="w-full object-cover"
-              />
-            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <div className="flex w-full cursor-pointer items-center justify-center rounded-lg border shadow-sm">
+                  <Image
+                    src={iPost?.image_url ?? ""}
+                    alt=""
+                    width={300}
+                    height={100}
+                    className="w-full object-cover"
+                  />
+                </div>
+              </DialogTrigger>
+              <DialogContent className="max-w-[35%] bg-white p-0">
+                <Image
+                  src={iPost?.image_url ?? ""}
+                  alt=""
+                  width={300}
+                  height={300}
+                  className="z-10 w-full rounded-lg object-contain"
+                />
+              </DialogContent>
+            </Dialog>
           )}
           {review && iPost?.preview_url && (
             <PreviewContainer data={review} isComment={false} />
@@ -460,7 +505,7 @@ const FeedPost = ({
                         <div className="mt-6 w-full">
                           <div className="flex w-full flex-col space-y-8">
                             {comments?.map((comment, index) => (
-                              <div key={comment.id}>
+                              <div key={comment?.id}>
                                 <PostComment
                                   postUserId={iPost?.user?.id ?? ""}
                                   user={user}
@@ -483,8 +528,8 @@ const FeedPost = ({
                               variant={"ghost"}
                               className="text-s rounded-full bg-slate-100 p-3"
                               onClick={() => {
-                                handleLoadComments();
                                 setPage(page + 1);
+                                handleLoadComments();
                                 setLoadingMore(true);
                               }}
                             >
@@ -492,8 +537,8 @@ const FeedPost = ({
                             </Button>
                             <p
                               onClick={() => {
-                                handleLoadComments();
                                 setPage(page + 1);
+                                handleLoadComments();
                                 setLoadingMore(true);
                               }}
                               className="cursor-pointer rounded-md px-2 py-1 text-sm font-medium hover:bg-slate-100"

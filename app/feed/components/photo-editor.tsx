@@ -10,6 +10,8 @@ interface PhotoEditorProps {
   setIsPostModalOpen: (open: boolean) => void;
   image: File | null;
   setImage: (image: File | null) => void;
+
+  setIsPhotoEditorOpened?: (open: boolean) => void;
 }
 
 const PhotoEditor = ({
@@ -19,6 +21,7 @@ const PhotoEditor = ({
   setIsMediaModalOpen,
   setIsPostModalOpen,
   setImage,
+  setIsPhotoEditorOpened,
 }: PhotoEditorProps) => {
   let isChange = false;
   const handleSaveImage = (editedFile: File) => {
@@ -30,6 +33,7 @@ const PhotoEditor = ({
     if (isChange === true) {
       setOpen(false);
       setIsMediaModalOpen(false);
+      setIsPhotoEditorOpened && setIsPhotoEditorOpened(false);
       setIsPostModalOpen(true);
     } else {
       setImage(null);

@@ -23,11 +23,10 @@ const PreviewContainer = ({
 }: PreviewContainerProps) => {
   return (
     <div className="flex w-full space-x-4 rounded-lg border bg-slate-100 p-4 shadow-md">
-      {data.url.includes(window.location.origin) ? (
-        <Link
+      {data?.url?.includes(window.location.origin) ? (
+        <div
           className="flex w-full items-center justify-between hover:cursor-pointer"
-          href={data.url}
-          target="_blank"
+          onClick={() => window.open(data.url, "_blank")}
         >
           <div className="flex space-x-4">
             <Image
@@ -51,13 +50,12 @@ const PreviewContainer = ({
           >
             View job post
           </Button>
-        </Link>
+        </div>
       ) : (
         <>
-          <Link
+          <div
             className="flex items-center space-x-4 hover:cursor-pointer"
-            href={data.url}
-            target="_blank"
+            onClick={() => window.open(data.url, "_blank")}
           >
             {data.images?.length > 0 && (
               <Image
@@ -72,7 +70,7 @@ const PreviewContainer = ({
               <div className={`text-sm font-semibold`}>{data.title}</div>
               <div className={`text-xs`}>{data.description}</div>
             </div>
-          </Link>
+          </div>
 
           {isComment && !isUserComment && (
             <Button

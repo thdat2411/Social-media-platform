@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest) {
             if (!firstName || !lastName || !countryValue || !cityValue || !headLine) {
                 return NextResponse.json({ error: "missing required fields" }, { status: 400 })
             }
-            const updatedUser = await prisma.user.update({
+            const updatedUserIntro = await prisma.user.update({
                 where: { id: user.id },
                 data: {
                     name: firstName + " " + lastName,
@@ -24,19 +24,17 @@ export async function PUT(req: NextRequest) {
                     headline: headLine
                 }
             })
-            if (!updatedUser) {
-                return NextResponse.json({ error: "user is not found" }, { status: 400 })
-            }
-            return NextResponse.json({ updatedUser }, { status: 200 })
+            return NextResponse.json({ updatedUser: updatedUserIntro }, { status: 200 })
         }
-        else {
+        else if (action === "edit-contact"
+        ) {
             const { phoneNumber, address, birthDate } = body;
-            console.log(phoneNumber, address, birthDate);
+
             if (!phoneNumber || !address || !birthDate) {
                 return NextResponse.json({ error: "missing required fields" }, { status: 400 })
             }
-            console.log("pass");
-            const updatedUser = await prisma.user.update({
+
+            const updatedUserContact = await prisma.user.update({
                 where: { id: user.id },
                 data: {
                     phone_number: Number(phoneNumber),
@@ -44,10 +42,7 @@ export async function PUT(req: NextRequest) {
                     birth_date: new Date(birthDate)
                 }
             })
-            if (!updatedUser) {
-                return NextResponse.json({ error: "user is not found" }, { status: 400 })
-            }
-            return NextResponse.json({ updatedUser }, { status: 200 })
+            return NextResponse.json({ updatedUser: updatedUserContact }, { status: 200 })
         }
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 })

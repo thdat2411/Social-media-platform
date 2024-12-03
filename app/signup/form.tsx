@@ -81,12 +81,27 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
             Name
           </label>
           <input
-            className="w-full rounded border border-gray-300 px-4 py-2 text-sm"
+            className={`w-full rounded border px-4 py-2 text-sm ${
+              errors.name
+                ? "border-red-600 focus:outline-red-600"
+                : "border-gray-300"
+            }`}
             required
             type="text"
             disabled={isLoading}
-            {...register("name", { required: "Name is required" })}
+            {...register("name", {
+              required: "Name is required",
+              pattern: {
+                value: /^[A-Za-z\s]+$/,
+                message: "Name cannot contain numbers or special characters",
+              },
+            })}
           />
+          {errors.name && (
+            <p className="mt-1 text-xs text-red-600">
+              {errors.name.message as string}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -95,7 +110,9 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
           </label>
           <input
             className={`w-full rounded border border-gray-300 px-4 py-2 text-sm ${
-              error ? "border-red-600" : ""
+              errors.email || error
+                ? "border-red-600 focus:outline-red-600"
+                : ""
             }`}
             required
             type="email"
@@ -110,11 +127,11 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
             })}
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600">
+            <p className="mt-1 text-xs text-red-600">
               {errors.email.message as string}
             </p>
           )}
-          {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+          {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
         </div>
 
         <div className="mb-4">
@@ -122,11 +139,13 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
             Password
           </label>
           <div
-            className={`flex rounded-md ${
-              isPasswordFocused
-                ? "border-black outline outline-2"
-                : "outline outline-1 outline-gray-300"
-            }`}
+            className={`flex rounded-md outline ${
+              isPasswordFocused && !errors.password
+                ? "border-black outline-2"
+                : isPasswordFocused && errors.password
+                  ? "outline-2 outline-red-600"
+                  : "outline-1 outline-gray-300"
+            } ${errors.password ? "outline-1 outline-red-600 focus:outline-red-600" : ""}`}
           >
             <input
               onClick={() => setIsPasswordFocused(true)}
@@ -136,6 +155,12 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
               disabled={isLoading}
               {...register("password", {
                 required: "Password is required",
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character",
+                },
                 onBlur: () => setIsPasswordFocused(false),
               })}
             />
@@ -146,12 +171,17 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
               variant="ghost"
             >
               {showPassword ? (
-                <EyeOff className="size-5" />
-              ) : (
                 <Eye className="size-5" />
+              ) : (
+                <EyeOff className="size-5" />
               )}
             </Button>
           </div>
+          {errors.password && (
+            <p className="mt-1 text-xs text-red-600">
+              {errors.password.message as string}
+            </p>
+          )}
         </div>
         <p className="mb-4 text-center text-xs text-gray-600">
           By clicking Agree and Join or Continue, you agree to LinkedIn&apos;s{" "}

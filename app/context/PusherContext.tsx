@@ -31,12 +31,10 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
           forceTLS: true,
         }
       );
-      console.log("Initialized Pusher");
       setPusher(pusherClient);
 
       // Cleanup when the component unmounts
       return () => {
-        console.log("Cleaning up Pusher");
         Object.values(channelsRef.current).forEach((channel) => {
           if (channel) {
             channel.unbind_all();
@@ -59,13 +57,13 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const channel = pusher.subscribe(channelName);
-    console.log(`Subscribed to ${channelName}`);
+
     channelsRef.current[channelName] = channel;
   };
 
   const unsubscribeFromChannel = (channelName: string) => {
     const channel = channelsRef.current[channelName];
-    console.log(`Unsubscribing from ${channelName}`);
+
     if (channel) {
       channel.unbind_all();
       channel.unsubscribe();

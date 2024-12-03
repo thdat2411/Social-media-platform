@@ -16,19 +16,21 @@ import React, { useEffect, useState } from "react";
 interface JobPreferenceModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  userProfile: user;
+  setUserProfile: (userProfile: user) => void;
   user: user;
-  setUser: (user: user) => void;
 }
 const JobPreferenceModal = ({
   open,
   setOpen,
+  userProfile,
   user,
 }: JobPreferenceModalProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [jobPreferences, setJobPreferences] = useState<job_preference>();
   useEffect(() => {
     const fetchJobPreferences = async () => {
-      const jobPreferences = await getJobPreferences(user.id);
+      const jobPreferences = await getJobPreferences(userProfile?.id);
       if (jobPreferences) {
         setJobPreferences(jobPreferences);
       }
@@ -56,23 +58,25 @@ const JobPreferenceModal = ({
               <div className="flex items-center space-x-4">
                 <Avatar className="size-16">
                   <AvatarImage
-                    src={user?.image ?? ""}
+                    src={userProfile?.image ?? ""}
                     className="rounded-full"
                   />
                   <AvatarFallback className="size-16 bg-blue-300 text-2xl font-medium text-white">
-                    {user.name.split(" ").pop()?.charAt(0) ?? ""}
+                    {userProfile?.name.split(" ").pop()?.charAt(0) ?? ""}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col space-y-1">
-                  <p className="text-xl font-medium">{user.name}</p>
+                  <p className="text-xl font-medium">{userProfile?.name}</p>
                   {jobPreferences?.start_date && (
                     <p className="text-base font-light">is open to work</p>
                   )}
                 </div>
               </div>
-              <Button className="rounded-full p-3" variant="ghost">
-                <Pencil className="size-6" />
-              </Button>
+              {userProfile?.id === user.id && (
+                <Button className="rounded-full p-3" variant="ghost">
+                  <Pencil className="size-6" />
+                </Button>
+              )}
             </div>
             <div className="flex flex-col space-y-3 text-sm">
               <p className="font-medium">Job titles</p>
@@ -83,7 +87,7 @@ const JobPreferenceModal = ({
                   </p>
                 ))
               ) : (
-                <p className="text-xs">No job titles selected</p>
+                <p className="text-xs">Not set yet</p>
               )}
             </div>
             <div className="flex flex-col space-y-3 text-sm">
@@ -95,7 +99,7 @@ const JobPreferenceModal = ({
                   </p>
                 ))
               ) : (
-                <p className="text-xs">No location types selected</p>
+                <p className="text-xs">Not set yet</p>
               )}
             </div>
             {jobPreferences?.location_type?.includes("On-site") ? (

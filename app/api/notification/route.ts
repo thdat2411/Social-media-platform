@@ -15,21 +15,29 @@ export async function GET(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
     let notifications;
 
     if (user.role === "jobseeker" || user.role === null) {
+      // Jobseeker or null role (user with jobseeker permissions)
       notifications = await prisma.notification.findMany({
         where: {
           AND: [
             {
               OR: [
-                { user_id: { not: user.id }, type: { not: "job_apply" } },
-                { user_id: user.id, type: "post_comment" }
-              ]
+                // Receive job_posting_create for all job postings
+                { type: "job_posting_create" },
+                // Receive post_comment notifications for their posts
+                { user_id: user.id, type: "post_comment" },
+                // Receive post_reply notifications for their comments
+                { user_id: user.id, type: "post_reply" },
+              ],
             },
             {
               OR: [
+                // Receive job_posting_update if they have applied for the job
                 { type: "job_posting_update", job_posting: { job_applications: { some: { user_id: user.id } } } },
+                // All notifications except job_posting_update
                 { type: { not: "job_posting_update" } }
               ]
             }
@@ -45,18 +53,25 @@ export async function GET(req: NextRequest) {
           created_at: 'desc',
         },
       });
+
+      // Apply filtering based on the 'filter' query parameter
       if (filterSearch === 'jobs') {
         notifications = notifications.filter((notification) => notification.type.includes('job'));
       } else if (filterSearch === 'my posts') {
         notifications = notifications.filter((notification) => notification.type.includes('post_comment'));
       }
+
     } else {
+      // Recruiter role
       notifications = await prisma.notification.findMany({
         where: {
           OR: [
+            // Receive job_apply notifications for job applications to their posts
             { user_id: user.id, type: "job_apply" },
-            { user_id: user.id, type: { not: { contains: "job_posting" } } },
-            { user_id: user.id, type: "post_comment" }
+            // Receive post_comment notifications for comments on their posts
+            { user_id: user.id, type: "post_comment" },
+            // Receive post_reply notifications for replies to their comments
+            { user_id: user.id, type: "post_reply" }
           ]
         },
         take,
@@ -67,9 +82,11 @@ export async function GET(req: NextRequest) {
         orderBy: {
           created_at: 'desc',
         },
-      })
+      });
+
+      // Apply filtering based on the 'filter' query parameter
       if (filterSearch === 'jobs') {
-        notifications = notifications.filter((notification) => notification.type.includes('job'));
+        notifications = notifications.filter((notification) => notification.type.includes('job_apply'));
       } else if (filterSearch === 'my posts') {
         notifications = notifications.filter((notification) => notification.type.includes('post_comment'));
       }
@@ -83,7 +100,6 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-
 }
 
 export async function POST(req: NextRequest) {

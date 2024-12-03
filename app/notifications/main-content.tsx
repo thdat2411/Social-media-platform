@@ -28,8 +28,9 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const pageSize = 15;
+  const observerRef = useRef<HTMLDivElement | null>(null);
+  const [cursor, setCursor] = useState<string | null>(null);
+
   const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
@@ -52,32 +53,32 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
   }, []);
 
   useEffect(() => {
-    fetchNotifications();
-  }, [currentFilter, page]);
+    setNotifications([]);
+    setCursor(null);
+    setHasMore(true);
+    fetchNotifications(true);
+  }, [currentFilter]);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (initialLoad = false) => {
     if (!hasMore || loading) return;
 
     setLoading(true);
     try {
       const response = await axios.get(
-        `/api/notification?filter=${currentFilter.toLowerCase()}&page=${page}`
+        `/api/notification?filter=${currentFilter.toLowerCase()}${cursor ? `&cursor=${cursor}` : ""}`
       );
       const data = await response.data;
 
       if (response.status === 200) {
         const newNotifications = data.notifications;
-
-        setNotifications((prev) => {
-          const updatedNotifications = [...prev, ...newNotifications];
-          sessionStorage.setItem(
-            `notifications-${userId}`,
-            JSON.stringify(updatedNotifications)
+        if (newNotifications.length > 0) {
+          setNotifications((prev) =>
+            initialLoad ? newNotifications : [...prev, ...newNotifications]
           );
-          return updatedNotifications;
-        });
+        }
 
-        if (newNotifications.length < pageSize) {
+        setCursor(data.nextCursor);
+        if (!data.nextCursor) {
           setHasMore(false);
         }
       }
@@ -87,37 +88,28 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
     setLoading(false);
   };
 
-  const lastNotificationRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (loading || !hasMore) return;
-      if (observerRef.current) observerRef.current.disconnect();
-
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !loading && hasMore) {
+          fetchNotifications();
         }
-      });
+      },
+      { rootMargin: "150px" }
+    );
 
-      if (node) observerRef.current.observe(node);
-    },
-    [loading, hasMore]
-  );
+    const currentObserverRef = observerRef.current;
 
-  const handleDeleteNotification = async (id: string) => {
-    try {
-      await axios.delete(`/api/notification`, { data: { notificationId: id } });
-      setNotifications((prev) => {
-        const updatedNotifications = prev.filter((n) => n.id !== id);
-        localStorage.setItem(
-          `notifications-${userId}`,
-          JSON.stringify(updatedNotifications)
-        );
-        return updatedNotifications;
-      });
-    } catch (error) {
-      console.error("Failed to delete notification:", error);
+    if (currentObserverRef) {
+      observer.observe(currentObserverRef);
     }
-  };
+
+    return () => {
+      if (currentObserverRef) {
+        observer.unobserve(currentObserverRef);
+      }
+    };
+  }, [hasMore, loading]);
 
   const handleClickNotification = async (id: string) => {
     try {
@@ -142,6 +134,21 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
       });
     } catch (error) {
       console.error("Failed to update notification:", error);
+    }
+  };
+  const handleDeleteNotification = async (id: string) => {
+    try {
+      await axios.delete(`/api/notification`, { data: { notificationId: id } });
+      setNotifications((prev) => {
+        const updatedNotifications = prev.filter((n) => n.id !== id);
+        localStorage.setItem(
+          `notifications-${userId}`,
+          JSON.stringify(updatedNotifications)
+        );
+        return updatedNotifications;
+      });
+    } catch (error) {
+      console.error("Failed to delete notification:", error);
     }
   };
 
@@ -261,13 +268,13 @@ const NotificationMainContent = ({ user }: NotificationMainContentProps) => {
               <p className="text-2xl font-medium">No new post activities</p>
             </div>
           )}
-          {hasMore && <div ref={lastNotificationRef}></div>}
+          <div ref={observerRef} />
+          {loading && hasMore && (
+            <div className="flex animate-spin items-center justify-center">
+              <Loader className="size-8 text-blue-500" />
+            </div>
+          )}
         </div>
-        {loading && (
-          <div className="flex animate-spin items-center justify-center">
-            <Loader className="size-8 text-blue-500" />
-          </div>
-        )}
       </div>
     );
   }

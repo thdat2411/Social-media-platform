@@ -7,32 +7,43 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import React, { useState } from "react";
-import ConfirmModal from "../../components/confirm-modal";
+import { job_preference } from "@prisma/client";
+import React, { useEffect, useState } from "react";
+import { getJobPreferences } from "../actions/getJobPreferences";
+import ConfirmModal from "../components/confirm-modal";
 import ButtonTransferInput from "./button-transfer-input";
 import TypeSelection from "./type-selection";
 
 interface EditJobPreferenceModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  userId: string;
 }
 
 const EditJobPreferenceModal = ({
   open,
   setOpen,
+  userId,
 }: EditJobPreferenceModalProps) => {
-  const [jobTitles, setJobTitles] = useState<string[]>([]);
   const [isTitleAdding, setIsTitleAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [locationOnSite, setLocationOnSite] = useState<string[]>([]);
-  const [isLocationOnSiteAdding, setIsLocationOnSiteAdding] = useState(false);
-  const [newOnSiteLocation, setNewOnSiteLocation] = useState("");
-  const [locationRemote, setLocationRemote] = useState<string[]>([]);
-  const [isLocationRemoteAdding, setIsLocationRemoteAdding] = useState(false);
-  const [newRemoteLocation, setNewRemoteLocation] = useState("");
   const [employmentTypes, setEmploymentTypes] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [jobPreferences, setJobPreferences] = useState<job_preference>();
+  const [updatedData, setUpdatedData] = useState<job_preference>();
+  useEffect(() => {
+    const fetchJobPreferences = async () => {
+      const jobPreferences = await getJobPreferences(userId);
+      if (jobPreferences) {
+        setJobPreferences(jobPreferences);
+        setUpdatedData(jobPreferences);
+      }
+      setIsLoading(false);
+    };
+    fetchJobPreferences();
+  });
+
   const employmentValue = [
     "Full-time",
     "Part-time",
@@ -50,9 +61,9 @@ const EditJobPreferenceModal = ({
     if (locationTypes.includes(type)) {
       setLocationTypes(locationTypes.filter((item) => item !== type));
       if (type === "On-site" || type === "Hybrid") {
-        setLocationOnSite([]);
+        setUpdatedData({ ...updatedData!, location_on_site: "" });
       } else {
-        setLocationRemote([]);
+        setUpdatedData({ ...updatedData!, location_remote: "" });
       }
     } else {
       setLocationTypes([...locationTypes, type]);
@@ -61,25 +72,13 @@ const EditJobPreferenceModal = ({
 
   const handleAddTitle = () => {
     if (newTitle.trim()) {
-      setJobTitles([...jobTitles, newTitle]);
+      setUpdatedData({
+        ...updatedData!,
+        job_titles: [...(updatedData?.job_titles || []), newTitle],
+      });
       setNewTitle("");
     }
     setIsTitleAdding(false);
-  };
-
-  const handleAddOnSiteLocation = () => {
-    if (newOnSiteLocation.trim()) {
-      setLocationOnSite([...locationOnSite, newOnSiteLocation]);
-      setNewOnSiteLocation("");
-    }
-    setIsLocationOnSiteAdding(false);
-  };
-  const handleAddRemoteLocation = () => {
-    if (newRemoteLocation.trim()) {
-      setLocationRemote([...locationRemote, newRemoteLocation]);
-      setNewRemoteLocation("");
-    }
-    setIsLocationRemoteAdding(false);
   };
 
   const handleElementType = (type: string) => {
@@ -89,6 +88,17 @@ const EditJobPreferenceModal = ({
       setEmploymentTypes([...employmentTypes, type]);
     }
   };
+
+  const insertJobTitle = (job_titles: string) => {
+    setUpdatedData({
+      ...updatedData!,
+      job_titles: [...(updatedData?.job_titles || []), job_titles],
+    });
+  };
+
+  if (isLoading) {
+    return null;
+  }
   return (
     <>
       <ConfirmModal
@@ -111,8 +121,8 @@ const EditJobPreferenceModal = ({
             {/*Job titles*/}
             <ButtonTransferInput
               title="Job titles*"
-              data={jobTitles}
-              setData={setJobTitles}
+              data={updatedData?.job_titles || []}
+              setData={() => insertJobTitle}
               isAdding={isTitleAdding}
               setIsAdding={setIsTitleAdding}
               newValue={newTitle}
@@ -129,29 +139,43 @@ const EditJobPreferenceModal = ({
             {/*Location (On-site)*/}
             {(locationTypes.includes("On-site") ||
               locationTypes.includes("Hybrid")) && (
-              <ButtonTransferInput
-                title="Location (on-site)*"
-                data={locationOnSite}
-                setData={setLocationOnSite}
-                isAdding={isLocationOnSiteAdding}
-                setIsAdding={setIsLocationOnSiteAdding}
-                newValue={newOnSiteLocation}
-                setNewValue={setNewOnSiteLocation}
-                handleFunction={handleAddOnSiteLocation}
-              />
+              <div className="flex w-full flex-col items-center justify-between space-y-2">
+                <p className="self-start text-sm text-muted-foreground">
+                  Location (On-site)*
+                </p>
+                <input
+                  type="text"
+                  value={updatedData?.location_on_site || ""}
+                  onChange={(e) =>
+                    setUpdatedData({
+                      ...updatedData!,
+                      location_on_site: e.target.value,
+                    })
+                  }
+                  className="w-full border-2 px-2 py-1 text-sm"
+                  placeholder="Enter location"
+                />
+              </div>
             )}
             {/*Location (Remote)*/}
             {locationTypes.includes("Remote") && (
-              <ButtonTransferInput
-                title="Location (remote)*"
-                data={locationRemote}
-                setData={setLocationRemote}
-                isAdding={isLocationRemoteAdding}
-                setIsAdding={setIsLocationRemoteAdding}
-                newValue={newRemoteLocation}
-                setNewValue={setNewRemoteLocation}
-                handleFunction={handleAddRemoteLocation}
-              />
+              <div className="flex w-full flex-col items-center justify-between space-y-2">
+                <p className="self-start text-sm text-muted-foreground">
+                  Location (Remote)*
+                </p>
+                <input
+                  type="text"
+                  value={updatedData?.location_remote || ""}
+                  onChange={(e) =>
+                    setUpdatedData({
+                      ...updatedData!,
+                      location_remote: e.target.value,
+                    })
+                  }
+                  className="w-full border-2 px-2 py-1 text-sm"
+                  placeholder="Enter locatiton"
+                />
+              </div>
             )}
             {/*Start date*/}
             <div className="flex flex-col space-y-2">
@@ -163,9 +187,15 @@ const EditJobPreferenceModal = ({
                   name="eventType"
                   className="mr-2 size-6"
                   onClick={() =>
-                    setStartDate("Immediately, I am actively applying")
+                    setUpdatedData({
+                      ...updatedData!,
+                      start_date: "Immediately, I am actively applying",
+                    })
                   }
-                  checked={startDate === "Immediately, I am actively applying"}
+                  checked={
+                    updatedData?.start_date ===
+                    "Immediately, I am actively applying"
+                  }
                 />
                 <label htmlFor="immediate" className="text-sm">
                   Immediately, I am actively applying
@@ -178,9 +208,15 @@ const EditJobPreferenceModal = ({
                   name="eventType"
                   className="mr-2 size-6"
                   onClick={() =>
-                    setStartDate("Flexible, I am casually looking")
+                    setUpdatedData({
+                      ...updatedData!,
+                      start_date: "Flexible, I am casually looking",
+                    })
                   }
-                  checked={startDate === "Flexible, I am casually looking"}
+                  checked={
+                    updatedData?.start_date ===
+                    "Flexible, I am casually looking"
+                  }
                 />
                 <label htmlFor="flexible" className="text-sm">
                   Flexible, I am casually looking
@@ -190,7 +226,7 @@ const EditJobPreferenceModal = ({
             {/*Employment types*/}
             <TypeSelection
               title="Employment types*"
-              types={employmentTypes}
+              types={updatedData?.employment_types || []}
               values={employmentValue}
               handleFunction={handleElementType}
             />

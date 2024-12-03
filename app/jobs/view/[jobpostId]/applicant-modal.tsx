@@ -84,11 +84,15 @@ const ApplicantModal = ({
     CVdata.append("file", cvFile);
 
     try {
-      const response = await axios.post("/api/cv-upload", CVdata, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "/api/cloudinary-upload?type=raw",
+        CVdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const data = response.data;
 

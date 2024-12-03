@@ -44,6 +44,7 @@ const CommentInput = ({
   const [currentUser, setCurrentUser] = useState<user | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSmileHovered, setIsSmileHovered] = useState(false);
   const [isEmojiFocused, setIsEmojiFocused] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
@@ -75,10 +76,11 @@ const CommentInput = ({
     event
   ) => {
     const file = event.target.files?.[0] || null;
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImageUrl(reader.result as string);
+        setImageFile(file);
       };
       reader.readAsDataURL(file);
     }
@@ -151,14 +153,36 @@ const CommentInput = ({
     }
   }, [commentText, textareaRef]);
   /*----------------------------------------------------------------*/
-  const handleInsertComment = () => {
+  const handleInsertComment = async () => {
     try {
       setIsLoading(true);
+      let cloudinaryImageUrl;
+      if (imageUrl) {
+        const imageData = new FormData();
+        imageData.append("file", imageFile!);
+        const response = await axios.post(
+          "/api/cloudinary-upload?type=image",
+          imageData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status !== 200) {
+          console.error("Error uploading image to Cloudinary");
+          return;
+        } else {
+          const { url } = response.data;
+          cloudinaryImageUrl = url;
+        }
+      }
       const body = {
         user_id: currentUser?.id,
         post_id: !isReply ? data?.id : null,
         content: commentText,
-        image_url: imageUrl ? imageUrl : null,
+        image_url: cloudinaryImageUrl ? cloudinaryImageUrl : null,
         preview_url: linkPreview ? linkPreview.url : null,
         parent_id: isReply ? data?.id : null,
       };

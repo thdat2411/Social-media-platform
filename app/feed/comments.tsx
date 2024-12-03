@@ -4,6 +4,7 @@ import PencilIcon from "@/app/assets/pencil.png";
 import TrashIcon from "@/app/assets/trash.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,7 +52,7 @@ const PostComment = ({
   /*----------------------------------------------------------------*/
   useEffect(() => {
     setCurrentUser(user);
-  }, [user]);
+  }, [currentUser?.id]);
   /*----------------------------------------------------------------*/
   useEffect(() => {
     const channel = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY as string, {
@@ -284,13 +285,28 @@ const PostComment = ({
               {!isEdit ? (
                 <>
                   <p className="my-2 text-sm">{iComment?.content}</p>
+
                   {iComment?.image_url && (
-                    <Image
-                      src={iComment?.image_url}
-                      alt=""
-                      width={150}
-                      height={150}
-                    />
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Image
+                          src={iComment?.image_url}
+                          alt=""
+                          width={150}
+                          height={150}
+                          className="cursor-pointer"
+                        />
+                      </DialogTrigger>
+                      <DialogContent className="max-w-[35%] bg-white p-0">
+                        <Image
+                          src={iComment?.image_url}
+                          alt=""
+                          width={300}
+                          height={300}
+                          className="z-10 w-full rounded-lg object-contain"
+                        />
+                      </DialogContent>
+                    </Dialog>
                   )}
                   {iComment?.preview_url && preview && (
                     <PreviewContainer

@@ -29,13 +29,13 @@ const EditIntroModal = ({
   setCurrentUser,
 }: EditIntroModalProps) => {
   const [data, setData] = useState({
-    firstName: user.name?.split(" ")[0] ?? "",
-    lastName: user.name?.split(" ").slice(1).join(" ") ?? "",
-    countryValue: user.location ? user.location.split(", ").slice(-1)[0] : "",
-    cityValue: user.location
-      ? user.location.split(", ").slice(0, -1).join(", ")
+    firstName: user?.name?.split(" ")[0] ?? "",
+    lastName: user?.name?.split(" ").slice(1).join(" ") ?? "",
+    countryValue: user?.location ? user?.location.split(", ").slice(-1)[0] : "",
+    cityValue: user?.location
+      ? user?.location.split(", ").slice(0, -1).join(", ")
       : "",
-    headLine: user.headline ? user.headline : "",
+    headLine: user?.headline ? user.headline : "",
   });
   const [isEditContactModalOpen, setIsEditContactModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);

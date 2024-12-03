@@ -6,12 +6,14 @@ import PictureImageHover from "@/app/assets/picture-hover.png";
 import PictureImage from "@/app/assets/picture.png";
 import SmileIconHover from "@/app/assets/smile-hover.png";
 import SmileIcon from "@/app/assets/smile.png";
+import ConfirmModal from "@/app/components/confirm-modal";
 import { defaultEvent } from "@/app/utils/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { user } from "@prisma/client";
 import axios from "axios";
+import { set } from "lodash";
 import { ChevronDown, Loader, Pencil, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -19,6 +21,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { FaRegSmile } from "react-icons/fa";
 import { ReactPhotoEditor } from "react-photo-editor";
+import { toast } from "sonner";
 import { text } from "stream/consumers";
 import { useDebounce } from "use-debounce";
 import { EmojiPopover } from "../../components/emoji-popover";
@@ -30,7 +33,6 @@ import {
 } from "./event-post-field";
 import PreviewContainer from "./preview-container";
 
-const ConfirmModal = dynamic(() => import("../../components/confirm-modal"));
 export type Event = {
   eventName: string;
   description: string;
@@ -50,10 +52,6 @@ interface PostModalProps {
   setOpen: (open: boolean) => void;
   image?: File | null | undefined;
   setImage?: (image: File | null) => void;
-  draftImage?: string | null;
-  draftContent?: string | null;
-  setDraftContent?: (draft: string | null) => void;
-  setDraftImage?: (image: string | null) => void;
   setIsOpenEditModal?: (open: boolean) => void;
   setIsEventModalOpen?: (open: boolean) => void;
   setIsHavingText?: (value: boolean) => void;
@@ -63,9 +61,11 @@ interface PostModalProps {
   event?: Event | undefined;
   setEvent?: (event: Event | undefined) => void;
   isIn?: boolean;
-  user: user;
+  user?: user;
   isEdit?: boolean;
+  setIsEdit?: (value: boolean) => void;
   post?: PostwithLiked;
+  setPost?: (post: PostwithLiked) => void;
 }
 
 const PostModal = ({
@@ -73,10 +73,6 @@ const PostModal = ({
   setOpen,
   image,
   setImage,
-  draftContent,
-  draftImage,
-  setDraftContent,
-  setDraftImage,
   setIsOpenEditModal,
   setIsEventModalOpen,
   event,
@@ -88,35 +84,80 @@ const PostModal = ({
   isIn,
   user,
   isEdit,
+  setIsEdit,
   post,
+  setPost,
 }: PostModalProps) => {
-  console.log(isEdit);
+  console.log("post", post);
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
-  const [postContent, setPostContent] = useState(
-    isEdit && post ? post.content : ""
-  );
-  const [editedImage, setEditedImage] = useState<string | null>(
-    isEdit && post ? post.image_url : null
-  );
+  const [postContent, setPostContent] = useState<string | null>(null);
+  const [editedImage, setEditedImage] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);
   const [debouncedPostContent] = useDebounce(postContent, 300);
   const avatarFallBack = user?.name.split(" ").pop()?.charAt(0).toUpperCase();
   const [isSmileHovered, setIsSmileHovered] = useState(false);
   const [isEmojiFocused, setIsEmojiFocused] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isEventHovered, setIsEventHovered] = useState(false);
-  const [linkPreview, setLinkPreview] = useState<any>(
-    isEdit && post ? post.preview_url : null
-  );
+  const [linkPreview, setLinkPreview] = useState<any>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [currentPreviewUrl, setCurrentPreviewUrl] = useState<string | null>(
+    null
+  );
+  const [updatedData, setUpdatedData] = useState<any>(null);
 
+  const urlRegex = /https?:\/\/[^\s]+/g;
+
+  useEffect(() => {
+    const draftContent = sessionStorage.getItem("draftContent");
+    const content = draftContent ? JSON.parse(draftContent) : null;
+    const draftImage = sessionStorage.getItem("draftImage");
+    const image = draftImage ? JSON.parse(draftImage) : null;
+    const draftPreview = sessionStorage.getItem("draftPreview");
+    const preview = draftPreview ? JSON.parse(draftPreview) : null;
+    if (open === true && !isEdit) {
+      setPostContent(content || "");
+      setEditedImage(image || null);
+    } else if (open === true && isEdit) {
+      setPostContent(content ? content : post?.content || "");
+      setEditedImage(image ? image : post?.image_url || null);
+      setCurrentPreviewUrl(preview ? preview : post?.preview_url || null);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (open === true && isEdit) {
+      const draftPreview = sessionStorage.getItem("draftPreview");
+      if (!editedImage) {
+        if (!draftPreview && post?.preview_url) {
+          fetchLinkPreview(post?.preview_url);
+        } else if (draftPreview) {
+          setCurrentPreviewUrl(null);
+        }
+      }
+    }
+  }, [open]);
   /*------------------------------------------------------------------*/
-  const extractURL = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.match(urlRegex);
+
+  const handleInputChange = (content: string) => {
+    setPostContent(content);
+    handleAutoResize(textareaRef.current as HTMLTextAreaElement);
+    if (!editedImage) {
+      const urls = content.match(urlRegex);
+
+      if (urls && urls.length > 0) {
+        if (!linkPreview && urls[0] !== currentPreviewUrl) {
+          setCurrentPreviewUrl(urls[0]);
+          fetchLinkPreview(urls[0]);
+        }
+      } else {
+        setLinkPreview(null);
+      }
+    }
   };
 
   /*------------------------------------------------------------------*/
@@ -141,25 +182,17 @@ const PostModal = ({
   };
 
   /*------------------------------------------------------------------*/
-  useEffect(() => {
-    if (!editedImage) {
-      if (!linkPreview) {
-        const urls = extractURL(postContent);
-        if (urls && urls.length > 0) {
-          fetchLinkPreview(urls[0]);
-        } else {
-          console.log("No URL detected");
-        }
-      }
-    }
-  }, [postContent]);
-  /*------------------------------------------------------------------*/
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPostContent(e.target.value);
-    handleAutoResize(e.target);
-  };
 
+  // const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+  //   e.preventDefault();
+  //   const pastedText = e.clipboardData.getData("text");
+  //   const updatedContent = postContent + pastedText;
+  //   handleInputChange(updatedContent); // Process the pasted content
+  // };
+
+  /*------------------------------------------------------------------*/
   const handleAutoResize = (textarea: HTMLTextAreaElement) => {
+    if (textarea === null) return;
     textarea.style.height = "auto"; // Reset the height to auto to recalculate
     textarea.style.height = `${textarea.scrollHeight}px`; // Set it to the scroll height
   };
@@ -169,23 +202,12 @@ const PostModal = ({
   };
   /*------------------------------------------------------------------*/
   useEffect(() => {
-    if (draftContent) {
-      setDraftContent?.(debouncedPostContent);
-    }
-    if (draftImage) {
-      setEditedImage(draftImage);
-    }
-  }, [draftContent, draftImage, debouncedPostContent, setDraftContent]);
-  /*------------------------------------------------------------------*/
-  useEffect(() => {
-    if (open) {
+    if (open && image) {
       const reader = new FileReader();
-      if (image) {
-        reader.onloadend = () => {
-          setEditedImage(reader.result as string);
-        };
-        reader.readAsDataURL(image);
-      }
+      reader.onloadend = () => {
+        setEditedImage(reader.result as string);
+      };
+      reader.readAsDataURL(image);
       return () => {
         reader.abort();
       };
@@ -194,57 +216,85 @@ const PostModal = ({
 
   /*------------------------------------------------------------------*/
   const handleSaveDraft = () => {
-    if (postContent.trim() !== "") {
-      setDraftContent?.(postContent);
-      sessionStorage.setItem("draftContent", JSON.stringify(postContent));
+    if (!isEdit) {
+      if (postContent?.trim() !== "") {
+        sessionStorage.setItem("draftContent", JSON.stringify(postContent));
+      }
+      if (editedImage !== null) {
+        sessionStorage.setItem("draftImage", JSON.stringify(editedImage));
+      }
+      setIsHavingText?.(false);
+      setTriggerReset?.(true);
+      setOpen(false);
+      setIsConfirmModalOpen(false);
+    } else {
+      setIsEditConfirmModalOpen(false);
+      sessionStorage.removeItem("draftContent");
+      sessionStorage.removeItem("draftPreview");
+      setIsEdit?.(false);
+      setOpen(false);
     }
-    if (editedImage !== null) {
-      setDraftImage?.(editedImage);
-      sessionStorage.setItem("draftImage", JSON.stringify(editedImage));
-    }
-    setIsHavingText?.(false);
-    setTriggerReset?.(true);
-    setOpen(false);
-    setIsConfirmModalOpen(false);
   };
   /*------------------------------------------------------------------*/
   const handleDiscardDraft = () => {
-    sessionStorage.removeItem("draftContent");
-    sessionStorage.removeItem("draftImage");
-    setDraftContent?.(null);
-    setDraftImage?.(null);
-    setPostContent("");
-    setLinkPreview(null);
-    setEditedImage(null);
-    setOpen(false);
-    setIsConfirmModalOpen(false);
+    if (!isEdit) {
+      sessionStorage.removeItem("draftContent");
+      sessionStorage.removeItem("draftImage");
+      setPostContent("");
+      setLinkPreview(null);
+      setCurrentPreviewUrl(null);
+      setEditedImage(null);
+      setOpen(false);
+      setIsConfirmModalOpen(false);
+    } else {
+      setIsEditConfirmModalOpen(false);
+    }
   };
   /*------------------------------------------------------------------*/
   const handleClose = () => {
-    if (
-      (postContent.trim() !== "" ||
-        editedImage !== null ||
-        event !== undefined ||
-        linkPreview) &&
-      isIn === false
-    ) {
-      setIsConfirmModalOpen(true);
-    } else {
-      const draftContent = sessionStorage.getItem("draftContent");
-      const draftImage = sessionStorage.getItem("draftImage");
-      if (draftContent || draftImage) {
-        if (draftContent) {
-          sessionStorage.removeItem("draftContent");
-          setDraftContent?.(null);
+    console.log("isEidt", isEdit);
+    if (!isEdit) {
+      if (
+        (postContent?.trim() !== "" ||
+          editedImage !== null ||
+          event !== undefined ||
+          linkPreview) &&
+        isIn === false
+      ) {
+        setIsConfirmModalOpen(true);
+      } else {
+        const draftContent = sessionStorage.getItem("draftContent");
+        const draftImage = sessionStorage.getItem("draftImage");
+        if (draftContent || draftImage) {
+          if (draftContent) {
+            sessionStorage.removeItem("draftContent");
+          }
+          if (draftImage) {
+            sessionStorage.removeItem("draftImage");
+          }
         }
-        if (draftImage) {
-          sessionStorage.removeItem("draftImage");
-          setDraftImage?.(null);
-        }
+        setNestedEventModal?.(false);
+        setNestedMediaModal?.(false);
+        setOpen(false);
       }
-      setNestedEventModal?.(false);
-      setNestedMediaModal?.(false);
-      setOpen(false);
+    } else if (isEdit) {
+      console.log("PostContent", postContent);
+      console.log("post.conent", post?.content);
+      console.log("editedImage", editedImage);
+      console.log("post.image_url", post?.image_url);
+      if (
+        postContent !== post?.content ||
+        editedImage !== post?.image_url ||
+        linkPreview !== post?.preview_url
+      ) {
+        setIsEditConfirmModalOpen(true);
+      } else {
+        setNestedEventModal?.(false);
+        setNestedMediaModal?.(false);
+        setPost?.(post);
+        setIsEdit?.(false);
+        setOpen(false);
+      }
     }
   };
   /*------------------------------------------------------------------*/
@@ -286,22 +336,62 @@ const PostModal = ({
   };
   /*------------------------------------------------------------------*/
   const handlePost = () => {
-    setIsLoading(true);
-    const body = {
-      user_id: user.id,
-      content: postContent,
-      image_url: editedImage,
-      preview_url: linkPreview?.url,
-    };
-    axios.post("/api/post", body).then((response) => {
-      if (response.status === 200) {
-        setIsLoading(false);
-        setOpen(false);
-        router.refresh();
-      }
-    });
+    if (!isEdit) {
+      setIsLoading(true);
+      const body = {
+        user_id: user?.id,
+        content: postContent,
+        image_url: editedImage,
+        preview_url: linkPreview?.url,
+      };
+      axios
+        .post("/api/post", body)
+        .then((response) => {
+          if (response.status === 200) {
+            setIsLoading(false);
+            setOpen(false);
+            sessionStorage.removeItem("draftContent");
+            sessionStorage.removeItem("draftImage");
+            sessionStorage.removeItem("draftPreview");
+            router.refresh();
+          }
+        })
+        .catch((error) => {
+          toast.error("Failed to post");
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(true);
+      const body = {
+        postId: post?.id,
+        content: postContent,
+        image_url: editedImage,
+        preview_url: linkPreview?.url,
+      };
+      axios
+        .put("/api/post", body)
+        .then((response) => {
+          if (response.status === 200) {
+            setIsLoading(false);
+            setIsEdit?.(false);
+            setOpen(false);
+            sessionStorage.removeItem("draftContent");
+            sessionStorage.removeItem("draftImage");
+            sessionStorage.removeItem("draftPreview");
+            toast.success("Post updated successfully");
+            router.push(`/feed/post/${post?.id}`);
+            router.refresh();
+          }
+        })
+        .catch((error) => {
+          toast.error("Failed to update post");
+          setIsLoading(false);
+        });
+    }
   };
+
   /*------------------------------------------------------------------*/
+  if (postContent === null || (isEdit && !post)) return null;
 
   return (
     <>
@@ -313,6 +403,19 @@ const PostModal = ({
           setIsPhotoEditorOpen(false);
           setOpen(true);
         }}
+      />
+      <ConfirmModal
+        open={isEditConfirmModalOpen}
+        setOpen={setIsEditConfirmModalOpen}
+        onClose={handleDiscardDraft}
+        onConfirm={handleSaveDraft}
+        title={"Cancel updating post"}
+        content={
+          "You haven’t finished your post yet. Are you sure you want to cancel update?"
+        }
+        cancelLabel="Go back"
+        confirmLabel="Cancel"
+        width="400"
       />
       <ConfirmModal
         open={isConfirmModalOpen}
@@ -358,7 +461,9 @@ const PostModal = ({
                 </AvatarFallback>
               </Avatar>
               <div className="ml-2 flex flex-col">
-                <div className="text-left text-lg font-semibold">Thái Đạt</div>
+                <div className="text-left text-lg font-semibold">
+                  {user?.name}
+                </div>
                 <div className="flex text-xs text-gray-500">
                   <span>Posted to anyone</span>
                   <ChevronDown size={16} />
@@ -374,12 +479,13 @@ const PostModal = ({
                 ref={textareaRef}
                 className={`mt-4 w-full rounded-lg p-2 text-base font-normal focus:border-transparent focus:outline-none ${
                   editedImage !== null || event !== undefined || linkPreview
-                    ? "min-h-40"
+                    ? "min-h-52"
                     : "min-h-72"
                 }`}
                 placeholder="What do you want to say?"
-                value={postContent}
-                onChange={handleInputChange}
+                value={postContent!}
+                onChange={(e) => handleInputChange(e.target.value)}
+                // onPaste={handlePaste}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     const { selectionStart, selectionEnd } =
@@ -396,7 +502,9 @@ const PostModal = ({
 
               {linkPreview &&
                 (isPreviewLoading ? (
-                  <div>...Loading preview</div>
+                  <div className="text-sm text-muted-foreground">
+                    ...Loading preview
+                  </div>
                 ) : (
                   <div className="flex flex-col">
                     <Button
@@ -404,6 +512,7 @@ const PostModal = ({
                       className="mb-2 self-end rounded-full bg-[#404040] p-3 hover:bg-black"
                       onClick={() => {
                         setLinkPreview(null);
+                        setCurrentPreviewUrl(null);
                       }}
                     >
                       <X size={18} strokeWidth={2.5} color="white" />
@@ -446,80 +555,101 @@ const PostModal = ({
                 </div>
               )}
             </div>
-            {editedImage === null && event === undefined && !linkPreview && (
-              <>
-                <EmojiPopover
-                  onEmojiSelect={handleEmojiSelect}
-                  setIsEmojiFocused={setIsEmojiFocused}
-                >
-                  <Button
-                    variant="ghost"
-                    className="w-fit rounded-full transition-all duration-100 hover:scale-110"
-                    onMouseEnter={() => setIsSmileHovered(true)}
-                    onMouseLeave={() => setIsSmileHovered(false)}
-                    onFocus={() => setIsEmojiFocused(true)}
+            {editedImage === null &&
+              event === undefined &&
+              !linkPreview &&
+              !isPreviewLoading && (
+                <>
+                  <EmojiPopover
+                    onEmojiSelect={handleEmojiSelect}
+                    setIsEmojiFocused={setIsEmojiFocused}
                   >
-                    {!isSmileHovered && !isEmojiFocused ? (
-                      <Image src={SmileIcon} alt="" className="size-5" />
-                    ) : (
-                      <Image src={SmileIconHover} className="size-6" alt="" />
-                    )}
-                  </Button>
-                </EmojiPopover>
-                <div className="ml-4 mt-7 flex items-center justify-start space-x-9 text-gray-500">
-                  <Hint label="Add a media">
                     <Button
-                      onClick={() => {
-                        setIsOpenEditModal?.(true);
-                        setOpen(false);
-                        setNestedMediaModal?.(true);
-                      }}
                       variant="ghost"
-                      className="flex items-center space-x-4 rounded-full p-3 transition-all duration-100 hover:scale-110"
-                      onMouseEnter={() => setIsImageHovered(true)}
-                      onMouseLeave={() => setIsImageHovered(false)}
+                      className="w-fit rounded-full transition-all duration-100 hover:scale-110"
+                      onMouseEnter={() => setIsSmileHovered(true)}
+                      onMouseLeave={() => setIsSmileHovered(false)}
+                      onFocus={() => setIsEmojiFocused(true)}
                     >
-                      {!isImageHovered ? (
-                        <Image
-                          src={PictureImage}
-                          alt="Upload"
-                          className="size-6"
-                        />
+                      {!isSmileHovered && !isEmojiFocused ? (
+                        <Image src={SmileIcon} alt="" className="size-5" />
                       ) : (
-                        <Image
-                          src={PictureImageHover}
-                          alt="Upload"
-                          className="size-7"
-                        />
+                        <Image src={SmileIconHover} className="size-6" alt="" />
                       )}
                     </Button>
-                  </Hint>
-                  <Hint label="Create an event">
-                    <Button
-                      onClick={handleOpenEvent}
-                      variant="ghost"
-                      className="flex items-center space-x-4 rounded-full p-3 transition-all duration-100 hover:scale-110"
-                      onMouseEnter={() => setIsEventHovered(true)}
-                      onMouseLeave={() => setIsEventHovered(false)}
-                    >
-                      {!isEventHovered ? (
-                        <Image
-                          src={EventIcon}
-                          alt="Upload"
-                          className="size-5"
-                        />
-                      ) : (
-                        <Image
-                          src={EventIconHover}
-                          alt="Upload"
-                          className="size-6"
-                        />
-                      )}
-                    </Button>
-                  </Hint>
-                </div>
-              </>
-            )}
+                  </EmojiPopover>
+                  <div className="ml-4 mt-7 flex items-center justify-start space-x-9 text-gray-500">
+                    <Hint label="Add a media">
+                      <Button
+                        onClick={() => {
+                          setIsOpenEditModal?.(true);
+                          if (postContent) {
+                            sessionStorage.setItem(
+                              "draftContent",
+                              JSON.stringify(postContent)
+                            );
+                          }
+                          if (!currentPreviewUrl && post?.preview_url) {
+                            sessionStorage.setItem(
+                              "draftPreview",
+                              JSON.stringify("")
+                            );
+                          }
+                          if (!editedImage && post?.image_url) {
+                            sessionStorage.setItem(
+                              "draftImage",
+                              JSON.stringify("")
+                            );
+                          }
+                          setOpen(false);
+                          setNestedMediaModal?.(true);
+                        }}
+                        variant="ghost"
+                        className="flex items-center space-x-4 rounded-full p-3 transition-all duration-100 hover:scale-110"
+                        onMouseEnter={() => setIsImageHovered(true)}
+                        onMouseLeave={() => setIsImageHovered(false)}
+                      >
+                        {!isImageHovered ? (
+                          <Image
+                            src={PictureImage}
+                            alt="Upload"
+                            className="size-6"
+                          />
+                        ) : (
+                          <Image
+                            src={PictureImageHover}
+                            alt="Upload"
+                            className="size-7"
+                          />
+                        )}
+                      </Button>
+                    </Hint>
+                    <Hint label="Create an event">
+                      <Button
+                        onClick={handleOpenEvent}
+                        variant="ghost"
+                        className="flex items-center space-x-4 rounded-full p-3 transition-all duration-100 hover:scale-110"
+                        onMouseEnter={() => setIsEventHovered(true)}
+                        onMouseLeave={() => setIsEventHovered(false)}
+                      >
+                        {!isEventHovered ? (
+                          <Image
+                            src={EventIcon}
+                            alt="Upload"
+                            className="size-5"
+                          />
+                        ) : (
+                          <Image
+                            src={EventIconHover}
+                            alt="Upload"
+                            className="size-6"
+                          />
+                        )}
+                      </Button>
+                    </Hint>
+                  </div>
+                </>
+              )}
 
             <div className="mt-4 w-full border"></div>
             <div
@@ -541,9 +671,10 @@ const PostModal = ({
                 disabled={
                   !isEdit
                     ? !postContent || isLoading
-                    : postContent === post?.content &&
-                      editedImage === post?.image_url &&
-                      linkPreview === post?.preview_url
+                    : (postContent === post?.content &&
+                        editedImage === post?.image_url &&
+                        currentPreviewUrl === post?.preview_url) ||
+                      (!postContent && !editedImage && !currentPreviewUrl)
                 }
                 className="mr-4 rounded-full bg-blue-500 px-4 py-2 text-lg text-white"
                 onClick={handlePost}

@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -67,12 +68,27 @@ const LoginForm = () => {
     signIn("google", {
       redirect: false,
     })
-      .then((callback) => {
+      .then(async (callback) => {
         if (callback?.error) {
           toast.error(callback.error);
         }
         if (callback?.ok) {
           toast.success("Logged in!");
+          Cookies.set("user_data", "1");
+          // const session = await getSession();
+          // if (session?.user) {
+          //   const { email, name, image } = session.user;
+
+          //   // Set user data in a cookie
+          //   const existingCookie = Cookies.get("user_data");
+          //   if (!existingCookie) {
+          //     Cookies.set(
+          //       "user_data",
+          //       JSON.stringify({ email, name, avatar: image }),
+          //       { expires: 7, secure: true, sameSite: "Strict" }
+          //     );
+          //   }
+          // }
           router.push("/feed");
         }
       })

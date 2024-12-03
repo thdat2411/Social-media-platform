@@ -17,20 +17,23 @@ import {
   FaLinkedin,
   FaPhoneAlt,
 } from "react-icons/fa";
+import { IoLocationSharp } from "react-icons/io5";
 import EditInfoModal from "./edit-info-modal";
 
 interface ContactInfoModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  userProfile: user;
+  setUserProfile: (value: user) => void;
   user: user;
-  setUser: (value: user) => void;
 }
 
 const ContactInfoModal = ({
   open,
   setOpen,
+  userProfile,
+  setUserProfile,
   user,
-  setUser,
 }: ContactInfoModalProps) => {
   const [isEditContactModalOpen, setIsEditContactModalOpen] = useState(false);
   const [origin, setOrigin] = useState<string>("");
@@ -44,29 +47,31 @@ const ContactInfoModal = ({
       <EditInfoModal
         open={isEditContactModalOpen}
         setOpen={setIsEditContactModalOpen}
-        user={user}
+        user={userProfile}
         isNestedOpen={true}
-        setUser={setUser}
+        setUser={setUserProfile}
       />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="absolute top-[44%] bg-white">
           <DialogHeader className="p-3">
-            <DialogTitle>{user.full_name}</DialogTitle>
+            <DialogTitle>{userProfile?.full_name}</DialogTitle>
           </DialogHeader>
           <Separator />
           <div className="flex flex-col space-y-4 px-2 pb-2">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-lg">Contact Info</p>
-              <Button
-                onClick={() => {
-                  setIsEditContactModalOpen(true);
-                  setOpen(false);
-                }}
-                variant="ghost"
-                className="rounded-full p-3"
-              >
-                <Pencil className="size-5" />
-              </Button>
+              <p className="text-lg font-medium">Contact Info</p>
+              {userProfile?.id === user.id && (
+                <Button
+                  onClick={() => {
+                    setIsEditContactModalOpen(true);
+                    setOpen(false);
+                  }}
+                  variant="ghost"
+                  className="rounded-full p-3"
+                >
+                  <Pencil className="size-5" />
+                </Button>
+              )}
             </div>
             <div className="flex space-x-4">
               <FaLinkedin className="size-6" />
@@ -76,19 +81,21 @@ const ContactInfoModal = ({
                   href="#"
                   className="text-sm text-blue-500 hover:underline"
                 >
-                  {origin}/in/{user.id}
+                  {origin}/in/{userProfile?.id}
                 </Link>
               </div>
             </div>
-            <div className="flex space-x-4">
-              <FaPhoneAlt className="size-5" />
-              <div className="flex flex-col">
-                <p className="font-medium">Phone</p>
-                <p className="text-sm text-muted-foreground">
-                  {user.phone_number ? user.phone_number : "Add phone number"}
-                </p>
+            {userProfile?.phone_number && (
+              <div className="flex space-x-4">
+                <FaPhoneAlt className="size-5" />
+                <div className="flex flex-col">
+                  <p className="font-medium">Phone</p>
+                  <p className="text-sm text-muted-foreground">
+                    {userProfile.phone_number}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex space-x-4">
               <FaEnvelope className="size-5" />
               <div className="flex flex-col">
@@ -97,21 +104,32 @@ const ContactInfoModal = ({
                   href="#"
                   className="text-sm text-blue-500 hover:underline"
                 >
-                  {user.email}
+                  {userProfile?.email}
                 </Link>
               </div>
             </div>
-            <div className="flex space-x-4">
-              <FaCalendarAlt className="size-5" />
-              <div className="flex flex-col">
-                <p className="font-medium">Birthday</p>
-                <p className="text-sm text-muted-foreground hover:underline">
-                  {user.birth_date
-                    ? new Date(user.birth_date).toLocaleDateString()
-                    : "Add birthday"}
-                </p>
+            {userProfile?.birth_date && (
+              <div className="flex space-x-4">
+                <FaCalendarAlt className="size-5" />
+                <div className="flex flex-col">
+                  <p className="font-medium">Birthday</p>
+                  <p className="text-sm text-muted-foreground hover:underline">
+                    {new Date(userProfile.birth_date).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
+            {userProfile?.address && (
+              <div className="flex space-x-4">
+                <IoLocationSharp className="size-5" />
+                <div className="flex flex-col">
+                  <p className="font-medium">Adress</p>
+                  <p className="text-sm text-muted-foreground hover:underline">
+                    {userProfile.address}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

@@ -5,14 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { user } from "@prisma/client";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { defaultEvent } from "../utils/utils";
 import { Event } from "./components/post-modal";
 
 interface PostInputProps {
+  draftContent: string | null;
   setIsPostModalOpen: (open: boolean) => void;
   setIsImageModalOpen: (open: boolean) => void;
   setIsEventModalOpen: (open: boolean) => void;
-  draftContent?: string | null;
   setFormData: (data: Event | undefined) => void;
   setNestedMediaModal: (open: boolean) => void;
   setNestedEventModal: (open: boolean) => void;
@@ -20,10 +21,10 @@ interface PostInputProps {
 }
 
 const PostInput = ({
+  draftContent,
   setIsPostModalOpen,
   setIsImageModalOpen,
   setIsEventModalOpen,
-  draftContent,
   setFormData,
   setNestedMediaModal,
   setNestedEventModal,

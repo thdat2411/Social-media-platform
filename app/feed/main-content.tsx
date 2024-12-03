@@ -24,11 +24,11 @@ interface FeedMainContentProps {
 }
 
 const FeedMainContent = ({ user }: FeedMainContentProps) => {
+  console.log("FeedMainContent rerender");
+  const [drafContent, setDraftContent] = useState<string | null>(null);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-  const [draftContent, setDraftContent] = useState<string | null>(null);
-  const [draftImage, setDraftImage] = useState<string | null>();
   const [nestedMediaModal, setNestedMediaModal] = useState(false);
   const [nestedEventModal, setNestedEventModal] = useState(false);
   const [formData, setFormData] = useState<Event | undefined>(undefined);
@@ -37,81 +37,81 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
   const [posts, setPosts] = useState<PostwithLiked[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true); // Track if there are more posts to load
+  const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const content = sessionStorage.getItem("draftContent");
+    if (content) {
+      setDraftContent(content);
+    } else {
+      setDraftContent(null);
+    }
+  }, [isPostModalOpen]);
 
   useEffect(() => {
     setCurrentUser(user);
   }, [user]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const fetchPosts = async () => {
+    if (isLoading || !hasMore) return; // Prevent fetching if already loading or no more posts
 
-  useEffect(() => {
-    console.log("Fetching posts for page:", page);
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`/api/posts?page=${page}`);
+      if (response.status === 200) {
+        const { posts: fetchedPosts } = response.data;
 
-    const fetchPosts = async () => {
-      // Prevent fetching if no more posts or already loading
-      if (isLoading || !hasMore) return;
-
-      setIsLoading(true);
-
-      try {
-        const response = await axios.get(`/api/posts?page=${page}`);
-        if (response.status === 200) {
-          const { posts: fetchedPosts } = response.data;
-
-          console.log(`Posts fetched for page ${page}:`, fetchedPosts);
-
-          // Check if there are no new posts
-          if (!fetchedPosts || fetchedPosts.length === 0) {
-            setHasMore(false); // Stop further fetches
-          } else {
-            // Add new posts to the state, avoiding duplicates
-            setPosts((prevPosts) => [
-              ...prevPosts,
-              ...fetchedPosts.filter(
-                (post: PostwithLiked) =>
-                  !prevPosts.some((p) => p.id === post.id)
-              ),
-            ]);
-          }
+        // Check if there are new posts and update state
+        if (fetchedPosts.length > 0) {
+          setPosts((prevPosts) => {
+            const existingIds = new Set(prevPosts.map((post) => post.id));
+            const newPosts = fetchedPosts.filter(
+              (post: PostwithLiked) => !existingIds.has(post.id)
+            );
+            return [...prevPosts, ...newPosts];
+          });
+        } else {
+          setHasMore(false); // No more posts to fetch
         }
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setIsLoading(false);
+      } else {
+        console.error("Failed to fetch posts");
       }
-    };
-
-    fetchPosts();
-  }, [page, hasMore, isLoading]);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let debounceTimeout: NodeJS.Timeout;
+    fetchPosts();
+  }, [page]);
 
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isLoading && hasMore) {
-          clearTimeout(debounceTimeout);
-          debounceTimeout = setTimeout(() => {
-            setPage((prevPage) => prevPage + 1);
-          }, 300); // Adjust debounce timing
+          setPage((prevPage) => prevPage + 1);
         }
       },
       {
-        rootMargin: "50px", // Adjust margin to trigger early
+        rootMargin: "150px",
       }
     );
 
-    if (observerRef.current) observer.observe(observerRef.current);
+    const currentObserverRef = observerRef.current;
+
+    if (currentObserverRef) {
+      observer.observe(currentObserverRef);
+    }
 
     return () => {
-      clearTimeout(debounceTimeout);
-      if (observerRef.current) observer.unobserve(observerRef.current);
+      if (currentObserverRef) {
+        observer.unobserve(currentObserverRef);
+      }
     };
-  }, [isLoading, hasMore]);
+  }, [hasMore, isLoading]);
 
   return (
     <>
@@ -120,10 +120,6 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
         setOpen={setIsPostModalOpen}
         image={image}
         setImage={setImage}
-        draftImage={draftImage}
-        draftContent={draftContent}
-        setDraftContent={setDraftContent}
-        setDraftImage={setDraftImage}
         setIsOpenEditModal={setIsOpenEditModal}
         setIsEventModalOpen={setIsEventModalOpen}
         setNestedEventModal={setNestedEventModal}
@@ -132,12 +128,11 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
         setEvent={setFormData}
         isIn={false}
         user={currentUser!}
+        isEdit={false}
       />
       <MediaModal
         open={isOpenEditModal}
         setOpen={setIsOpenEditModal}
-        setDraftContent={setDraftContent}
-        setDraftImage={setDraftImage}
         nestedMediaModal={nestedMediaModal}
         setNestedMediaModal={setNestedMediaModal}
         isIn={false}
@@ -155,12 +150,12 @@ const FeedMainContent = ({ user }: FeedMainContentProps) => {
       />
       <div className="mx-4 w-[52%] overflow-hidden pb-6 max-[1000px]:w-[65%]">
         <PostInput
+          draftContent={drafContent}
           setIsPostModalOpen={() => setIsPostModalOpen(true)}
           setIsImageModalOpen={() => {
             setIsOpenEditModal(true);
           }}
           setIsEventModalOpen={setIsEventModalOpen}
-          draftContent={draftContent}
           setFormData={setFormData}
           setNestedMediaModal={setNestedMediaModal}
           setNestedEventModal={setNestedEventModal}

@@ -1,6 +1,7 @@
 "use client";
 import LinkedLogo from "@/app/assets/LinkedIn-Logo.svg";
 import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
 import { BriefcaseBusiness, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +25,8 @@ const LandingHeader = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+
   return (
     <div className="flex w-full items-center justify-around bg-white">
       <div className="flex items-center">

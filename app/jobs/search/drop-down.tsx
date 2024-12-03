@@ -67,12 +67,9 @@ const SubHeaderDropdown = ({
             }
           })
         );
-        console.log("UpdatedItem", updatedItems);
-        console.log("OrignialJobs", originalJobs);
 
         return updatedItems;
       });
-      console.log("JobsTemp", jobsTemp);
     } else if (title === "Remote") {
       setRemoteSelectedItems((prev) => {
         const updatedItems = prev.includes(item)

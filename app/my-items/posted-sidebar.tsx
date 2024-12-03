@@ -19,16 +19,16 @@ const PostedSidebar = ({ user }: PostedSidebarProps) => {
   }, [user]);
 
   return (
-    <aside className="h-fit w-1/4 rounded-lg border shadow-sm">
-      <div className="flex flex-col">
-        <div className="flex items-center space-x-4 bg-[#F9FAFB] p-4 text-[#666666]">
+    <aside className="h-fit w-1/5 rounded-lg border shadow-sm max-[1400px]:w-[22%] max-[900px]:w-1/4 max-[750px]:w-[40%]">
+      <div className="flex flex-col max-[750px]:text-center">
+        <div className="max-[750px]:justify-centere flex items-center space-x-4 bg-[#F9FAFB] p-4 text-[#666666]">
           <FaBookmark />
-          <p>My items</p>
+          <p className="max-[1400px]:text-sm">My items</p>
         </div>
         <Separator />
         <Link
           href="/my-items/my-posts"
-          className={`bg-white px-4 py-3 ${
+          className={`bg-white px-4 py-3 max-[1400px]:text-sm ${
             pathName === "/my-items/my-posts"
               ? "border-l-4 border-l-blue-600 text-blue-600"
               : "text-[#666666] hover:text-black"
@@ -39,7 +39,7 @@ const PostedSidebar = ({ user }: PostedSidebarProps) => {
         {userRole === "recruiter" && (
           <Link
             href="/my-items/posted-jobs"
-            className={`bg-white px-4 py-3 ${
+            className={`bg-white px-4 py-3 max-[1400px]:text-sm ${
               pathName === "/my-items/posted-jobs"
                 ? "border-l-4 border-l-blue-600 text-blue-600"
                 : "text-[#666666] hover:text-black"
@@ -49,7 +49,7 @@ const PostedSidebar = ({ user }: PostedSidebarProps) => {
           </Link>
         )}
         <Separator />
-        <Link
+        {/* <Link
           href="/my-items/saved-posts"
           className={`bg-white px-4 py-3 ${
             pathName === "/my-items/saved-posts"
@@ -58,7 +58,7 @@ const PostedSidebar = ({ user }: PostedSidebarProps) => {
           } `}
         >
           Save posts and articles
-        </Link>
+        </Link> */}
       </div>
     </aside>
   );

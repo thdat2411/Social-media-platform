@@ -71,7 +71,7 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
   const onSave = async () => {
     try {
       setIsLoading(true);
-      console.log(data);
+      
       const response = await axios.put(`/api/in?action=edit-info`, data);
       if (response.status === 200) {
         const { updatedUser } = response.data;

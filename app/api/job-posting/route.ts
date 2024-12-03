@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     const posting_notification = await prisma.notification.create({
       data: {
         user_id: employer_id,
-        type: "job_posting",
+        type: "job_posting_create",
         content: `<strong>${company_name}</strong> have created a new jobs: "<strong>${title}</strong>". Check it out now!`,
         job_posting_id: job_posting.id,
       },

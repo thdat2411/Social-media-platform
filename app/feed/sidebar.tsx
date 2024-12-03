@@ -11,6 +11,7 @@ interface FeedSideBarProps {
 }
 
 const FeedSideBar = ({ user }: FeedSideBarProps) => {
+  console.log("FeedSiebar rerender");
   // const avatarFallBack = user.name.split(" ").pop()?.charAt(0).toUpperCase();
   const [isBookMarkHovered, setIsBookMarkHovered] = useState(false);
   const [isEventHovered, setIsEventHovered] = useState(false);
@@ -41,7 +42,7 @@ const FeedSideBar = ({ user }: FeedSideBarProps) => {
       </aside>
       <aside className="h-fit space-y-4 rounded-lg border bg-white p-6 shadow-sm">
         <Link
-          href="/my-items/posted-jobs"
+          href="/my-items/my-posts"
           className="flex items-center space-x-3"
           onMouseEnter={() => setIsBookMarkHovered(true)}
           onMouseLeave={() => setIsBookMarkHovered(false)}

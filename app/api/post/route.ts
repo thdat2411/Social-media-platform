@@ -72,3 +72,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error }, { status: 500 })
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { postId, content, image_url, preview_url } = body;
+    if (!postId) {
+      return NextResponse.json({ error: "postId is required" }, { status: 400 })
+    }
+    const post = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        content,
+        image_url,
+        preview_url
+      }
+    });
+    if (!post) {
+      return NextResponse.json({ error: "Post not updated" }, { status: 500 })
+    }
+    return NextResponse.json({ post }, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 })
+  }
+}

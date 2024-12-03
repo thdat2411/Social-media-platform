@@ -69,6 +69,9 @@ const JobPostingDescription = ({
             ["link"],
             [{ size: ["small", "large", "huge"] }],
           ],
+          clipboard: {
+            matchVisual: false,
+          },
         },
       };
 

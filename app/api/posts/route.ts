@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
         }
 
         const posts = await prisma.post.findMany({
-            skip: (Number(page) - 1) * 10,
-            take: 10,
+            skip: (Number(page) - 1) * 3,
+            take: 3,
             include: {
                 user: true,
                 likes: {
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
         }
 
         const processedPosts = posts.map(({ user, _count, likes, ...post }) => {
-            const likedByUser = likes.some((like) => like.user_id.trim() == currentUser!.id.trim());
+            const likedByUser = likes.some((like) => like.user_id.trim() === currentUser!.id.trim());
             return {
                 ...post,
                 user,

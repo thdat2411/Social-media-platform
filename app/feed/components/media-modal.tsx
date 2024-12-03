@@ -10,29 +10,36 @@ import { Separator } from "@/components/ui/separator";
 import { user } from "@prisma/client";
 import Image from "next/image";
 import React, { useState } from "react";
+import { PostwithLiked } from "../post";
 import PhotoEditor from "./photo-editor";
 import PostModal from "./post-modal";
 
 interface ImageEditModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  setDraftContent?: (draft: string | null) => void;
-  setDraftImage?: (image: string | null) => void;
   nestedMediaModal?: boolean;
   setNestedMediaModal?: (open: boolean) => void;
+  setIsPhotoEditorOpened?: (open: boolean) => void;
   isIn?: boolean;
   user: user;
+  post?: PostwithLiked;
+  setPost?: (post: PostwithLiked) => void;
+  isEdit?: boolean;
+  setIsEdit?: (edit: boolean) => void;
 }
 
 const MediaModal = ({
   open,
   setOpen,
-  setDraftContent,
-  setDraftImage,
   nestedMediaModal,
   setNestedMediaModal,
+  setIsPhotoEditorOpened,
   isIn,
   user,
+  post,
+  setPost,
+  isEdit,
+  setIsEdit,
 }: ImageEditModalProps) => {
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [uploadImage, setUploadImage] = useState<File | null>(null);
@@ -44,6 +51,7 @@ const MediaModal = ({
       if (validateFileType(file)) {
         setUploadImage(file);
         setIsPhotoEditorOpen(true);
+        setIsPhotoEditorOpened?.(true);
         setOpen(false);
         setIsValid(true);
       } else {
@@ -87,6 +95,7 @@ const MediaModal = ({
         setOpen={setIsPhotoEditorOpen}
         setIsMediaModalOpen={setOpen}
         setIsPostModalOpen={setIsPostModalOpen}
+        setIsPhotoEditorOpened={setIsPhotoEditorOpened}
         image={uploadImage}
         setImage={setUploadImage}
       />
@@ -94,12 +103,13 @@ const MediaModal = ({
         open={isPostModalOpen}
         setOpen={setIsPostModalOpen}
         image={uploadImage}
-        setDraftContent={setDraftContent}
-        setDraftImage={setDraftImage}
         setIsOpenEditModal={setOpen}
         setNestedEventModal={setNestedMediaModal}
+        isEdit={isEdit}
+        setIsEdit={setIsEdit}
         isIn={isIn}
         user={user}
+        post={post}
       />
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="w-full max-w-5xl overflow-hidden bg-gray-50 p-0">
