@@ -33,7 +33,7 @@ const LandingHeader = () => {
         <Image src={LinkedLogo} alt="LinkedIn Logo" className="w-48" />
       </div>
       <div className="flex space-x-14 max-[700px]:space-x-0">
-        {!isMobile && (
+        {/* {!isMobile && (
           <>
             <Link
               href="#"
@@ -57,8 +57,8 @@ const LandingHeader = () => {
               <span className="text-xs">Article</span>
             </Link>
           </>
-        )}
-        <div className="overflow-auto border-l px-3">
+        )} */}
+        <div className="overflow-auto px-3">
           <Button
             onClick={() => {
               router.push("/signup");
