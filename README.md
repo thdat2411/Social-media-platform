@@ -1,4 +1,4 @@
-# Social Media Platform
+# [Social Media Platform](<https://mirrored-social-media-platform.vercel.app/>)
 
 This is a comprehensive social media platform project designed to provide users with robust networking, job posting, and communication functionalities. Developed using modern frameworks, it offers an engaging and efficient user experience.
 
@@ -18,7 +18,7 @@ This is a comprehensive social media platform project designed to provide users 
 
 ### Communication
 
-- Messaging: Real-time messaging features (in-progress).
+- Messaging: Real-time messaging features (in progress).
 - Email Integration: Send verification codes and communication emails.
 
 ## Technology Stack
