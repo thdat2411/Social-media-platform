@@ -81,7 +81,7 @@ const ContactInfoModal = ({
                   href="#"
                   className="text-sm text-blue-500 hover:underline"
                 >
-                  {origin}/in/{userProfile?.id}
+                  {origin}/in?userId={userProfile?.id}
                 </Link>
               </div>
             </div>

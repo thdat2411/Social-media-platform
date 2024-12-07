@@ -45,7 +45,7 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
       <DropdownMenuContent className="absolute w-[300px] max-[1300px]:-right-10 min-[1300px]:-right-20">
         <div className="flex flex-col">
           <div
-            onClick={() => router.push(`/in/${user?.id}`)}
+            onClick={() => router.push(`/in?userId=${user?.id}`)}
             className="flex cursor-pointer space-x-3 p-4"
           >
             <Avatar className="size-14">

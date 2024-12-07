@@ -126,7 +126,7 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
               <div className="flex flex-col space-y-2">
                 <p className="text-sm text-gray-600">Profile URL</p>
                 <p className="w-fit rounded-md bg-slate-100 p-3 text-sm text-black">
-                  {origin}/in/{currenUser?.id}
+                  {origin}/in?userId={currenUser?.id}
                 </p>
               </div>
               <div className="flex flex-col space-y-2 text-gray-500">
