@@ -75,7 +75,7 @@ const LandingMainContent = () => {
     <main className="flex w-full justify-center space-x-10 bg-white pt-20 max-[700px]:flex-col max-[700px]:space-x-0 max-[700px]:space-y-10">
       <div className="flex w-[550px] flex-col max-[700px]:w-full max-[700px]:justify-center max-[700px]:self-center">
         <h1 className="text-5xl text-slate-500 max-[700px]:break-words max-[700px]:text-center max-[700px]:text-3xl">
-          Chào mừng đến với cộng đồng chuyên gia của bạn
+          Welcome to your professional community
         </h1>
         <div className="max-[700px]:self-center">
           <Button
@@ -133,7 +133,7 @@ const LandingMainContent = () => {
             >
               Privacy Policy
             </a>{" "}
-            và{" "}
+            and{" "}
             <a
               href="#"
               className="font-medium text-blue-600 hover:text-blue-800"
