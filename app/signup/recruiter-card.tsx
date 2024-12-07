@@ -50,7 +50,7 @@ const RecruiterCard = ({ userData }: RecruiterCardProps) => {
           <p className="text-muted-foreground">Hire the best talent</p>
         </div>
         <Avatar className="size-16">
-          <AvatarFallback className="text-lg font-semibold">
+          <AvatarFallback className="text-2xl font-semibold">
             {userData?.name?.split(" ").pop()?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>

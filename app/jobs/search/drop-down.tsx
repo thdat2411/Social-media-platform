@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { JobsPost } from "../main-content";
 
 interface SubHeaderDropdownProps {
   title: string;
   jobs?: JobsPost[];
-  setJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
+  tempJobs?: JobsPost[] | null;
+  setTempJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
   setTotalPages?: React.Dispatch<React.SetStateAction<number>>;
   content: string[];
   isCheckbox: boolean;
@@ -25,7 +26,8 @@ interface SubHeaderDropdownProps {
 const SubHeaderDropdown = ({
   title,
   jobs,
-  setJobs,
+  tempJobs,
+  setTempJobs,
   setTotalPages,
   content,
   isCheckbox,
@@ -46,11 +48,11 @@ const SubHeaderDropdown = ({
   const [prevDatePostSelectedItems, setPrevDatePostSelectedItems] =
     useState<string>("Any time");
 
-  const [jobsTemp, setJobsTemp] = useState<JobsPost[] | null>(jobs ?? null);
+  const [jobsTemp, setJobsTemp] = useState<JobsPost[] | null>(null);
 
-  const [originalJobs, setOriginalJobs] = useState<JobsPost[] | null>(
-    jobs ?? null
-  );
+  useEffect(() => {
+    setJobsTemp(tempJobs!);
+  }, []);
 
   const handleChange = (item: string) => {
     if (title === "Experience level") {
@@ -59,11 +61,10 @@ const SubHeaderDropdown = ({
           ? prev.filter((i) => i !== item)
           : [...prev, item];
         setJobsTemp(
-          originalJobs!.filter((job) => {
-            if (updatedItems.length === 0) {
-              return true;
-            } else {
-              return job.level !== null && updatedItems.includes(job.level);
+          jobs!.filter((job) => {
+            console.log(tempJobs);
+            if (updatedItems.length > 0) {
+              return job?.level !== null && updatedItems.includes(job.level);
             }
           })
         );
@@ -76,10 +77,8 @@ const SubHeaderDropdown = ({
           ? prev.filter((i) => i !== item)
           : [...prev, item];
         setJobsTemp(
-          originalJobs!.filter((job) => {
-            if (updatedItems.length === 0) {
-              return true;
-            } else {
+          jobs!.filter((job) => {
+            if (updatedItems.length > 0) {
               return (
                 job.workplace_type !== null &&
                 updatedItems.includes(job.workplace_type)
@@ -96,7 +95,7 @@ const SubHeaderDropdown = ({
       const pastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       const pastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
       setJobsTemp(
-        originalJobs!.filter((job) => {
+        jobs!.filter((job) => {
           const jobDate = job?.created_at
             ? new Date(job.created_at)
             : new Date();
@@ -142,8 +141,7 @@ const SubHeaderDropdown = ({
         return prev.filter((item) => item !== title);
       });
     }
-    setJobs!(jobsTemp);
-    setOriginalJobs!(jobsTemp);
+    setTempJobs!(jobsTemp);
     setTotalPages!(Math.ceil(jobsTemp!.length / 15));
     setIsDropDownOpen(false);
   };

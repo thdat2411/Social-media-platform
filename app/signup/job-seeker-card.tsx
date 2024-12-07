@@ -5,8 +5,9 @@ import { debounce } from "lodash";
 import { Loader } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
+import LocationData from "../utils/locations.json";
 import OccupationData from "../utils/occupations.json";
 import { capitalizeFirstLetter } from "../utils/utils";
 
@@ -21,7 +22,6 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
   const [locationInputValue, setLocationInputValue] = useState("");
   const [jobSuggestions, setJobSuggestions] = useState<string[]>([]);
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-  const [locations, setLocations] = useState<string[]>([]);
   const [isLocationFocused, setIsLocationFocused] = useState(false);
   const [isJobFocused, setIsJobFocused] = useState(false);
   const [prevJobSuggestions, setPrevJobSuggestions] = useState<string[]>([]);
@@ -29,38 +29,9 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
     string[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+
   /*----------------------------------------------------------------------- */
-  const fetchLocations = useCallback(async (keyword: string) => {
-    if (!keyword) return;
-    try {
-      const formattedKeyword = keyword.split(" ").join("+");
-      const response = await fetch(
-        `http://api.geonames.org/searchJSON?q=${formattedKeyword}&country=VN&maxRows=20&username=thaidat`
-      );
-      const data = await response.json();
-      const locationList = data.geonames.map(
-        (location: { toponymName: string }) => location.toponymName
-      );
-      setLocations(locationList);
-    } catch (error) {
-      console.error("Error fetching locations:", error);
-    }
-  }, []);
-  /*----------------------------------------------------------------------- */
-  const debouncedFetchLocations = useCallback(
-    debounce((keyword: string) => fetchLocations(keyword), 300),
-    [fetchLocations]
-  );
-  /*----------------------------------------------------------------------- */
-  useEffect(() => {
-    if (locationInputValue) {
-      debouncedFetchLocations(locationInputValue);
-    } else {
-      setLocations([]);
-    }
-  }, [locationInputValue, debouncedFetchLocations]);
-  /*----------------------------------------------------------------------- */
-  const debouncedFilterSuggestions = debounce((value) => {
+  const debouncedFilterSuggestions = debounce(async (value) => {
     if (!value) {
       setJobSuggestions([]);
       setLocationSuggestions([]);
@@ -73,7 +44,27 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
 
       setJobSuggestions(filteredTitles);
     } else if (isLocationFocused) {
-      setLocationSuggestions(locations);
+      try {
+        const apikey = "pk.0bc3de263eae4d50edd8430c49080342";
+        const response = await axios.get(
+          `https://us1.locationiq.com/v1/autocomplete.php`,
+          {
+            params: {
+              key: apikey,
+              q: value,
+              limit: 15,
+              countrycodes: "vn",
+              format: "json",
+            },
+          }
+        );
+        const suggestions = response.data.map(
+          (location: any) => location.display_name
+        );
+        setLocationSuggestions(suggestions);
+      } catch (error) {
+        console.error("Error fetching location suggestions:", error);
+      }
     }
   }, 300);
   /*----------------------------------------------------------------------- */

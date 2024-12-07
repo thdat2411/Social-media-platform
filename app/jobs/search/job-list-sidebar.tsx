@@ -26,7 +26,13 @@ const JobListSideBar = ({
     return (
       <div className="flex cursor-pointer items-start justify-between space-x-4 border-b p-4">
         <div className="flex space-x-5">
-          <Image src={GrayAvatar} alt="Company logo" width={70} height={70} />
+          <Image
+            src={GrayAvatar}
+            alt="Company logo"
+            width={70}
+            height={70}
+            className="h-fit w-16 object-cover"
+          />
           <div>
             <div className="mb-2 h-4 w-[200px] rounded-full bg-gray-400" />
             <div className="mb-2 h-4 w-[150px] rounded-full bg-gray-400" />
@@ -39,7 +45,10 @@ const JobListSideBar = ({
   }
   return (
     <div
-      onClick={() => setPostIndex(jobs.indexOf(data))}
+      onClick={() => {
+        console.log(jobs.indexOf(data));
+        setPostIndex(jobs.indexOf(data));
+      }}
       className={`flex cursor-pointer items-start justify-between space-x-4 border-b px-4 py-8 ${
         isSelection ? "border-b-2 border-l-2 border-l-black bg-slate-200" : ""
       }`}
@@ -50,7 +59,7 @@ const JobListSideBar = ({
           alt="Company logo"
           width={60}
           height={60}
-          className="object-cover"
+          className="size-14 object-cover"
         />
         <div>
           <p className="text-lg font-semibold text-blue-600 hover:underline">

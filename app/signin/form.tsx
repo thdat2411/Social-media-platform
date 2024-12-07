@@ -1,10 +1,10 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
-import { getSession, signIn, useSession } from "next-auth/react";
-import Image from "next/image";
+import {signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -20,6 +20,11 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const router = useRouter();
   const session = useSession();
+  const [user, setUser] = useState<{
+    name?: string;
+    image?: string;
+    email?: string;
+  } | null>(null);
 
   const {
     register,
@@ -38,6 +43,21 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (session?.status === "authenticated") {
+      const isLoginByGoogle = sessionStorage.getItem("isLoginByGoogle");
+      if (isLoginByGoogle === "true") {
+        const existingData = Cookies.get("user_data");
+        if (!existingData && session?.data.user) {
+          Cookies.set(
+            "user_data",
+            JSON.stringify({
+              email: session?.data.user.email,
+              name: session?.data.user.name,
+              image: session?.data.user.image,
+            }),
+            { expires: 30, secure: true, sameSite: "Strict" }
+          );
+        }
+      }
       router.push("/feed");
     }
   }, [session?.status, router]);
@@ -55,7 +75,6 @@ const LoginForm = () => {
           setError(callback.error);
         }
         if (callback?.ok) {
-          router.push("/feed");
           toast.success("Logged in!");
         }
       })
@@ -65,35 +84,27 @@ const LoginForm = () => {
   const socialAction = () => {
     setIsLoading(true);
 
-    signIn("google", {
-      redirect: false,
-    })
-      .then(async (callback) => {
-        if (callback?.error) {
-          toast.error(callback.error);
-        }
-        if (callback?.ok) {
-          toast.success("Logged in!");
-          Cookies.set("user_data", "1");
-          // const session = await getSession();
-          // if (session?.user) {
-          //   const { email, name, image } = session.user;
-
-          //   // Set user data in a cookie
-          //   const existingCookie = Cookies.get("user_data");
-          //   if (!existingCookie) {
-          //     Cookies.set(
-          //       "user_data",
-          //       JSON.stringify({ email, name, avatar: image }),
-          //       { expires: 7, secure: true, sameSite: "Strict" }
-          //     );
-          //   }
-          // }
-          router.push("/feed");
-        }
+    signIn("google")
+      .then(() => {
+        console.log("Sign-in successful.");
       })
-      .finally(() => setIsLoading(false));
+      .catch((error) => {
+        toast.error("Sign-in failed.");
+        console.error(error);
+      })
+      .finally(() => {
+        console.log("Sign-in completed.");
+        sessionStorage.setItem("isLoginByGoogle", "true");
+        setIsLoading(false);
+      });
   };
+
+  useEffect(() => {
+    const userCookie = Cookies.get("user_data");
+    if (userCookie) {
+      setUser(JSON.parse(userCookie));
+    }
+  }, [router]);
 
   return (
     <div className="mt-36 w-full max-w-sm rounded-lg border bg-white p-8 shadow-md">
@@ -103,24 +114,27 @@ const LoginForm = () => {
         variant="outline"
         className="flex w-full justify-between space-x-2 rounded-full border border-gray-600 px-4 py-4"
       >
-        <div className="flex items-center space-x-2">
-          <Image
-            src="https://github.com/shadcn.png"
-            alt="User Avatar"
-            className="h-8 w-8 rounded-full"
-            width={20}
-            height={20}
-          />
-          <div className="flex flex-col items-start text-xs">
-            <strong className="text-gray-600">Continue as Thai</strong>
-            <div className="flex space-x-1">
-              <span className="text-gray-600">
-                thaidat.0901485160@gmail.com
-              </span>
-              <ChevronDown className="mt-0.5 size-3" />
+        {user ? (
+          <>
+            <Avatar>
+              <AvatarImage src={user?.image || ""} className="size-8" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col items-start text-xs">
+              <strong className="text-gray-600">
+                Continue as {user?.name}
+              </strong>
+              <div className="flex space-x-1">
+                <span className="text-gray-600">{user?.email}</span>
+                <ChevronDown className="mt-0.5 size-3" />
+              </div>
             </div>
+          </>
+        ) : (
+          <div className="space-x flex items-center">
+            <p>Login with your Google</p>
           </div>
-        </div>
+        )}
         <FcGoogle className="size-7" />
       </Button>
       <div className="my-4 flex items-center">

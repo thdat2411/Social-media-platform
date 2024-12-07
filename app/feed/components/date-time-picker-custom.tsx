@@ -119,7 +119,7 @@ const DEFAULT_TS_OPTIONS = {
 export const DatetimePicker = forwardRef<HTMLDivElement, DateTimeInput>(
   (
     {
-      value = new Date(),
+      value,
       format = DEFAULTS,
       placeholders,
       dtOptions = DEFAULT_TS_OPTIONS,

@@ -21,10 +21,26 @@ const LandingMainContent = () => {
     image?: string;
     email?: string;
   } | null>(null);
+
   useEffect(() => {
     if (session?.status === "authenticated") {
+      const isLoginByGoogle = sessionStorage.getItem("isLoginByGoogle");
+      if (isLoginByGoogle === "true") {
+        const existingData = Cookies.get("user_data");
+        if (!existingData && session?.data.user) {
+          Cookies.set(
+            "user_data",
+            JSON.stringify({
+              email: session?.data.user.email,
+              name: session?.data.user.name,
+              image: session?.data.user.image,
+            }),
+            { expires: 30, secure: true, sameSite: "Strict" }
+          );
+        }
+        sessionStorage.removeItem("isLoginByGoogle");
+      }
       router.push("/feed");
-      router.refresh();
     }
   }, [session?.status, router]);
 
@@ -42,12 +58,14 @@ const LandingMainContent = () => {
           toast.success("Logged in!");
         }
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        sessionStorage.setItem("isLoginByGoogle", "true");
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
     const userCookie = Cookies.get("user_data");
-    console.log(userCookie);
     if (userCookie) {
       setUser(JSON.parse(userCookie));
     }

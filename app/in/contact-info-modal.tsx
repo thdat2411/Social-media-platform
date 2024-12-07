@@ -54,7 +54,7 @@ const ContactInfoModal = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="absolute top-[44%] bg-white">
           <DialogHeader className="p-3">
-            <DialogTitle>{userProfile?.full_name}</DialogTitle>
+            <DialogTitle>{userProfile?.name}</DialogTitle>
           </DialogHeader>
           <Separator />
           <div className="flex flex-col space-y-4 px-2 pb-2">

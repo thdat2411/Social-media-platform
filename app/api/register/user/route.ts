@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, name, password_hash, full_name, role } = body;
-    if (!email || !password_hash || !name || !full_name || !role) {
+    const { email, name, password_hash, role } = body;
+    if (!email || !password_hash || !name || !role) {
       return new NextResponse("Missing info", { status: 400 });
     }
     const hashedPassword = await bcrypt.hash(password_hash, 10);
@@ -16,7 +16,6 @@ export async function POST(request: Request) {
         email,
         name,
         password_hash: hashedPassword,
-        full_name,
         role,
       },
     });

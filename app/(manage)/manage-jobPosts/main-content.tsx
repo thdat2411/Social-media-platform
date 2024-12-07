@@ -1,36 +1,43 @@
 "use client";
 import NotFoundImage from "@/app/assets/404-error.png";
 import FooterLink from "@/app/components/footerLink";
-import { application } from "@/app/my-items/my-application/main-content";
 import { Separator } from "@/components/ui/separator";
+import { job_application, job_posting, user } from "@prisma/client";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import ManageDetailApplication from "./detail-application";
+import DetailApplication from "./detail-application";
+import JobApplicationPage from "./job-application";
 import ManageApplicationSideBar from "./side-bar";
-import { useSearchParams } from "next/navigation";
-const ManageApplicationsMainContent = () => {
-    const postId = useSearchParams().get("id");
-  const [applications, setApplications] = useState<application[] | null>([]);
-  const [applicationIndex, setApplicationIndex] = useState(0);
+
+export type ManageJobPost = job_posting & {
+  user?: user;
+  job_applications?: (job_application & { user: user })[];
+};
+
+const ManageJobPostsMainContent = () => {
+  const [jobs, setJobs] = useState<ManageJobPost[] | null>([]);
+  const [postIndex, setPostIndex] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDetail, setIsDetail] = useState(false);
+  const [detailApplication, setDetailApplication] = useState<
+    (job_application & { user: user }) | null
+  >(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(
-          `/api/manage/applications?page=${currentPage}&id=${postId}`
-        );
-        const { applications, totalPages } = response.data;
+        const response = await axios.get(`/api/manage/job-posting?page=${currentPage}`);
+        const { jobPosts, totalPages } = response.data;
         if (response.status === 200) {
-          setApplications(applications);
+          setJobs(jobPosts);
           setTotalPages(totalPages);
-          setApplicationIndex(0);
+          setPostIndex(0);
         } else {
           toast.error("Error fetching job data");
         }
@@ -127,7 +134,7 @@ const ManageApplicationsMainContent = () => {
               </div>
               <div className="h-[75vh] overflow-y-auto border border-t-0">
                 <div className="border-b">
-                  {applications?.length === 0 || !applications ? (
+                  {jobs?.length === 0 || !jobs ? (
                     <div className="flex h-[58vh] flex-col items-center justify-center text-2xl font-semibold">
                       <Image
                         src={NotFoundImage}
@@ -137,13 +144,15 @@ const ManageApplicationsMainContent = () => {
                       No post available
                     </div>
                   ) : (
-                    applications.map((application, index) => (
+                    jobs.map((job, index) => (
                       <ManageApplicationSideBar
-                        data={application}
                         key={index}
-                        applications={applications}
-                        isSelection={applicationIndex === index}
-                        setApplicationIndex={setApplicationIndex}
+                        data={job}
+                        setData={setJobs}
+                        jobs={jobs}
+                        setIsDetail={setIsDetail}
+                        isSelection={index === postIndex}
+                        setPostIndex={setPostIndex}
                       />
                     ))
                   )}
@@ -158,7 +167,7 @@ const ManageApplicationsMainContent = () => {
                 </div>
               </div>
             </aside>
-            {!applications || applications.length === 0 ? (
+            {!jobs || jobs.length === 0 ? (
               <div></div>
             ) : (
               <div
@@ -169,10 +178,18 @@ const ManageApplicationsMainContent = () => {
               >
                 <p className="px-5 py-6 text-xl font-medium">Applications</p>
                 <Separator />
-
-                <ManageDetailApplication
-                  application={applications[applicationIndex]}
-                />
+                {!isDetail ? (
+                  <JobApplicationPage
+                    jobPostApplications={jobs[postIndex].job_applications!}
+                    setDetailApplication={setDetailApplication}
+                    setIsDetail={setIsDetail}
+                  />
+                ) : (
+                  <DetailApplication
+                    application={detailApplication}
+                    setIsDetail={setIsDetail}
+                  />
+                )}
               </div>
             )}
           </div>
@@ -182,4 +199,4 @@ const ManageApplicationsMainContent = () => {
   }
 };
 
-export default ManageApplicationsMainContent;
+export default ManageJobPostsMainContent;

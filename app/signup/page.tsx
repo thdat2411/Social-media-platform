@@ -5,10 +5,10 @@ import SignUpMainContent from "./main-content";
 
 const SignUpPage = () => {
   return (
-    <div className="flex h-screen flex-col">
+    <div className="relative flex h-screen flex-col justify-center">
       <Image
         alt="LinkedIn logo"
-        className="ml-[450px] w-48"
+        className="absolute left-[25%] top-3 w-48"
         src={LinkedInLogo}
       />
       <div className="flex flex-col items-center justify-center space-y-2">

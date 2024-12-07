@@ -18,7 +18,7 @@ const ListUser = ({ users }: ListUserProps) => {
         <p className="pb-4 text-xl font-semibold">People you may know</p>
         {users.slice(0, 5).map((user, index) => (
           <>
-            <div className="flex cursor-pointer space-x-4" key={user.id}>
+            <div className="flex cursor-pointer space-x-4" key={index}>
               <Avatar
                 className="size-16"
                 onClick={() => router.push(`/in?userId=${user.id}`)}

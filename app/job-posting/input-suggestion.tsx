@@ -1,10 +1,11 @@
 import locations from "@/app/utils/locations.json";
 import occupations from "@/app/utils/occupations.json";
 import { job_posting } from "@prisma/client";
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import { X } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { capitalizeFirstLetter } from "../utils/utils";
 
@@ -29,7 +30,7 @@ const InputSuggestion = ({
   const [inputValue, setInputValue] = useState<string>(
     label === "Job title" ? formData.title || "" : formData.location || ""
   );
-  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+
   const [titleQues, setTitleQues] = useState(false);
 
   const debouncedUpdateFormData = useCallback(
@@ -40,7 +41,7 @@ const InputSuggestion = ({
         } else if (label === "Location") {
           setFormData({ ...formData, location: capitalizeFirstLetter(value) });
         }
-      }, 300)();
+      }, 1000)();
     },
     [label, formData, setFormData]
   );
@@ -62,52 +63,47 @@ const InputSuggestion = ({
   //   fetchData();
   // });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(capitalizeFirstLetter(value));
-    debouncedUpdateFormData(value);
-
-    if (label === "Job title") {
-      // Simple suggestion for job titles
-      const filteredSuggestions = occupations.title.filter((suggestion) =>
-        suggestion.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestionList(filteredSuggestions);
-    } else if (label === "Location") {
-      updateLocationSuggestions(value);
-    }
+    debouncedUpdateSuggestions(value, label);
   };
 
-  const updateLocationSuggestions = (value: string) => {
-    if (selectedProvince) {
-      // Filter locations within the selected province
-      const provinceData = locations.Vietnam.find(
-        (province) => province.province === selectedProvince
-      );
-      const filteredLocations = provinceData
-        ? provinceData.locations.filter((location) =>
-            location.toLowerCase().includes(value.toLowerCase())
-          )
-        : [];
-      setSuggestionList(filteredLocations);
-    } else {
-      // Show list of provinces if none selected
-      const filteredProvinces = locations.Vietnam.map(
-        (province) => province.province
-      ).filter((province) =>
-        province.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestionList(filteredProvinces);
-    }
-  };
-
-  useEffect(() => {
-    // If input doesn't include the selected province, reset selection
-    if (selectedProvince && !inputValue.startsWith(selectedProvince)) {
-      setSelectedProvince(null);
-      setSuggestionList(locations.Vietnam.map((province) => province.province));
-    }
-  }, [inputValue, selectedProvince]);
+  const debouncedUpdateSuggestions = useMemo(
+    () =>
+      debounce(async (value: string, label: string) => {
+        if (label === "Job title") {
+          // Simple suggestion for job titles
+          const filteredSuggestions = occupations.title.filter((suggestion) =>
+            suggestion.toLowerCase().includes(value.toLowerCase())
+          );
+          setSuggestionList(filteredSuggestions);
+        } else if (label === "Location") {
+          try {
+            const apikey = "pk.0bc3de263eae4d50edd8430c49080342";
+            const response = await axios.get(
+              `https://us1.locationiq.com/v1/autocomplete.php`,
+              {
+                params: {
+                  key: apikey,
+                  q: value,
+                  limit: 15,
+                  countrycodes: "vn",
+                  format: "json",
+                },
+              }
+            );
+            const suggestions = response.data.map(
+              (location: any) => location.display_name
+            );
+            setSuggestionList(suggestions);
+          } catch (error) {
+            console.error("Error fetching location suggestions:", error);
+          }
+        }
+      }, 300),
+    []
+  );
 
   const handleSuggestionClick = (value: string) => {
     setInputValue(value);
@@ -116,10 +112,7 @@ const InputSuggestion = ({
     setIsFocused(false);
   };
 
-  const shouldShowDropdown =
-    isFocused &&
-    inputValue.trim() !== "" &&
-    (suggestionList.length > 0 || selectedProvince === null);
+  const shouldShowDropdown = isFocused && inputValue.trim() !== "";
 
   return (
     <div className="relative flex w-1/2 flex-col">

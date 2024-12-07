@@ -6,7 +6,7 @@ const client = new HfInference(HUGGING_FACE_API_KEY);
 
 if (!HUGGING_FACE_API_KEY) {
   throw new Error("Hugging Face API key is missing");
-  throw new Error("Hugging Face API key is missing");
+
 }
 
 // Utility function to fetch job description suggestions

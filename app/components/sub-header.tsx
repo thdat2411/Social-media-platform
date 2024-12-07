@@ -17,11 +17,17 @@ import SubHeaderDropdown from "../jobs/search/drop-down";
 
 interface SubHeaderProps {
   jobs?: JobsPost[] | null;
-  setJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
   setTotalPages?: React.Dispatch<React.SetStateAction<number>>;
+  tempJobs?: JobsPost[] | null;
+  setTempJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
 }
 
-const SubHeader = ({ jobs, setJobs, setTotalPages }: SubHeaderProps) => {
+const SubHeader = ({
+  jobs,
+  setTotalPages,
+  tempJobs,
+  setTempJobs,
+}: SubHeaderProps) => {
   const [isCateogryOpen, setIsCategoryOpen] = useState(false);
   const router = useRouter();
   const categoryList = useSearchingCategoriesList();
@@ -62,7 +68,8 @@ const SubHeader = ({ jobs, setJobs, setTotalPages }: SubHeaderProps) => {
           key={item.title}
           title={item.title}
           jobs={jobs!}
-          setJobs={setJobs}
+          tempJobs={tempJobs}
+          setTempJobs={setTempJobs}
           setTotalPages={setTotalPages}
           content={item.content}
           isCheckbox={item.title === "Date posted" ? false : true}

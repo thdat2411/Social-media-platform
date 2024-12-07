@@ -1,7 +1,7 @@
 import React from "react";
 import ManageApplicationsMainContent from "./main-content";
 
-const ManageJobPostingPage = () => {
+const ManageJobPostsPage = async () => {
   return (
     <div className="mt-8 flex w-full justify-between">
       <ManageApplicationsMainContent />
@@ -9,4 +9,4 @@ const ManageJobPostingPage = () => {
   );
 };
 
-export default ManageJobPostingPage;
+export default ManageJobPostsPage;

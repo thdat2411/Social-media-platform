@@ -14,13 +14,13 @@ import JobListSideBar from "./job-list-sidebar";
 const JobSearchPage = () => {
   const params = useSearchParams();
   const searchKeyword = params.get("keyword");
-  const [jobs, setJobs] = useState<JobsPost[] | null>([]);
+  const [jobs, setJobs] = useState<JobsPost[] | null>(null);
   const [postIndex, setPostIndex] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [totalJobs, setTotalJobs] = useState<JobsPost[] | null>([]);
   const [user, setUser] = useState<user | null>(null);
+  const [tempJobPosts, setTempJobPosts] = useState<JobsPost[] | null>(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -29,12 +29,11 @@ const JobSearchPage = () => {
         const response = await axios.get(
           `/api/search?keyword=${searchKeyword}&page=${currentPage}`
         );
-        const { jobPostings, totalPages, jobPostingsTotal, user } =
-          response.data;
+        const { jobPostings, totalPages, user } = response.data;
         if (response.status === 200) {
           setJobs(jobPostings);
+          setTempJobPosts(jobPostings);
           setTotalPages(totalPages);
-          setTotalJobs(jobPostingsTotal);
           setUser(user);
           setPostIndex(0);
         } else {
@@ -112,6 +111,19 @@ const JobSearchPage = () => {
     return buttons;
   };
 
+  useEffect(() => {
+    console.log("jobs", jobs);
+    console.log("tempJobPosts", tempJobPosts);
+    console.log(
+      "filteredJobs",
+      jobs?.filter((job) => job.title === "Software Engineer")
+    );
+  }, [jobs, tempJobPosts]);
+
+  useEffect(() => {
+    setPostIndex(0);
+  }, [tempJobPosts]);
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-200 bg-opacity-50">
@@ -124,8 +136,9 @@ const JobSearchPage = () => {
     return (
       <>
         <SubHeader
-          jobs={totalJobs}
-          setJobs={setJobs}
+          jobs={jobs}
+          tempJobs={tempJobPosts}
+          setTempJobs={setTempJobPosts}
           setTotalPages={setTotalPages}
         />
         <div
@@ -133,24 +146,23 @@ const JobSearchPage = () => {
           style={{ scrollbarWidth: "none" }}
         >
           <div className="flex w-full justify-center">
-            <div className="flex-shrik flex w-4/6">
+            <div className="flex-shrik flex w-4/6 max-[1300px]:w-[85%]">
               <aside className="w-2/5 bg-white">
                 <div className="w-full border-b border-r px-5 py-6">
                   <p className="text-xl font-medium">Top job picks for you</p>
-                  <p>Based on your ....</p>
                 </div>
                 <div className="h-[75vh] overflow-y-auto border border-t-0">
                   <div className="border-b">
-                    {!jobs ? (
+                    {tempJobPosts?.length === 0 || !tempJobPosts ? (
                       <div className="flex h-[75vh] flex-col items-center justify-center text-3xl font-semibold">
                         No post yet
                       </div>
                     ) : (
-                      jobs!.map((job, index) => (
+                      tempJobPosts!.map((job, index) => (
                         <JobListSideBar
                           key={index}
                           data={job}
-                          jobs={jobs!}
+                          jobs={tempJobPosts!}
                           isSelection={index === postIndex ? true : false}
                           isLoading={isLoading}
                           setPostIndex={setPostIndex}
@@ -168,8 +180,8 @@ const JobSearchPage = () => {
                   </div>
                 </div>
               </aside>
-              {!jobs ? (
-                <div></div>
+              {tempJobPosts?.length === 0 ? (
+                <div>GG</div>
               ) : (
                 <div
                   className="flex h-[86vh] w-3/5 flex-col overflow-y-auto border border-l-0 border-t-0 bg-white p-10"
@@ -177,7 +189,7 @@ const JobSearchPage = () => {
                     scrollbarColor: "#F4F2EE #FFF",
                   }}
                 >
-                  <JobContent data={jobs![postIndex]} user={user!} />
+                  <JobContent data={tempJobPosts![postIndex]} user={user!} />
                 </div>
               )}
             </div>

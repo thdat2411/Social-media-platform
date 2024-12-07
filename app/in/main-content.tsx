@@ -245,10 +245,8 @@ const UserProfileMainContent = ({
                             className="cursor-pointer rounded-full"
                           />
                           <AvatarFallback className="bg-blue-300 text-[60px] text-white">
-                            {userProfile
-                              ?.full_name!.split(" ")
-                              .pop()
-                              ?.charAt(0) || ""}
+                            {userProfile?.name!.split(" ").pop()?.charAt(0) ||
+                              ""}
                           </AvatarFallback>
                         </Avatar>
                       </DropdownMenuTrigger>
@@ -308,7 +306,7 @@ const UserProfileMainContent = ({
                   className={`px-6 pb-10 ${userProfile?.id !== currentUser?.id ? "mt-16" : "mt-1"}`}
                 >
                   <h1 className="text-2xl font-semibold">
-                    {userProfile?.full_name}{" "}
+                    {userProfile?.name}{" "}
                     <i className="fas fa-check-circle text-blue-500"></i>
                   </h1>
                   <p className="text-gray-600">{userProfile?.headline ?? ""}</p>
@@ -323,29 +321,30 @@ const UserProfileMainContent = ({
                     </span>
                   </p>
                 </div>
-                {userProfile?.role !== "recruiter" && (
-                  <div className="mb-4 ml-4 flex w-1/2 justify-between rounded-lg bg-[#DDE7F1] px-6 py-4">
-                    <div className="flex cursor-pointer flex-col space-y-1 text-sm">
-                      <p className="text-base font-medium">Open to work</p>
-                      <p>User preference roles</p>
-                      <p
-                        onClick={() => setIsJobPreferenceModalOpen(true)}
-                        className="font-medium text-blue-500 hover:underline"
-                      >
-                        Show details
-                      </p>
+                {userProfile?.role !== "recruiter" &&
+                  userProfile?.id === currentUser?.id && (
+                    <div className="mb-4 ml-4 flex w-1/2 justify-between rounded-lg bg-[#DDE7F1] px-6 py-4">
+                      <div className="flex cursor-pointer flex-col space-y-1 text-sm">
+                        <p className="text-base font-medium">Open to work</p>
+                        <p>User preference roles</p>
+                        <p
+                          onClick={() => setIsJobPreferenceModalOpen(true)}
+                          className="font-medium text-blue-500 hover:underline"
+                        >
+                          Show details
+                        </p>
+                      </div>
+                      {userProfile?.id === currentUser?.id && (
+                        <Button
+                          onClick={() => setIsEditReferenceModalOpen(true)}
+                          variant="ghost"
+                          className="rounded-full px-3"
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+                      )}
                     </div>
-                    {userProfile?.id === currentUser?.id && (
-                      <Button
-                        onClick={() => setIsEditReferenceModalOpen(true)}
-                        variant="ghost"
-                        className="rounded-full px-3"
-                      >
-                        <Pencil className="size-4" />
-                      </Button>
-                    )}
-                  </div>
-                )}
+                  )}
               </div>
               {/* User activity */}
               <UserActivity user={userProfile!} userPosts={userPosts} />

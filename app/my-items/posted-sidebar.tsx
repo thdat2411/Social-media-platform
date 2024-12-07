@@ -36,7 +36,7 @@ const PostedSidebar = ({ user }: PostedSidebarProps) => {
         >
           My posts
         </Link>
-        {userRole === "recruiter" && (
+        {userRole === "recruiter" ? (
           <Link
             href="/my-items/posted-jobs"
             className={`bg-white px-4 py-3 max-[1400px]:text-sm ${
@@ -46,6 +46,17 @@ const PostedSidebar = ({ user }: PostedSidebarProps) => {
             } `}
           >
             Job postings
+          </Link>
+        ) : (
+          <Link
+            href="/my-items/my-application"
+            className={`bg-white px-4 py-3 max-[1400px]:text-sm ${
+              pathName === "/my-items/my-application"
+                ? "border-l-4 border-l-blue-600 text-blue-600"
+                : "text-[#666666] hover:text-black"
+            } `}
+          >
+            My applications
           </Link>
         )}
         <Separator />

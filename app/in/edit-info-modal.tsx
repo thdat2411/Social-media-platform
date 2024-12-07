@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { user } from "@prisma/client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BsFillPatchMinusFill } from "react-icons/bs";
 import { toast } from "sonner";
@@ -22,19 +23,21 @@ interface EditInfoModalProps {
   setUser: (value: user) => void;
 }
 
+interface UserData {
+  phoneNumber: number | null;
+  address: string;
+  birthDate: Date | string;
+}
+
 const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
-  const [currenUser, setCurrentUser] = useState<user | null>(user);
-  const [data, setData] = useState({
-    phoneNumber: currenUser?.phone_number ? currenUser?.phone_number : "",
-    address: currenUser?.address ? currenUser?.address : "",
-    birthDate: currenUser?.birth_date ? currenUser?.birth_date : "",
-  });
-  const [date, setDate] = useState<Date>(
-    currenUser?.birth_date ? new Date(currenUser.birth_date) : new Date()
-  );
+  const [currenUser, setCurrentUser] = useState<user | null>(null);
+  const [data, setData] = useState<UserData | undefined>(undefined);
+  const [date, setDate] = useState<Date | null>();
   const [origin, setOrigin] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+  const router = useRouter();
   useEffect(() => {
     if (typeof window !== "undefined") {
       setOrigin(window.location.origin);
@@ -42,17 +45,29 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
   }, []);
 
   useEffect(() => {
-    const phoneNumber = data.phoneNumber.toString();
+    setCurrentUser(user);
+    setData({
+      phoneNumber: user?.phone_number ? Number(user.phone_number) : null,
+      address: user?.address ? user?.address : "",
+      birthDate: user?.birth_date ? user?.birth_date : "",
+    });
+    console.log(new Date(user?.birth_date!));
+    setDate(user?.birth_date ? new Date(user.birth_date) : new Date());
+    setIsFetching(false);
+  }, [user]);
+
+  useEffect(() => {
+    const phoneNumber = data?.phoneNumber?.toString();
     if (phoneNumber === "") return;
     // Check if the phone number contains only digits and has exactly 10 digits
-    if (!/^[0-9]+$/.test(phoneNumber)) {
+    if (!/^[0-9]+$/.test(phoneNumber!)) {
       setError("Phone number does not contain any characters");
-    } else if (phoneNumber.length > 10) {
+    } else if (phoneNumber!.length > 10) {
       setError("Invalid phone number");
     } else {
       setError(""); // Clear error if valid
     }
-  }, [data.phoneNumber]);
+  }, [data?.phoneNumber]);
 
   useEffect(() => {
     setData((prev) => ({ ...prev!, birthDate: date || "" }));
@@ -61,7 +76,9 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
   const onClose = () => {
     setOpen(false);
     setData({
-      phoneNumber: currenUser?.phone_number ? currenUser?.phone_number : "",
+      phoneNumber: currenUser?.phone_number
+        ? Number(currenUser.phone_number)
+        : null,
       address: currenUser?.address ? currenUser?.address : "",
       birthDate: currenUser?.birth_date ? currenUser?.birth_date : "",
     });
@@ -71,13 +88,13 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
   const onSave = async () => {
     try {
       setIsLoading(true);
-      
+
       const response = await axios.put(`/api/in?action=edit-info`, data);
       if (response.status === 200) {
-        const { updatedUser } = response.data;
-        setCurrentUser(updatedUser);
+        toast.success("Contact info updated successfully");
         setIsLoading(false);
         setOpen(false);
+        router.refresh();
       } else {
         setIsLoading(false);
         toast.error(response.data.error);
@@ -87,7 +104,13 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
       toast.error("Something went wrong");
     }
   };
-
+  if (isFetching) {
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>
@@ -116,11 +139,13 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
                 <p className="text-sm text-gray-600">Phone number</p>
                 <input
                   type="text"
-                  value={data.phoneNumber ?? ""}
+                  value={data?.phoneNumber?.toString() ?? ""}
                   onChange={(e) =>
                     setData((prev) => ({
                       ...prev!,
-                      phoneNumber: e.target.value,
+                      phoneNumber: e.target.value
+                        ? Number(e.target.value)
+                        : null,
                     }))
                   }
                   className={`w-full rounded-sm px-2 py-[6px] text-sm outline outline-1 hover:outline-2 focus:outline-2 ${error ? "border-red-500" : ""}`}
@@ -135,7 +160,7 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
               <div className="flex flex-col space-y-2">
                 <p className="text-sm">Address</p>
                 <textarea
-                  value={data.address ?? ""}
+                  value={data?.address ?? ""}
                   onChange={(e) =>
                     setData((prev) => ({
                       ...prev!,
@@ -148,8 +173,11 @@ const EditInfoModal = ({ open, setOpen, user }: EditInfoModalProps) => {
               <div className="flex flex-col space-y-2">
                 <p className="text-sm">Birthday</p>
                 <DatetimePicker
-                  value={date ? date : undefined}
-                  onChange={(nextDate) => setDate(nextDate || new Date())}
+                  value={date || undefined}
+                  onChange={(nextDate) => {
+                    setDate(nextDate || new Date());
+                    console.log(nextDate);
+                  }}
                   format={[["months", "days", "years"]]}
                 />
               </div>

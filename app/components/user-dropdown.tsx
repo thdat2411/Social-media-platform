@@ -16,8 +16,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-import { FaCircleUser } from "react-icons/fa6";
-
 interface UserDropdownProps {
   user: user | null;
 }
@@ -76,11 +74,11 @@ const UserDropdown = ({ user }: UserDropdownProps) => {
           {user?.role === "recruiter" && (
             <>
               <Button
-                onClick={() => router.push("/manage-applications")}
+                onClick={() => router.push("/manage-jobPosts")}
                 className="my-2 flex items-center justify-between"
                 variant="ghost"
               >
-                <p className="text-base">Applicants</p>
+                <p className="text-base">Manage jobs</p>
                 <Image src={ApplicationsIcon} alt="" className="size-6" />
               </Button>
               <Separator />

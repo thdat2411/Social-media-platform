@@ -20,13 +20,13 @@ export async function PUT(req: NextRequest) {
                 where: { id: user.id },
                 data: {
                     name: firstName + " " + lastName,
-                    location: countryValue + ", " + cityValue,
+                    location: cityValue + ", " + countryValue,
                     headline: headLine
                 }
             })
             return NextResponse.json({ updatedUser: updatedUserIntro }, { status: 200 })
         }
-        else if (action === "edit-contact"
+        else if (action === "edit-info"
         ) {
             const { phoneNumber, address, birthDate } = body;
 
