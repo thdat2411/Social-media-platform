@@ -145,7 +145,7 @@ const LandingMainContent = () => {
           <p className="mt-4 w-[400px] items-start text-center text-gray-600">
             New to LinkedIn?{" "}
             <Link
-              href="#"
+              href="/signup"
               className="font-medium text-blue-600 hover:text-blue-800"
             >
               Join Now
