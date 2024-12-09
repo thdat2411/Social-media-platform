@@ -69,9 +69,9 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
       "Entry level",
       "Associate",
       "Mid-Senior level",
+      "Senior",
       "Director",
       "Executive",
-      "Senior",
     ],
     []
   );

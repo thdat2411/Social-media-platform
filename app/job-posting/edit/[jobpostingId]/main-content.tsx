@@ -66,9 +66,9 @@ const EditJobPostingMainContent = ({
       "Entry level",
       "Associate",
       "Mid-Senior level",
+      "Senior",
       "Director",
       "Executive",
-      "Senior",
     ],
     []
   );
