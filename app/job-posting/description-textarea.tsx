@@ -146,7 +146,7 @@ const JobPostingDescription = ({
           );
           typingIndex += currentWord.length + 1;
           wordIndex++;
-          setTimeout(typeNextWord, 50);
+          setTimeout(typeNextWord, 20);
         } else {
           quillRef.current?.insertText(
             typingIndex,
@@ -156,7 +156,7 @@ const JobPostingDescription = ({
           typingIndex += 1;
           lineIndex++;
           wordIndex = 0;
-          setTimeout(typeNextWord, 50);
+          setTimeout(typeNextWord, 20);
         }
       } else {
         isTypingRef.current = false;
