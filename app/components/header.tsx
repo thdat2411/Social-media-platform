@@ -30,7 +30,7 @@ const Header = () => {
   const [isLocationSearchFocus, setIsLocationSearchFocus] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [jobSearchValue, setJobSearchValue] = useState("");
-  const [locationValue, setLocationValue] = useState("VietNam");
+  const [locationValue, setLocationValue] = useState("Vietnam");
   const [recentItem, setRecentItem] = useState<search_history[]>([]);
   const [isSeeAll, setIsSeeAll] = useState(false);
   const routes = useRoutes();
