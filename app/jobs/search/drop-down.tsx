@@ -176,7 +176,13 @@ const SubHeaderDropdown = ({
       setActiveFilters((prev) => {
         return [...prev, title];
       });
-    } else {
+    } else if (
+      (levelSelectedItems!.length === 0 &&
+        activeFilters.includes("Experience level")) ||
+      (remoteSelectedItems!.length === 0 && activeFilters.includes("Remote")) ||
+      (datePostSelectedItems === "Any time" &&
+        activeFilters.includes("Date posted"))
+    ) {
       setActiveFilters((prev) => {
         return prev.filter((item) => item !== title);
       });
