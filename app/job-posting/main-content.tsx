@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { job_posting, user } from "@prisma/client";
 import axios from "axios";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import { Loader, Plus, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -69,9 +69,9 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
       "Entry level",
       "Associate",
       "Mid-Senior level",
+      "Senior",
       "Director",
       "Executive",
-      "Senior",
     ],
     []
   );
@@ -131,7 +131,6 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
             ...prevFormData,
             description: description,
           }));
-          setIsAILoading(false);
           setTriggerTypingAnimation(true);
         })
         .catch((error) => {
@@ -139,7 +138,8 @@ const JobPostingMainContent = ({ user }: JobPostingMainContentProps) => {
             error.response?.data?.error ||
               "Posting job failed, please try again"
           );
-        });
+        })
+        .finally(() => setIsAILoading(false));
     } catch {
       toast.error("Failed to generate job description");
     }

@@ -37,11 +37,8 @@ export async function GET(req: NextRequest) {
           include: {
             user: true,
           },
-          orderBy:
-          {
-            created_at: 'desc',
-          },
         });
+
         const users = await prisma.user.findMany({
           where: {
             name: {
@@ -50,6 +47,7 @@ export async function GET(req: NextRequest) {
             },
           },
         });
+
         const posts = await prisma.post.findMany({
           where: {
             content: {

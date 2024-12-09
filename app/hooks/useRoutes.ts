@@ -25,12 +25,12 @@ const useRoutes = () => {
         iconHover: "/job-seeking.mp4",
         active: pathname === "/jobs",
       },
-      {
-        label: "Messaging",
-        href: "/message",
-        iconHover: "/message.mp4",
-        active: pathname === "/message",
-      },
+      // {
+      //   label: "Messaging",
+      //   href: "/message",
+      //   iconHover: "/message.mp4",
+      //   active: pathname === "/message",
+      // },
       {
         label: "Notifications",
         href: "/notifications",

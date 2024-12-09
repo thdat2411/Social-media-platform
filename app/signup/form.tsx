@@ -182,7 +182,7 @@ const SignUpForm = ({ setIsRegister, setData, data }: SignUpFormProps) => {
                   required: "Password is required",
                   pattern: {
                     value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,}$/,
                     message:
                       "Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character",
                   },
