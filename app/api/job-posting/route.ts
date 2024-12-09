@@ -138,11 +138,8 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ job_posting }, { status: 200 });
 
   } catch (err) {
-    console.error(err);
-    if (err instanceof Error) {
-      return new NextResponse(err.message, { status: 500 });
-    }
-    return new NextResponse("An unknown error occurred", { status: 500 });
+
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }
 

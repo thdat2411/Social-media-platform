@@ -13,8 +13,8 @@ const pusher = new Pusher({
 // Function to send notifications to Pusher channel
 export const notifyUser = async (
     userId: string,
-    type: string,
-    message: string
+    message: string,
+    type: string
 ) => {
     try {
         await pusher.trigger(`user-${userId}`, "new-notification", {

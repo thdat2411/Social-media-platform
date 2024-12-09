@@ -17,6 +17,12 @@ interface SubHeaderDropdownProps {
   tempJobs?: JobsPost[] | null;
   setTempJobs?: React.Dispatch<React.SetStateAction<JobsPost[] | null>>;
   setTotalPages?: React.Dispatch<React.SetStateAction<number>>;
+  levelSelectedItems?: string[];
+  setLevelSelectedItems?: React.Dispatch<React.SetStateAction<string[]>>;
+  remoteSelectedItems?: string[];
+  setRemoteSelectedItems?: React.Dispatch<React.SetStateAction<string[]>>;
+  datePostSelectedItems?: string;
+  setDatePostSelectedItems?: React.Dispatch<React.SetStateAction<string>>;
   content: string[];
   isCheckbox: boolean;
   activeFilters: string[];
@@ -29,86 +35,118 @@ const SubHeaderDropdown = ({
   tempJobs,
   setTempJobs,
   setTotalPages,
+  levelSelectedItems,
+  setLevelSelectedItems,
+  remoteSelectedItems,
+  setRemoteSelectedItems,
+  datePostSelectedItems,
+  setDatePostSelectedItems,
   content,
   isCheckbox,
   activeFilters,
   setActiveFilters,
 }: SubHeaderDropdownProps) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-  const [levelSelectedItems, setLevelSelectedItems] = useState<string[]>([]);
   const [prevLevelSelectedItems, setPrevLevelSelectedItems] = useState<
     string[]
   >([]);
-  const [remoteSelectedItems, setRemoteSelectedItems] = useState<string[]>([]);
   const [prevRemoteSelectedItems, setPrevRemoteSelectedItems] = useState<
     string[]
   >([]);
-  const [datePostSelectedItems, setDatePostSelectedItems] =
-    useState<string>("Any time");
   const [prevDatePostSelectedItems, setPrevDatePostSelectedItems] =
     useState<string>("Any time");
 
   const [jobsTemp, setJobsTemp] = useState<JobsPost[] | null>(null);
 
+  const [resultNumber, setResultNumber] = useState<number>(0);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
   useEffect(() => {
     setJobsTemp(tempJobs!);
+    setResultNumber(jobs?.length!);
+    setIsFirstRender(false);
+    console.log("Rendered");
   }, []);
 
+  useEffect(() => {
+    if (!isFirstRender && jobsTemp) {
+      setResultNumber(jobsTemp.length);
+    }
+  }, [jobsTemp]);
+
   const handleChange = (item: string) => {
+    const now = new Date();
+    const past24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const pastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const pastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    // Helper function to apply all active filters
+    const applyFilters = (
+      updatedDatePostSelectedItems: string = datePostSelectedItems ||
+        "Any time",
+      updatedLevelSelectedItems: string[] = levelSelectedItems || [],
+      updatedRemoteSelectedItems: string[] = remoteSelectedItems || []
+    ) => {
+      let filteredJobs = jobs || [];
+
+      // Apply experience level filter
+      if (updatedLevelSelectedItems.length > 0) {
+        filteredJobs = filteredJobs.filter(
+          (job) =>
+            (job.level !== null || job.job_type !== null) &&
+            (updatedLevelSelectedItems.includes(job.level ?? "") ||
+              updatedLevelSelectedItems.includes(job.job_type ?? ""))
+        );
+      }
+
+      // Apply remote filter
+      if (updatedRemoteSelectedItems.length > 0) {
+        filteredJobs = filteredJobs.filter(
+          (job) =>
+            job.workplace_type !== null &&
+            updatedRemoteSelectedItems.includes(job.workplace_type)
+        );
+      }
+
+      // Apply date post filter
+      if (updatedDatePostSelectedItems) {
+        filteredJobs = filteredJobs.filter((job) => {
+          const jobDate = job?.created_at
+            ? new Date(job.created_at)
+            : new Date();
+          return updatedDatePostSelectedItems === "Past 24 hours"
+            ? jobDate > past24Hours
+            : updatedDatePostSelectedItems === "Past week"
+              ? jobDate > pastWeek
+              : updatedDatePostSelectedItems === "Past month"
+                ? jobDate > pastMonth
+                : true;
+        });
+      }
+
+      setJobsTemp(filteredJobs);
+    };
+
     if (title === "Experience level") {
-      setLevelSelectedItems((prev) => {
+      setLevelSelectedItems!((prev) => {
         const updatedItems = prev.includes(item)
           ? prev.filter((i) => i !== item)
           : [...prev, item];
-        setJobsTemp(
-          jobs!.filter((job) => {
-            console.log(tempJobs);
-            if (updatedItems.length > 0) {
-              return job?.level !== null && updatedItems.includes(job.level);
-            }
-          })
-        );
-
+        applyFilters(datePostSelectedItems, updatedItems, remoteSelectedItems);
         return updatedItems;
       });
     } else if (title === "Remote") {
-      setRemoteSelectedItems((prev) => {
+      setRemoteSelectedItems!((prev) => {
         const updatedItems = prev.includes(item)
           ? prev.filter((i) => i !== item)
           : [...prev, item];
-        setJobsTemp(
-          jobs!.filter((job) => {
-            if (updatedItems.length > 0) {
-              return (
-                job.workplace_type !== null &&
-                updatedItems.includes(job.workplace_type)
-              );
-            }
-          })
-        );
+        applyFilters(datePostSelectedItems, levelSelectedItems, updatedItems);
         return updatedItems;
       });
     } else {
       const updatedItems = item;
-      const now = new Date();
-      const past24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-      const pastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const pastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      setJobsTemp(
-        jobs!.filter((job) => {
-          const jobDate = job?.created_at
-            ? new Date(job.created_at)
-            : new Date();
-          return updatedItems === "Past 24 hours"
-            ? jobDate > past24Hours
-            : updatedItems === "Past week"
-              ? jobDate > pastWeek
-              : updatedItems === "Past month"
-                ? jobDate > pastMonth
-                : true;
-        })
-      );
-      setDatePostSelectedItems(updatedItems);
+      setDatePostSelectedItems!(updatedItems);
+      applyFilters(updatedItems, levelSelectedItems, remoteSelectedItems);
     }
   };
 
@@ -118,21 +156,23 @@ const SubHeaderDropdown = ({
       prevLevelSelectedItems !== levelSelectedItems ||
       prevRemoteSelectedItems !== remoteSelectedItems
     ) {
-      setLevelSelectedItems(prevLevelSelectedItems);
-      setRemoteSelectedItems(prevRemoteSelectedItems);
-      setDatePostSelectedItems(prevDatePostSelectedItems);
+      setLevelSelectedItems!(prevLevelSelectedItems);
+      setRemoteSelectedItems!(prevRemoteSelectedItems);
+      setDatePostSelectedItems!(prevDatePostSelectedItems);
     }
   };
 
   const onSubmit = () => {
     if (
-      levelSelectedItems.length > 0 ||
-      remoteSelectedItems.length > 0 ||
-      datePostSelectedItems !== "Any time"
+      (levelSelectedItems!.length > 0 &&
+        !activeFilters.includes("Experience level")) ||
+      (remoteSelectedItems!.length > 0 && !activeFilters.includes("Remote")) ||
+      (datePostSelectedItems !== "Any time" &&
+        !activeFilters.includes("Date posted"))
     ) {
-      setPrevLevelSelectedItems(levelSelectedItems);
-      setPrevRemoteSelectedItems(remoteSelectedItems);
-      setPrevDatePostSelectedItems(datePostSelectedItems);
+      setPrevLevelSelectedItems(levelSelectedItems!);
+      setPrevRemoteSelectedItems(remoteSelectedItems!);
+      setPrevDatePostSelectedItems(datePostSelectedItems!);
       setActiveFilters((prev) => {
         return [...prev, title];
       });
@@ -152,11 +192,11 @@ const SubHeaderDropdown = ({
       !event.relatedTarget?.classList.contains("show-button")
     ) {
       if (title === "Experience level") {
-        setLevelSelectedItems([]);
+        setLevelSelectedItems!([]);
       } else if (title === "Remote") {
-        setRemoteSelectedItems([]);
+        setRemoteSelectedItems!([]);
       } else {
-        setDatePostSelectedItems("Any time");
+        setDatePostSelectedItems!("Any time");
       }
     }
     setIsDropDownOpen(false);
@@ -187,8 +227,8 @@ const SubHeaderDropdown = ({
                   className="size-5"
                   checked={
                     title === "Experience level"
-                      ? levelSelectedItems.includes(item)
-                      : remoteSelectedItems.includes(item)
+                      ? levelSelectedItems!.includes(item)
+                      : remoteSelectedItems!.includes(item)
                   }
                 />
               )}
@@ -226,7 +266,8 @@ const SubHeaderDropdown = ({
             }}
             className="show-button rounded-full bg-blue-600 text-white hover:bg-blue-800"
           >
-            Show
+            {/* Show {resultNumber ? `(${resultNumber})` : null} */}
+            Show ({resultNumber})
           </Button>
         </div>
       </DropdownMenuContent>

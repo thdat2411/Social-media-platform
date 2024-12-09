@@ -55,64 +55,13 @@ export async function PUT(req: NextRequest) {
     }
     const url = new URL(req.url);
     const action = url.searchParams.get("action");
-    try {
-      const user = await getCurrentUser();
-      if (!user) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-      }
-      const url = new URL(req.url);
-      const action = url.searchParams.get("action");
-
-      const body = await req.json();
-      const { id } = body;
-      if (!id) {
-        return NextResponse.json(
-          { error: "Invalid job post id" },
-          { status: 400 }
-        );
-      }
-      if (action === "hide") {
-        const jobPost = await prisma.job_posting.update({
-          where: {
-            id,
-          },
-          data: {
-            status: "inactive",
-          },
-        });
-        if (!jobPost) {
-          return NextResponse.json(
-            { error: "Job post not found" },
-            { status: 404 }
-          );
-        }
-        return NextResponse.json({ message: "Job post hidden" }, { status: 200 });
-      } else if (action === "restore") {
-        const jobPost = await prisma.job_posting.update({
-          where: {
-            id,
-          },
-          data: {
-            status: "active",
-          },
-        });
-        if (!jobPost) {
-          return NextResponse.json(
-            { error: "Job post not found" },
-            { status: 404 }
-          );
-        }
-        return NextResponse.json(
-          { message: "Job post restored" },
-          { status: 200 }
-        );
-      }
-    } catch {
+    if (action !== "hide" && action !== "restore") {
       return NextResponse.json(
-        { error: "Error hiding job post" },
-        { status: 500 }
+        { error: "Invalid action" },
+        { status: 400 }
       );
     }
+
     const body = await req.json();
     const { id } = body;
     if (!id) {
@@ -122,7 +71,7 @@ export async function PUT(req: NextRequest) {
       );
     }
     if (action === "hide") {
-      const jobPost = await prisma.job_posting.update({
+      const jobPostHidden = await prisma.job_posting.update({
         where: {
           id,
         },
@@ -130,7 +79,7 @@ export async function PUT(req: NextRequest) {
           status: "inactive",
         },
       });
-      if (!jobPost) {
+      if (!jobPostHidden) {
         return NextResponse.json(
           { error: "Job post not found" },
           { status: 404 }
@@ -138,7 +87,7 @@ export async function PUT(req: NextRequest) {
       }
       return NextResponse.json({ message: "Job post hidden" }, { status: 200 });
     } else if (action === "restore") {
-      const jobPost = await prisma.job_posting.update({
+      const jobPostRestore = await prisma.job_posting.update({
         where: {
           id,
         },
@@ -146,7 +95,7 @@ export async function PUT(req: NextRequest) {
           status: "active",
         },
       });
-      if (!jobPost) {
+      if (!jobPostRestore) {
         return NextResponse.json(
           { error: "Job post not found" },
           { status: 404 }

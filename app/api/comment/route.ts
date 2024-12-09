@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
           user_id: true
         }
       })
+      console.log("continue 1");
     }
     else {
       postUserIdForComment = await prisma.post.findUnique({
@@ -47,23 +48,27 @@ export async function POST(req: NextRequest) {
         user: true
       }
     })
+    console.log("continue 2");
 
     if ((parent_id && commentIdForReply?.user_id !== user_id) || (post_id && postUserIdForComment?.user_id !== user_id)) {
+      console.log("continue 3");
       await prisma.notification.create({
         data: {
-          user_id: parent_id ? commentIdForReply?.post_id ?? "" : postUserIdForComment?.user_id ?? "",
-          type: parent_id ? "reply" : "comment",
+          user_id: parent_id ? commentIdForReply?.user_id ?? "" : postUserIdForComment?.user_id ?? "",
+          type: parent_id ? "post_reply" : "post_comment",
           content: parent_id ? "You have a new reply on your comment recently" : "You have a new comment on your post recently",
           is_read: false,
-          post_id: post_id
+          post_id: parent_id ? commentIdForReply?.post_id : post_id,
         }
       })
+      console.log("continue 4");
       if (parent_id) {
-        await notifyUser(commentIdForReply?.user_id!, "reply", content)
+        await notifyUser(commentIdForReply?.user_id!, "You have a new reply on your comment recently", content)
       }
       else {
-        await notifyUser(postUserIdForComment?.user_id!, "comment", content)
+        await notifyUser(postUserIdForComment?.user_id!, "You have a new comment on your post recently", content)
       }
+      console.log("continue 5");
     }
     const processedComment = {
       ...comment,

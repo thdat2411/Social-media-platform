@@ -33,6 +33,10 @@ const SubHeader = ({
   const categoryList = useSearchingCategoriesList();
   const pathName = useCurrentPath();
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [levelSelectedItems, setLevelSelectedItems] = useState<string[]>([]);
+  const [remoteSelectedItems, setRemoteSelectedItems] = useState<string[]>([]);
+  const [datePostSelectedItems, setDatePostSelectedItems] =
+    useState<string>("Any time");
   const isWhatCategory =
     pathName === "/search"
       ? "All"
@@ -71,6 +75,12 @@ const SubHeader = ({
           tempJobs={tempJobs}
           setTempJobs={setTempJobs}
           setTotalPages={setTotalPages}
+          levelSelectedItems={levelSelectedItems}
+          setLevelSelectedItems={setLevelSelectedItems}
+          remoteSelectedItems={remoteSelectedItems}
+          setRemoteSelectedItems={setRemoteSelectedItems}
+          datePostSelectedItems={datePostSelectedItems}
+          setDatePostSelectedItems={setDatePostSelectedItems}
           content={item.content}
           isCheckbox={item.title === "Date posted" ? false : true}
           activeFilters={activeFilters}

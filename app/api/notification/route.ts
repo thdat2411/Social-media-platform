@@ -195,30 +195,5 @@ export async function DELETE(req: NextRequest) {
       { status: 500 }
     );
   }
-  try {
-    const body = await req.json();
-    const { notificationId } = body;
-    if (!notificationId) {
-      return NextResponse.json({ error: "Missing info" }, { status: 400 });
-    }
-    const notification = await prisma.notification.delete({
-      where: { id: notificationId },
-    });
-    if (!notification) {
-      return NextResponse.json(
-        { error: "Notification not found" },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(
-      { message: "Delete sucessfully" },
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: "An error occurred while deleting notification" },
-      { status: 500 }
-    );
-  }
+
 }

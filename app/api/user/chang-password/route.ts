@@ -6,7 +6,7 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const { newPassword, userId } = body;
-    if (!newPassword) {
+    if (!newPassword || !userId) {
       return NextResponse.json({ error: "Missing info" }, { status: 400 });
     }
     const newHasedPassword = await bcrypt.hash(newPassword, 10);
@@ -18,9 +18,6 @@ export async function PUT(req: NextRequest) {
         password_hash: newHasedPassword,
       },
     });
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
     return NextResponse.json({ user }, { status: 200 });
   } catch {
     return NextResponse.json(

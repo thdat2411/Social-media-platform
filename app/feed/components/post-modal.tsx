@@ -88,7 +88,6 @@ const PostModal = ({
   post,
   setPost,
 }: PostModalProps) => {
-  console.log("post", post);
   const [isPhotoEditorOpen, setIsPhotoEditorOpen] = useState(false);
   const [postContent, setPostContent] = useState<string | null>(null);
   const [editedImage, setEditedImage] = useState<string | null>(null);
@@ -150,12 +149,12 @@ const PostModal = ({
       const urls = content.match(urlRegex);
 
       if (urls && urls.length > 0) {
-        if (!linkPreview && urls[0] !== currentPreviewUrl) {
+        if (!linkPreview && !currentPreviewUrl) {
           setCurrentPreviewUrl(urls[0]);
           fetchLinkPreview(urls[0]);
+        } else {
+          setLinkPreview(null);
         }
-      } else {
-        setLinkPreview(null);
       }
     }
   };
