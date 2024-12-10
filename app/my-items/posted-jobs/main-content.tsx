@@ -132,7 +132,7 @@ const PostedJobsMainContent = ({ jobPosts }: PostedJobsMainContentProps) => {
                             </Button>
                             <Button
                               onClick={() =>
-                                router.push(`/manage-applications?${job.id}`)
+                                router.push(`/manage-jobPosts?id=${job.id}`)
                               }
                               variant="ghost"
                               className="flex w-full items-center justify-start space-x-2"
@@ -143,17 +143,6 @@ const PostedJobsMainContent = ({ jobPosts }: PostedJobsMainContentProps) => {
                                 className="size-5"
                               />
                               <p>View Applicants</p>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              className="flex w-full items-center justify-start space-x-2"
-                            >
-                              <Image
-                                src={TrashIcon}
-                                alt=""
-                                className="size-5"
-                              />
-                              <p>Delete post</p>
                             </Button>
                           </DropdownMenuContent>
                         </DropdownMenu>

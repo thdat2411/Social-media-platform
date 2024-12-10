@@ -7,12 +7,18 @@ export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get("page") || "1");
+    const id = url.searchParams.get("id");
     const limit = 15; // Items per page
     const user = await getCurrentUser();
+
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    const jobPosts = await prisma.job_posting.findMany({
+
+    let prioritizedPost = null;
+    let jobPosts = [];
+
+    const allJobPosts = await prisma.job_posting.findMany({
       where: {
         employer_id: user.id,
       },
@@ -21,31 +27,38 @@ export async function GET(req: NextRequest) {
         job_applications: {
           include: {
             user: true,
-          }
-        }
+          },
+        },
       },
-      skip: (page - 1) * limit,
-      take: limit,
-
     });
 
+    if (id) {
+      prioritizedPost = allJobPosts.find((post) => post.id === id);
 
-    const totalJobPosts = await getUserJobPosts();
-    if (!totalJobPosts) {
-      return NextResponse.json(
-        { error: "No job posts found" },
-        { status: 404 }
-      );
+      jobPosts = allJobPosts.filter((post) => post.id !== id);
+    } else {
+      jobPosts = allJobPosts;
     }
-    const totalPages = Math.ceil(totalJobPosts.length / limit);
-    return NextResponse.json({ jobPosts, totalPages }, { status: 200 });
-  } catch {
+
+    const paginatedPosts = jobPosts.slice((page - 1) * limit, page * limit);
+
+    if (prioritizedPost) {
+      paginatedPosts.unshift(prioritizedPost);
+    }
+
+    const totalJobPosts = allJobPosts.length;
+    const totalPages = Math.ceil(totalJobPosts / limit);
+
+    return NextResponse.json({ jobPosts: paginatedPosts, totalPages }, { status: 200 });
+  } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Error fetching job data" },
       { status: 500 }
     );
   }
 }
+
 
 export async function PUT(req: NextRequest) {
   try {

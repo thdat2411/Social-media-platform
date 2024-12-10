@@ -52,7 +52,7 @@ const FeedSideBar = ({ user }: FeedSideBarProps) => {
             isHovered={isBookMarkHovered}
             className="size-7"
           />
-          <p className="cursor-pointer text-sm hover:underline">Saved Items</p>
+          <p className="cursor-pointer text-sm hover:underline">My Items</p>
         </Link>
         <div
           className="flex items-center space-x-3"

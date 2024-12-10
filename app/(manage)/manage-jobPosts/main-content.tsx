@@ -6,6 +6,7 @@ import { job_application, job_posting, user } from "@prisma/client";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DetailApplication from "./detail-application";
@@ -18,6 +19,7 @@ export type ManageJobPost = job_posting & {
 };
 
 const ManageJobPostsMainContent = () => {
+  const id = useSearchParams().get("id");
   const [jobs, setJobs] = useState<ManageJobPost[] | null>([]);
   const [postIndex, setPostIndex] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -32,7 +34,9 @@ const ManageJobPostsMainContent = () => {
     const fetchJobs = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`/api/manage/job-posting?page=${currentPage}`);
+        const response = await axios.get(
+          `/api/manage/job-posting?page=${currentPage}&id=${id}`
+        );
         const { jobPosts, totalPages } = response.data;
         if (response.status === 200) {
           setJobs(jobPosts);

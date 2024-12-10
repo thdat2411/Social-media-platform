@@ -14,7 +14,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { Ellipsis } from "lucide-react";
 import Image from "next/image";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { ManageJobPost } from "./main-content";
@@ -39,10 +39,11 @@ const ManageApplicationSideBar = ({
   const [isHideConfirmModalOpen, setIsHideConfirmModalOpen] = useState(false);
   const [isRestoreConfirmModalOpen, setIsRestoreConfirmModalOpen] =
     useState(false);
+  const router = useRouter();
   const handleHidePost = async () => {
     try {
       await axios
-        .put(`/api/manage?action=hide`, { id: data.id })
+        .put(`/api/manage/job-posting?action=hide`, { id: data.id })
         .then((response) => {
           if (response.status === 200) {
             const updatedJobs = jobs.map((job) =>
@@ -62,7 +63,7 @@ const ManageApplicationSideBar = ({
   const handleRestorePost = async () => {
     try {
       await axios
-        .put(`/api/manage?action=restore`, { id: data.id })
+        .put(`/api/manage/job-posting?action=restore`, { id: data.id })
         .then((response) => {
           if (response.status === 200) {
             const updatedJobs = jobs.map((job) =>
