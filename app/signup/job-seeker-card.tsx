@@ -108,9 +108,9 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
     const isJobValid = prevJobSuggestions.includes(jobInputValue);
     const isLocationValid =
       prevLocationSuggestions.includes(locationInputValue);
-    return !(
-      (jobInputValue && locationInputValue && isJobValid && isLocationValid) ||
-      !isLoading
+    return (
+      !(jobInputValue && locationInputValue && isJobValid && isLocationValid) ||
+      isLoading
     );
   };
   /*----------------------------------------------------------------------- */
@@ -146,6 +146,7 @@ const JobSeekerCard = ({ userData }: JobSeekerCardProps) => {
             })
             .catch((error) => {
               console.error("Error signing in:", error);
+              setIsLoading(false);
             });
         });
     } catch (error) {
