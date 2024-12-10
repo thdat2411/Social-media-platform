@@ -20,7 +20,7 @@ const ChangePasswordForm = ({ emailValue }: ChangePasswordFormProps) => {
   const [isNewPasswordFocus, setIsNewPasswordFocus] = useState(false);
 
   const validatePassword = (password: string) => {
-    const specialCharacterPattern = /[!@#$%^&*(),.?":{}|<>]/g; // Adjust this pattern as needed
+    const specialCharacterPattern = /[!@#$%^&*(),.?":{}|<>]/g;
     if (password.length < 8) {
       setNewError("Password must be at least 8 characters long.");
     } else if (!specialCharacterPattern.test(password)) {
@@ -96,9 +96,9 @@ const ChangePasswordForm = ({ emailValue }: ChangePasswordFormProps) => {
             className="rounded-full p-3"
           >
             {isPasswordVisible ? (
-              <EyeOff className="size-5" />
-            ) : (
               <Eye className="size-5" />
+            ) : (
+              <EyeOff className="size-5" />
             )}
           </Button>
         </div>

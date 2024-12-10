@@ -29,7 +29,7 @@ const ConfirmCodeForm = ({
 
   return (
     <>
-      {!isCodeConfirm ? (
+      {isCodeConfirm ? (
         <ChangePasswordForm emailValue={emailValue} />
       ) : (
         <>
