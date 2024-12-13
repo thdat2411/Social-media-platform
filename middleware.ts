@@ -11,7 +11,7 @@ export default withAuth({
         "/api/register/check-email",
         "/api/register/user",
         "/api/register/job-preference",
-        "/api/user/change-password",
+        "/forgot-password",
         "/api/email",
         "/api/suggestion",
       ];
