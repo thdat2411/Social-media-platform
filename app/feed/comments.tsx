@@ -240,7 +240,8 @@ const PostComment = ({
                   {iComment?.updated_at &&
                     iComment?.created_at &&
                     iComment.updated_at > iComment.created_at &&
-                    comment?.user_id === user.id && (
+                    new Date(iComment.updated_at) >
+                      new Date(iComment.created_at) && (
                       <p className="text-xs text-gray-500">(edited)</p>
                     )}
                   {iComment?.user_id === user.id && (

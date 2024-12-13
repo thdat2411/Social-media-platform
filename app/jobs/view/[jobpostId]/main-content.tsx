@@ -196,13 +196,22 @@ const JobViewMainContent = ({
           <div className="flex w-1/5 flex-col items-center space-y-5">
             <div className="mt-4 h-fit rounded-lg border bg-white p-6 shadow-md max-[800px]:mx-auto max-[800px]:w-9/12 min-[800px]:w-full min-[800px]:flex-col min-[800px]:justify-center">
               <div className="flex flex-wrap items-center justify-center max-[1500px]:space-y-4 max-[800px]:space-x-4 max-[800px]:space-y-0 min-[1500px]:space-x-4">
-                <p>Looking for talent?</p>
+                <p>
+                  {user.role === "recruiter"
+                    ? "Looking for talent?"
+                    : "Looking for job?"}
+                </p>
                 <Button
-                  onClick={() => router.push("/job-posting")}
+                  onClick={() => {
+                    if (user.role === "recruiter") {
+                      router.push("/job-posting");
+                    }
+                    router.push("/jobs");
+                  }}
                   variant="outline"
                   className="rounded-full border border-blue-500 px-7 py-3 text-blue-500 hover:border-2 hover:border-blue-700 hover:text-blue-500"
                 >
-                  Post a job
+                  {user.role === "recruiter" ? "Post a job" : "Browse jobs"}
                 </Button>
               </div>
             </div>
