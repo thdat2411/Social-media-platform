@@ -11,6 +11,7 @@ interface ChangePasswordFormProps {
 }
 
 const ChangePasswordForm = ({ emailValue }: ChangePasswordFormProps) => {
+  console.log(emailValue);
   const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,13 +30,20 @@ const ChangePasswordForm = ({ emailValue }: ChangePasswordFormProps) => {
   };
 
   const checkValid = async () => {
-    const user = await getUserByEmail(emailValue);
+    const response = await axios.get(
+      `/api/user/get-userbyEmail?email=${emailValue}`
+    );
+    const { user } = response.data;
+    if (!user) {
+      toast.error("User not found");
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setConfirmError("Passwords do not match");
     }
     const data = {
       newPassword,
-      userId: user?.id,
+      userId: user.id,
     };
     axios
       .put("/api/user/change-password", data)
@@ -111,7 +119,7 @@ const ChangePasswordForm = ({ emailValue }: ChangePasswordFormProps) => {
 
         <input
           value={confirmPassword}
-          className={`w-full rounded-md border p-3 ${confirmError !== "" ? "border-red-500 outline outline-1 outline-red-500" : "border-gray-700 focus:outline-blue-500"} } transition-all`}
+          className={`w-full rounded-md border p-3 ${confirmError !== "" ? "border-red-500 outline outline-1 outline-red-500" : "border-gray-700 focus:outline-blue-500"} transition-all`}
           type="password"
           placeholder="Retype new password"
           onChange={(e) => setConfirmPassword(e.target.value)}

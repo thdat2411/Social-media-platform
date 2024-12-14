@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       {
         message: "File uploaded successfully.",
         url: result.secure_url,
-        folder: folderPath, // Provide the folder path in the response
+        folder: folderPath,
       },
       { status: 200 }
     );

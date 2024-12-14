@@ -60,6 +60,17 @@ export const deleteComment = async (postId: string, commentId: string) => {
     }
 }
 
+export const deleteReply = async (postId: string, commentId: string, replyId: string) => {
+    try {
+        await pusher.trigger(`comment-${commentId}`, "delete-reply", {
+            replyId: replyId,
+        });
+        await pusher.trigger(`post-${postId}`, "delete-reply", {});
+    } catch (error) {
+        console.error(`Error deleting message for comment: ${commentId}`, error);
+    }
+}
+
 export const insertReplies = async (comment: CommentsWithLiked) => {
     try {
         await pusher.trigger(`comment-${comment.parent_id}`, "new-reply", {

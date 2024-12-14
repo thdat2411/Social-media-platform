@@ -6,22 +6,27 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "placehold.co",
-        pathname: "/**",
+        pathname: "**",
       },
       {
         protocol: "https",
         hostname: "github.com",
-        pathname: "/**",
+        pathname: "**",
       },
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
-        pathname: "/**",
+        pathname: "**",
       },
       {
         protocol: "https",
         hostname: "social-img.staticblitz.com",
-        pathname: "/**",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
       },
       {
         protocol: "https",

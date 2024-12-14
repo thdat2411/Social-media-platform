@@ -56,7 +56,7 @@ export async function DELETE(req: NextRequest) {
         user_id_entity_type_entity_id: {
           user_id: user.id,
           entity_type: postId ? "post" : "comment",
-          entity_id: (postId || commentId)!,
+          entity_id: postId ? postId! : commentId!,
         }
       }
     }

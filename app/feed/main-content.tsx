@@ -24,7 +24,6 @@ interface FeedMainContentProps {
 }
 
 const FeedMainContent = ({ user }: FeedMainContentProps) => {
-  console.log("FeedMainContent rerender");
   const [drafContent, setDraftContent] = useState<string | null>(null);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);

@@ -32,7 +32,6 @@ import { usePusher } from "../context/PusherContext";
 import { formatDate } from "../utils/utils";
 import CommentInput from "./comment-input";
 import PostComment from "./comments";
-import PostModal from "./components/post-modal";
 import PreviewContainer from "./components/preview-container";
 
 export type PostwithLiked = post & { user: user | null } & {
@@ -125,6 +124,13 @@ const FeedPost = ({
       }));
     };
 
+    const handleDeleteReply = (data: unknown) => {
+      setIPost((prev) => ({
+        ...prev!,
+        commentCount: prev!.commentCount - 1,
+      }));
+    };
+
     const handleDeleteComment = (data: unknown) => {
       const { commentId } = data as { commentId: string };
 
@@ -156,6 +162,7 @@ const FeedPost = ({
     bindEvent(channelName, "new-reply", handleNewReply);
     bindEvent(channelName, "handle-like", handleLike);
     bindEvent(channelName, "delete-comment", handleDeleteComment);
+    bindEvent(channelName, "delete-reply", handleDeleteReply);
 
     // Cleanup: unbind events and unsubscribe from the channel
     return () => {
@@ -321,7 +328,7 @@ const FeedPost = ({
               open={isDropdownOpen}
               onOpenChange={setIsDropdownOpen}
             >
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   className="rounded-full p-3 hover:bg-[#F4F2EE]"
